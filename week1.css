@@ -1,0 +1,206 @@
+/* Переменные для этой недели */
+:root {
+    --card-height: 180px;
+    --card-bg-front: #ffffff;
+    --card-bg-back: #00B5AD;
+    --text-on-back: #ffffff;
+}
+
+/* Шапка недели */
+.week-header {
+    background: linear-gradient(135deg, #003366 0%, #005c99 100%);
+    color: white;
+    padding: 40px 0;
+    margin-bottom: 30px;
+    border-bottom: 4px solid var(--accent-color);
+}
+.week-badge {
+    background: var(--accent-color);
+    color: #000;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+.week-header h1 { margin-top: 10px; font-size: 2.5rem; }
+
+/* Секции */
+.lesson-section {
+    margin-bottom: 60px;
+}
+.section-title {
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 20px;
+    border-left: 5px solid var(--accent-color);
+    padding-left: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 7 Правил (Grid) */
+.rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+.rule-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    transition: transform 0.3s;
+}
+.rule-card:hover { transform: translateY(-5px); border-color: var(--primary-color); }
+.rule-icon { font-size: 2rem; margin-bottom: 10px; }
+.rule-card h3 { color: #2c3e50; margin-bottom: 10px; }
+.example {
+    margin-top: 10px;
+    padding: 8px;
+    background: #f0f8ff;
+    border-radius: 6px;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #005c99;
+}
+
+/* Грамматика */
+.grammar-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+.grammar-box {
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    border-top: 5px solid var(--primary-color);
+    box-shadow: var(--shadow);
+}
+.formula {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 15px 0;
+    padding: 10px;
+    background: #e0f7fa;
+    border-radius: 8px;
+    text-align: center;
+}
+.formula .highlight { color: #d32f2f; }
+.examples-list li { margin-bottom: 8px; list-style: none; position: relative; padding-left: 20px; }
+.examples-list li::before { content: "•"; color: var(--accent-color); position: absolute; left: 0; font-weight: bold; }
+
+/* --- 3D FLIP CARDS --- */
+.header-with-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+/* Контейнер карты */
+.flip-card {
+    background-color: transparent;
+    height: var(--card-height);
+    perspective: 1000px; /* Эффект 3D */
+    cursor: pointer;
+}
+
+/* Внутренняя часть, которая вращается */
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style: preserve-3d;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border-radius: 15px;
+}
+
+/* Класс для переворота (добавляется JS) */
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Общие стили для сторон */
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Лицевая сторона (Казахский) */
+.flip-card-front {
+    background-color: var(--card-bg-front);
+    color: var(--text-dark);
+}
+.flip-card-front h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+.icon-play {
+    margin-top: 10px;
+    color: #ccc;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
+.flip-card:hover .icon-play { color: var(--accent-color); }
+
+/* Обратная сторона (Русский) */
+.flip-card-back {
+    background: linear-gradient(135deg, var(--primary-color), #008f8a);
+    color: var(--text-on-back);
+    transform: rotateY(180deg);
+}
+.flip-card-back p {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+/* Кнопка действия */
+.btn-action {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(0, 181, 173, 0.3);
+    transition: all 0.3s;
+}
+.btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 181, 173, 0.4); }
+.btn-light { background: white; color: var(--primary-color); }
+
+/* Темная секция для теста */
+.dark-bg {
+    background: linear-gradient(135deg, #2C3E50, #4CA1AF);
+    padding: 40px;
+    border-radius: 20px;
+    margin-top: 40px;
+}
+.white-text { color: white !important; border-color: white !important; }

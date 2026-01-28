@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <title>Сөздік • Ситуативтік қазақ тілі</title>
+  <meta name="color-scheme" content="light" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+/* =========================================
+     DICTIONARY: CREATIVE & COMPACT STYLE
+     ========================================= */
+
+  /* 1. ІЗДЕУ ПАНЕЛІ (GLASSMROPHISM) */
+  .searchWrapper {
+    position: sticky;
+    top: 15px;
+    z-index: 100;
+    margin-bottom: 30px;
+    padding: 0 10px;
+  }
+
+  .searchBox {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 12px 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .searchBox:focus-within {
+    transform: translateY(-2px) scale(1.01);
+    border-color: var(--a);
+    box-shadow: 0 12px 40px rgba(59, 130, 246, 0.2);
+    background: #fff;
+  }
+
+  .searchInput {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 1.1rem;
+    color: var(--text);
+    outline: none;
+    font-weight: 500;
+  }
+
+  /* 2. АПТАЛАРДЫҢ ТАҚЫРЫБЫ (HEADER) */
+  .dictHeader {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 15px 20px;
+    border-radius: 16px;
+    margin-bottom: 15px;
+    border-left: 5px solid var(--a);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dictTitle {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0;
+  }
+  .dictSub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* 3. СӨЗДЕР ТОРЫ (GRID) */
+  .wordList {
+    display: grid;
+    /* Компьютерде: 4-5 бағанға дейін сыяды */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  /* 4. КРЕАТИВТІ КАРТОЧКАЛАР (CARDS) */
+  .wordItem {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    cursor: default;
+  }
+
+  /* Жұмсақ градиентті жиек */
+  .wordItem::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 2px; /* border width */
+    background: linear-gradient(135deg, #e2e8f0, #f1f5f9);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Hover эффектісі */
+  .wordItem:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+  }
+  
+  /* Hover кезіндегі түсті жиек */
+  .wordItem:hover::before {
+    background: linear-gradient(135deg, var(--a), var(--b));
+  }
+
+  .wordItem__kz {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .wordItem__ru {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+    display: block;
+  }
+
+  /* 5. МОБИЛЬДІ ВЕРСИЯ (COMPACT) */
+  @media (max-width: 900px) {
+    .container { padding-left: 10px; padding-right: 10px; }
+    
+    .searchBox {
+      padding: 10px 15px;
+      margin-bottom: 20px;
+    }
+    .searchInput { font-size: 1rem; }
+
+    /* Тақырыпты ықшамдау */
+    .dictHeader {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+      padding: 12px;
+    }
+    
+    /* 2 бағанды тор */
+    .wordList {
+      grid-template-columns: 1fr 1fr !important;
+      gap: 8px !important;
+    }
+
+    /* Карточканы кішірейту */
+    .wordItem {
+      padding: 12px !important;
+      border-radius: 12px !important;
+    }
+    .wordItem__kz { font-size: 0.95rem !important; }
+    .wordItem__ru { font-size: 0.8rem !important; }
+  }
+  /* =========================================
+     DICTIONARY NAVIGATION (1-10 & UP)
+     ========================================= */
+
+     .dictNav {
+      position: sticky;
+      /* Іздеу жолағының астында тұруы үшін (SearchBox биіктігіне байланысты) */
+      top: 90px; 
+      z-index: 90;
+      
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      
+      background: rgba(255, 255, 255, 0.8); /* Жартылай мөлдір */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      
+      padding: 10px 15px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+  
+    /* Сандар (батырмалар) */
+    .dictNav__link {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      border-radius: 50%; /* Дөңгелек */
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: var(--text);
+      
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+  
+    /* Hover эффектісі */
+    .dictNav__link:hover {
+      background: var(--a); /* Акцент түс */
+      color: #ffffff;
+      border-color: var(--a);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    }
+  
+    /* Жоғарыға батырмасы (UP Button) */
+    .dictNav__up {
+      width: auto;
+      padding: 0 15px;
+      border-radius: 20px; /* Сопақша */
+      margin-left: 10px; /* Сандардан бөліп тұру үшін */
+      background: #f1f5f9;
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    
+    .dictNav__up:hover {
+      background: #e2e8f0;
+      color: var(--text);
+      transform: translateY(-2px);
+    }
+  
+    /* МОБИЛЬДІ ВЕРСИЯҒА ТҮЗЕТУ */
+    @media (max-width: 900px) {
+      .dictNav {
+        top: 75px; /* Телефонда іздеу жолағы кішірек */
+        padding: 8px;
+        gap: 6px;
+        justify-content: flex-start; /* Сол жақтан басталады */
+        overflow-x: auto; /* Сыйламаса - айналдыру */
+        flex-wrap: nowrap; /* Бір қатарға тізу */
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      .dictNav__link {
+        flex: 0 0 auto; /* Сығымдалмау үшін */
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body data-page="dictionary">
+  <a class="skip-link" href="#main">Негізгі мазмұнға өту</a>
+
+  <header class="topbar" role="banner">
+    <div class="topbar__inner container">
+      <div class="brand" aria-label="Kazakh Course">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <div class="brand__text">
+          <div class="brand__title">Ситуативтік қазақ тілі</div>
+          <div class="brand__sub">Онлайн курс • 10 апта</div>
+        </div>
+      </div>
+
+      <nav class="nav nav--weeks" aria-label="Апталар (десктоп)">
+        <a class="nav__link" data-page="index" href="index.html">Басты</a>
+        <a class="nav__link" data-page="week1" href="week1.html">1</a>
+        <a class="nav__link" data-page="week2" href="week2.html">2</a>
+        <a class="nav__link" data-page="week3" href="week3.html">3</a>
+        <a class="nav__link" data-page="week4" href="week4.html">4</a>
+        <a class="nav__link" data-page="week5" href="week5.html">5</a>
+        <a class="nav__link" data-page="week6" href="week6.html">6</a>
+        <a class="nav__link" data-page="week7" href="week7.html">7</a>
+        <a class="nav__link" data-page="week8" href="week8.html">8</a>
+        <a class="nav__link " data-page="week9" href="week9.html" aria-current="page">9</a>
+        <a class="nav__link" data-page="week10" href="week10.html">10</a>
+        <a class="nav__link is-active" data-page="dictionary" href="dictionary.html">Сөздік</a>
+      </nav>
+    </div>
+
+  <main id="main" class="container">
+    
+    <section class="hero reveal">
+      <div class="hero__grid">
+        <div>
+          <h1 class="h1">Толық <span class="h1__accent">Сөздік</span></h1>
+          <p class="lead">
+            Барлық аптаның жаңа сөздері, грамматикалық ескертулері және мысалдары бір жерде.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <nav class="dictNav reveal">
+        <a href="#week1" class="dictNav__link" aria-label="1-апта">1</a>
+        <a href="#week2" class="dictNav__link" aria-label="2-апта">2</a>
+        <a href="#week3" class="dictNav__link" aria-label="3-апта">3</a>
+        <a href="#week4" class="dictNav__link" aria-label="4-апта">4</a>
+        <a href="#week5" class="dictNav__link" aria-label="5-апта">5</a>
+        <a href="#week6" class="dictNav__link" aria-label="6-апта">6</a>
+        <a href="#week7" class="dictNav__link" aria-label="7-апта">7</a>
+        <a href="#week8" class="dictNav__link" aria-label="8-апта">8</a>
+        <a href="#week9" class="dictNav__link" aria-label="9-апта">9</a>
+        <a href="#week10" class="dictNav__link" aria-label="10-апта">10</a>
+        
+        <button class="dictNav__link dictNav__up" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Жоғарыға">
+          ↑
+        </button>
+      </nav>
+
+    <section id="week1" class="dictSection reveal">
+      
+      <div class="dictHeader">
+        <h2 class="dictTitle">1-АПТА</h2>
+        <p class="dictSub">НЕГІЗДЕР, МЕН, ОРЫН, УАҚЫТ</p>
+      </div>
+
+      <div class="wordList">
+        <div class="wordItem"><span class="wordItem__kz">Мен</span> <span class="wordItem__ru">Я</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Менің</span> <span class="wordItem__ru">Мой</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Маған</span> <span class="wordItem__ru">Мне</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Менде</span> <span class="wordItem__ru">У меня</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Бұл</span> <span class="wordItem__ru">Это</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Мынау</span> <span class="wordItem__ru">Это (ближе)</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Ол</span> <span class="wordItem__ru">Тот / Он / Она</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Бүгін</span> <span class="wordItem__ru">Сегодня</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Қазір</span> <span class="wordItem__ru">Сейчас</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Ертең</span> <span class="wordItem__ru">Завтра</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Таңертең</span> <span class="wordItem__ru">Утром</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Күндіз</span> <span class="wordItem__ru">Днём</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Кешке</span> <span class="wordItem__ru">Вечером</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Ерте</span> <span class="wordItem__ru">Рано</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Кеш</span> <span class="wordItem__ru">Поздно</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Жұмыс</span> <span class="wordItem__ru">Работа</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Үй</span> <span class="wordItem__ru">Дом</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Сабақ</span> <span class="wordItem__ru">Занятие</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Университет</span> <span class="wordItem__ru">Университет</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Қала</span> <span class="wordItem__ru">Город</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Ауыл</span> <span class="wordItem__ru">Село</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Жұмыста</span> <span class="wordItem__ru">На работе</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Үйде</span> <span class="wordItem__ru">Дома</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Сабақта</span> <span class="wordItem__ru">На занятии</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Университетте</span> <span class="wordItem__ru">В университете</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Барамын</span> <span class="wordItem__ru">Иду</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Боламын</span> <span class="wordItem__ru">Буду</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Жазамын</span> <span class="wordItem__ru">Пишу</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Оқимын</span> <span class="wordItem__ru">Учусь / Читаю</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Оқытамын</span> <span class="wordItem__ru">Обучаю</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Үлкен</span> <span class="wordItem__ru">Большой</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Көп</span> <span class="wordItem__ru">Много</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Жақсы көремін</span> <span class="wordItem__ru">Люблю</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Ұнайды</span> <span class="wordItem__ru">Нравится</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Және</span> <span class="wordItem__ru">И</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Бірақ</span> <span class="wordItem__ru">Но</span></div>
+        <div class="wordItem"><span class="wordItem__kz">Немесе</span> <span class="wordItem__ru">Или</span></div>
+      </div>
+
+      <div class="dictNote">
+        <div class="callout">
+          <div class="callout__title">🧠 Есте сақтау</div>
+          <div class="callout__text">
+            <ul>
+              <li>Етістік (глагол) сөйлемнің соңында тұрады.</li>
+              <li>Я = мен + мын/мін (Мен дәрігер<strong>мін</strong>).</li>
+              <li>Қайда? (Где?) — жалғаулары: <strong>-да/-де, -та/-те</strong>.</li>
+              <li>Қайда? (Куда?) — жалғаулары: <strong>-ға/-ге, -қа/-ке</strong>.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="block block--accent">
+          <div class="block__title">✏️ Мысалдар</div>
+          <p style="margin-bottom: 8px;"><strong>Мен қазір жұмыста боламын.</strong><br><span class="muted">Я сейчас буду на работе.</span></p>
+          <p style="margin-bottom: 0;"><strong>Мен университетте оқимын.</strong><br><span class="muted">Я учусь в университете.</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="week2" class="dictSection reveal">
+        <div class="dictHeader">
+          <h2 class="dictTitle">2-АПТА</h2>
+          <p class="dictSub">ТАНЫСУ, СӘЛЕМДЕСУ, БИОГРАФИЯ</p>
+        </div>
+  
+        <div class="wordList">
+          <div class="wordItem"><span class="wordItem__kz">Сәлеметсіз бе</span> <span class="wordItem__ru">Здравствуйте</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сәлем</span> <span class="wordItem__ru">Привет</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қайырлы таң</span> <span class="wordItem__ru">Доброе утро</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қайырлы күн</span> <span class="wordItem__ru">Добрый день</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Кеш жарық</span> <span class="wordItem__ru">Добрый вечер</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қош келдіңіз</span> <span class="wordItem__ru">Добро пожаловать</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сау болыңыз</span> <span class="wordItem__ru">До свидания</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Аман болыңыз</span> <span class="wordItem__ru">Будьте здоровы</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Кездескенше</span> <span class="wordItem__ru">До встречи</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Рахмет</span> <span class="wordItem__ru">Спасибо</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көп рахмет</span> <span class="wordItem__ru">Большое спасибо</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мархабат</span> <span class="wordItem__ru">Пожалуйста</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Оқасы жоқ</span> <span class="wordItem__ru">Не за что</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Шын жүректен</span> <span class="wordItem__ru">От всей души</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ризамын</span> <span class="wordItem__ru">Благодарен</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ат / Есім</span> <span class="wordItem__ru">Имя</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Аты-жөні</span> <span class="wordItem__ru">ФИО</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тудым</span> <span class="wordItem__ru">Родился</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қалада</span> <span class="wordItem__ru">В городе</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ауылда</span> <span class="wordItem__ru">В селе</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қыста</span> <span class="wordItem__ru">Зимой</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көктемде</span> <span class="wordItem__ru">Весной</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жазда</span> <span class="wordItem__ru">Летом</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Күзде</span> <span class="wordItem__ru">Осенью</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мектеп</span> <span class="wordItem__ru">Школа</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Оқыдым</span> <span class="wordItem__ru">Учился</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жұмыс істеймін</span> <span class="wordItem__ru">Работаю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Университетте</span> <span class="wordItem__ru">В университете</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Оқытушы</span> <span class="wordItem__ru">Преподаватель</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Әдіскер</span> <span class="wordItem__ru">Методист</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Меңгеруші</span> <span class="wordItem__ru">Заведующий</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Денсаулық</span> <span class="wordItem__ru">Здоровье</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көңіл-күй</span> <span class="wordItem__ru">Настроение</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жаңалық</span> <span class="wordItem__ru">Новость</span></div>
+        </div>
+  
+        <div class="dictNote">
+          <div class="callout">
+            <div class="callout__title">🧠 Есте сақтау</div>
+            <div class="callout__text">
+              <ul>
+                 <li><strong>Туған жер</strong> (Место рождения) → жалғау: <em>-да/-де</em> (Қалада).</li>
+                 <li><strong>Туған уақыт</strong> (Время рождения) → жалғау: <em>-да/-де</em> (Жазда).</li>
+                 <li>Танысу — қысқа және нақты болу керек.</li>
+              </ul>
+            </div>
+          </div>
+  
+          <div class="block block--accent">
+            <div class="block__title">✏️ Мысалдар</div>
+            <p style="margin-bottom: 8px;"><strong>Мен Петропавлда тудым.</strong><br><span class="muted">Я родился в Петропавловске.</span></p>
+            <p style="margin-bottom: 0;"><strong>Мен университетте жұмыс істеймін.</strong><br><span class="muted">Я работаю в университете.</span></p>
+          </div>
+        </div>
+      </section>
+      <section id="week3" class="dictSection reveal">
+        <div class="dictHeader">
+          <h2 class="dictTitle">3-АПТА</h2>
+          <p class="dictSub">БОС УАҚЫТ, МАҚСАТ</p>
+        </div>
+      
+        <div class="wordList">
+          <div class="wordItem"><span class="wordItem__kz">Бос уақыт</span> <span class="wordItem__ru">Свободное время</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тоқимын</span> <span class="wordItem__ru">Вяжу</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ән айтамын</span> <span class="wordItem__ru">Пою</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Аударамын</span> <span class="wordItem__ru">Перевожу</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Білемін</span> <span class="wordItem__ru">Знаю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Отбасыммен</span> <span class="wordItem__ru">С семьёй</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Достарыммен</span> <span class="wordItem__ru">С друзьями</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Өткіземін</span> <span class="wordItem__ru">Провожу</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Спортзал</span> <span class="wordItem__ru">Спортзал</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Барамын</span> <span class="wordItem__ru">Хожу</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қыдырамын</span> <span class="wordItem__ru">Гуляю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мақсат</span> <span class="wordItem__ru">Цель</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мақсатым</span> <span class="wordItem__ru">Моя цель</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Барғым келеді</span> <span class="wordItem__ru">Хочу поехать</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Өмір</span> <span class="wordItem__ru">Жизнь</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Маңызды</span> <span class="wordItem__ru">Важно</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мен үшін</span> <span class="wordItem__ru">Для меня</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жұмысқа</span> <span class="wordItem__ru">На работу</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Дүкен</span> <span class="wordItem__ru">Магазин</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Дүкен аралаймын</span> <span class="wordItem__ru">Хожу по магазинам</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Теледидар</span> <span class="wordItem__ru">Телевизор</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қараймын</span> <span class="wordItem__ru">Смотрю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Кітап</span> <span class="wordItem__ru">Книга</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Оқимын</span> <span class="wordItem__ru">Читаю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Әдемі</span> <span class="wordItem__ru">Красивый</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қазақстан</span> <span class="wordItem__ru">Казахстан</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жер</span> <span class="wordItem__ru">Место</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тамашалау</span> <span class="wordItem__ru">Любоваться</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Әдетте</span> <span class="wordItem__ru">Обычно</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Кешке</span> <span class="wordItem__ru">Вечером</span></div>
+        </div>
+      
+        <div class="dictNote">
+          <div class="callout">
+            <div class="callout__title">🧠 Есте сақтау</div>
+            <div class="callout__text">
+              <ul>
+                <li><strong>Ұнайды</strong> (Нравится) → кімге? <em>Маған</em>.</li>
+                <li><strong>Жақсы көремін</strong> (Люблю) → кім? <em>Мен</em>.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="block block--accent">
+            <div class="block__title">✏️ Мысалдар</div>
+            <p style="margin-bottom: 8px;"><strong>Маған спорт ұнайды.</strong><br><span class="muted">Мне нравится спорт.</span></p>
+            <p style="margin-bottom: 0;"><strong>Мен кітап оқимын.</strong><br><span class="muted">Я читаю книгу.</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="week4" class="dictSection reveal">
+        <div class="dictHeader">
+          <h2 class="dictTitle">4-АПТА</h2>
+          <p class="dictSub">ДОСТЫҚ, ҚАСИЕТТЕР</p>
+        </div>
+      
+        <div class="wordList">
+          <div class="wordItem"><span class="wordItem__kz">Дос</span> <span class="wordItem__ru">Друг</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Достарым</span> <span class="wordItem__ru">Мои друзья</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жақын дос</span> <span class="wordItem__ru">Близкий друг</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ең жақсы дос</span> <span class="wordItem__ru">Лучший друг</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мектеп досым</span> <span class="wordItem__ru">Школьный друг</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Студенттік досым</span> <span class="wordItem__ru">Студенческий друг</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Достық</span> <span class="wordItem__ru">Дружба</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Достық деген не</span> <span class="wordItem__ru">Что такое дружба</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Адал</span> <span class="wordItem__ru">Честный</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Адалдық</span> <span class="wordItem__ru">Честность</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мейірімді</span> <span class="wordItem__ru">Добрый</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көңілді</span> <span class="wordItem__ru">Весёлый</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ашық</span> <span class="wordItem__ru">Открытый</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сенімді</span> <span class="wordItem__ru">Надёжный</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жауапты</span> <span class="wordItem__ru">Ответственный</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жауапсыз</span> <span class="wordItem__ru">Безответственный</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жауапкершілік</span> <span class="wordItem__ru">Ответственность</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қасиет</span> <span class="wordItem__ru">Качество</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жақсы қасиет</span> <span class="wordItem__ru">Хорошее качество</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жаман қасиет</span> <span class="wordItem__ru">Плохое качество</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бағалаймын</span> <span class="wordItem__ru">Ценю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сыйлаймын</span> <span class="wordItem__ru">Уважаю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жақсы көремін</span> <span class="wordItem__ru">Люблю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ұнатамын</span> <span class="wordItem__ru">Нравятся</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ұнатпаймын</span> <span class="wordItem__ru">Не нравятся</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жақтырмаймын</span> <span class="wordItem__ru">Не переношу / Не одобряю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Өз сөзінде тұрады</span> <span class="wordItem__ru">Держит слово</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Өз сөзінде тұрмайды</span> <span class="wordItem__ru">Не держит слово</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қолдау</span> <span class="wordItem__ru">Поддержка</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көмектесу</span> <span class="wordItem__ru">Помощь</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көмекке келеді</span> <span class="wordItem__ru">Приходит на помощь</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Өзара түсіністік</span> <span class="wordItem__ru">Взаимопонимание</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сыйластық</span> <span class="wordItem__ru">Уважение</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бірге</span> <span class="wordItem__ru">Вместе</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жиі</span> <span class="wordItem__ru">Часто</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Кездесеміз</span> <span class="wordItem__ru">Встречаемся</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Араласамыз</span> <span class="wordItem__ru">Общаемся</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сенемін</span> <span class="wordItem__ru">Доверяю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сенбеймін</span> <span class="wordItem__ru">Не доверяю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мінез</span> <span class="wordItem__ru">Характер</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мінезі жақсы</span> <span class="wordItem__ru">Хороший характер</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мінезі жаман</span> <span class="wordItem__ru">Плохой характер</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Пікірімше</span> <span class="wordItem__ru">По моему мнению</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Адам</span> <span class="wordItem__ru">Человек</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Адамдар</span> <span class="wordItem__ru">Люди</span></div>
+        </div>
+      
+        <div class="dictNote">
+          <div class="callout">
+            <div class="callout__title">🧠 Есте сақтау</div>
+            <div class="callout__text">
+              <ul>
+                <li><strong>Маған</strong> + сын есім + адамдар <strong>ұнайды</strong></li>
+                <li><strong>Мен</strong> + адамдарды + <strong>бағалаймын / жақсы көремін</strong></li>
+                <li>Терістеу (отрицание): <em>-маймын / -меймін</em></li>
+                <li>Өзара қатынас = <em>өзара</em> + зат есім</li>
+              </ul>
+            </div>
+          </div>
+          <div class="block block--accent">
+            <div class="block__title">✏️ Мысалдар</div>
+            <p style="margin-bottom: 8px;"><strong>Мен адал адамдарды бағалаймын.</strong><br><span class="muted">Я ценю честных людей.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Маған жауапсыз адамдар ұнамайды.</strong><br><span class="muted">Мне не нравятся безответственные люди.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Менің ең жақсы досым бар.</strong><br><span class="muted">У меня есть лучший друг.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Ол өз сөзінде тұрады.</strong><br><span class="muted">Он держит слово.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Біз жиі кездесеміз.</strong><br><span class="muted">Мы часто встречаемся.</span></p>
+            <p style="margin-bottom: 0;"><strong>Достық — өзара түсіністік пен қолдау.</strong><br><span class="muted">Дружба — это взаимопонимание и поддержка.</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="week5" class="dictSection reveal">
+        <div class="dictHeader">
+          <h2 class="dictTitle">5-АПТА</h2>
+          <p class="dictSub">ЖҰМЫС, ҒЫЛЫМ</p>
+        </div>
+      
+        <div class="wordList">
+          <div class="wordItem"><span class="wordItem__kz">Жұмыс</span> <span class="wordItem__ru">Работа</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жұмыс істеймін</span> <span class="wordItem__ru">Работаю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Міндет</span> <span class="wordItem__ru">Обязанность</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Міндетім</span> <span class="wordItem__ru">Моя обязанность</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бақылау</span> <span class="wordItem__ru">Контроль</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бақылау жасау</span> <span class="wordItem__ru">Контролировать</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Басқару</span> <span class="wordItem__ru">Управление</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Басқару жасау</span> <span class="wordItem__ru">Управлять</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Реттеу</span> <span class="wordItem__ru">Регулировать</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жоспарлау</span> <span class="wordItem__ru">Планировать</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ұйымдастыру</span> <span class="wordItem__ru">Организовать</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ұжым</span> <span class="wordItem__ru">Коллектив</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ұйым</span> <span class="wordItem__ru">Организация</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ұйымшыл</span> <span class="wordItem__ru">Организованный</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Кафедра</span> <span class="wordItem__ru">Кафедра</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Факультет</span> <span class="wordItem__ru">Факультет</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Университет</span> <span class="wordItem__ru">Университет</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Оқу бөлімі</span> <span class="wordItem__ru">Учебный отдел</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Оқытушы</span> <span class="wordItem__ru">Преподаватель</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Әдіскер</span> <span class="wordItem__ru">Методист</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Меңгеруші</span> <span class="wordItem__ru">Заведующий</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Пән</span> <span class="wordItem__ru">Дисциплина</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сабақ</span> <span class="wordItem__ru">Занятие</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сабақ жүргіземін</span> <span class="wordItem__ru">Веду занятия</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ғылым</span> <span class="wordItem__ru">Наука</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ғылыммен айналысамын</span> <span class="wordItem__ru">Занимаюсь наукой</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Зерттеу</span> <span class="wordItem__ru">Исследование</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Зерттеймін</span> <span class="wordItem__ru">Исследую</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мақала</span> <span class="wordItem__ru">Статья</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мақала жазамын</span> <span class="wordItem__ru">Пишу статью</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Оқу құралы</span> <span class="wordItem__ru">Учебное пособие</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жазамын</span> <span class="wordItem__ru">Пишу</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Конференция</span> <span class="wordItem__ru">Конференция</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қатысамын</span> <span class="wordItem__ru">Участвую</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тәжірибе</span> <span class="wordItem__ru">Опыт</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Еңбек</span> <span class="wordItem__ru">Труд</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жұмысым</span> <span class="wordItem__ru">Моя работа</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ұжымым</span> <span class="wordItem__ru">Мой коллектив</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Міндетіме жатады</span> <span class="wordItem__ru">Входит в мои обязанности</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сала</span> <span class="wordItem__ru">Сфера / Область</span></div>
+        </div>
+      
+        <div class="dictNote">
+          <div class="callout">
+            <div class="callout__title">🧠 Есте сақтау</div>
+            <div class="callout__text">
+              <ul>
+                <li>
+                  <strong>1-жақ тәуелдік:</strong> Мой/Моя/Моё → <em>-ым / -ім / -м</em><br>
+                  <span style="font-size:0.9em; color:var(--muted);">(Мысалы: Жұмысым, Ұжымым, Міндетім)</span>
+                </li>
+                <li>
+                  <strong>Айырмашылық:</strong><br>
+                  <em>Жұмыс істеймін</em> → Қайда? (Где работаю)<br>
+                  <em>Айналысамын</em> → Немен? (Чем занимаюсь)
+                </li>
+                <li>
+                  <strong>Етістік соңында:</strong> Жоспарлаймын, Реттеймін, Бақылаймын.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="block block--accent">
+            <div class="block__title">✏️ Мысалдар</div>
+            <p style="margin-bottom: 8px;"><strong>Мен университетте жұмыс істеймін.</strong><br><span class="muted">Я работаю в университете.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Менің жұмысым ұнайды.</strong><br><span class="muted">Мне нравится моя работа.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Менің міндетім – оқу процесін бақылау.</strong><br><span class="muted">Моя обязанность — контролировать учебный процесс.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Біздің ұжым ұйымшыл.</strong><br><span class="muted">Наш коллектив организованный.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Мен ғылыммен айналысамын.</strong><br><span class="muted">Я занимаюсь наукой.</span></p>
+            <p style="margin-bottom: 0;"><strong>Мен мақала жазамын және конференцияға қатысамын.</strong><br><span class="muted">Я пишу статьи и участвую в конференциях.</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="week6" class="dictSection reveal">
+        <div class="dictHeader">
+          <h2 class="dictTitle">6-АПТА</h2>
+          <p class="dictSub">ЖЫЛ МЕЗГІЛДЕРІ, МЕРЕКЕЛЕР</p>
+        </div>
+      
+        <div class="wordList">
+          <div class="wordItem"><span class="wordItem__kz">Жыл мезгілі</span> <span class="wordItem__ru">Время года</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қыс</span> <span class="wordItem__ru">Зима</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көктем</span> <span class="wordItem__ru">Весна</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жаз</span> <span class="wordItem__ru">Лето</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Күз</span> <span class="wordItem__ru">Осень</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сүйікті жыл мезгілім</span> <span class="wordItem__ru">Моё любимое время года</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ауа райы</span> <span class="wordItem__ru">Погода</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бүгін ауа райы</span> <span class="wordItem__ru">Погода сегодня</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Күн ашық</span> <span class="wordItem__ru">Ясный день</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Күн жылы</span> <span class="wordItem__ru">Тёплый день</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қар жауып тұр</span> <span class="wordItem__ru">Идёт снег</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жаңбыр жауып тұр</span> <span class="wordItem__ru">Идёт дождь</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қатты жел соғады</span> <span class="wordItem__ru">Дует сильный ветер</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Боран соғады</span> <span class="wordItem__ru">Метель</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мереке</span> <span class="wordItem__ru">Праздник</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мерекелер</span> <span class="wordItem__ru">Праздники</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тойлаймыз</span> <span class="wordItem__ru">Празднуем</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мереке құтты болсын</span> <span class="wordItem__ru">С праздником</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тәуелсіздік күні</span> <span class="wordItem__ru">День независимости</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жаңа жыл</span> <span class="wordItem__ru">Новый год</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Наурыз</span> <span class="wordItem__ru">Наурыз</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Рождество</span> <span class="wordItem__ru">Рождество</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Үйде тойлаймыз</span> <span class="wordItem__ru">Празднуем дома</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Орталыққа шығамыз</span> <span class="wordItem__ru">Выходим в центр</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Шырша</span> <span class="wordItem__ru">Ёлка</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Шыршаға барамыз</span> <span class="wordItem__ru">Идём к ёлке</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Дастархан</span> <span class="wordItem__ru">Накрытый стол</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мерекелік дастархан</span> <span class="wordItem__ru">Праздничный стол</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Дастархан жасаймыз</span> <span class="wordItem__ru">Накрываем стол</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бесбармақ</span> <span class="wordItem__ru">Бешбармак</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бесбармақ дайындаймыз</span> <span class="wordItem__ru">Готовим бешбармак</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қонақ</span> <span class="wordItem__ru">Гость</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қонақтар келеді</span> <span class="wordItem__ru">Приходят гости</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Туыстар</span> <span class="wordItem__ru">Родственники</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Туыстар келеді</span> <span class="wordItem__ru">Приходят родственники</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қыста</span> <span class="wordItem__ru">Зимой</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көктемде</span> <span class="wordItem__ru">Весной</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жазда</span> <span class="wordItem__ru">Летом</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Күзде</span> <span class="wordItem__ru">Осенью</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бүгін</span> <span class="wordItem__ru">Сегодня</span></div>
+        </div>
+      
+        <div class="dictNote">
+          <div class="callout">
+            <div class="callout__title">🧠 Есте сақтау</div>
+            <div class="callout__text">
+              <ul>
+                <li>
+                  <strong>1. Қашан? (Когда?)</strong> → жалғаулары: <em>-да / -де / -та / -те</em><br>
+                  <span style="font-size:0.9em; color:var(--muted);">(Қыс<strong>та</strong>, Көктем<strong>де</strong>, Мереке<strong>де</strong>)</span>
+                </li>
+                <li>
+                  <strong>2. Уақыт сөздері:</strong> <em>Бүгін, Ертең, Қазір</em> сөйлемнің басында тұрады.
+                </li>
+                <li>
+                  <strong>3. Етістік (Глагол):</strong> Сөйлемнің соңында тұрады.<br>
+                  <span style="font-size:0.9em; color:var(--muted);">(Тойлаймыз, Дайындаймыз, Барамыз)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="block block--accent">
+            <div class="block__title">✏️ Мысалдар</div>
+            <p style="margin-bottom: 8px;"><strong>Маған қыс ұнайды.</strong><br><span class="muted">Мне нравится зима.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Қыс — менің сүйікті жыл мезгілім.</strong><br><span class="muted">Зима — моё любимое время года.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Бүгін ауа райы керемет.</strong><br><span class="muted">Сегодня погода отличная.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Қыста қар жауып тұр.</strong><br><span class="muted">Зимой идёт снег.</span></p>
+            <p style="margin-bottom: 0;"><strong>Қыста Жаңа жылды тойлаймыз.</strong><br><span class="muted">Зимой мы празднуем Новый год.</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="week7" class="dictSection reveal">
+        <div class="dictHeader">
+          <h2 class="dictTitle">7-АПТА</h2>
+          <p class="dictSub">ШОППИНГ, ДҮКЕН</p>
+        </div>
+      
+        <div class="wordList">
+          <div class="wordItem"><span class="wordItem__kz">Шоппинг</span> <span class="wordItem__ru">Шоппинг</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Дүкен</span> <span class="wordItem__ru">Магазин</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Дүкендер</span> <span class="wordItem__ru">Магазины</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сауда үйі</span> <span class="wordItem__ru">Торговый дом</span></div>
+          <div class="wordItem"><span class="wordItem__kz">«Достық» сауда үйі</span> <span class="wordItem__ru">ТД «Достык»</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Орналасқан</span> <span class="wordItem__ru">Расположен</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Орталық</span> <span class="wordItem__ru">Центр</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Орталықта</span> <span class="wordItem__ru">В центре</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көше</span> <span class="wordItem__ru">Улица</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жұмабаев көшесі</span> <span class="wordItem__ru">Улица Жумабаева</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Үйге жақын</span> <span class="wordItem__ru">Рядом с домом</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жақын жерде</span> <span class="wordItem__ru">Поблизости</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ғимарат</span> <span class="wordItem__ru">Здание</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қабат</span> <span class="wordItem__ru">Этаж</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Үш қабатты ғимарат</span> <span class="wordItem__ru">Трёхэтажное здание</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бірінші қабат</span> <span class="wordItem__ru">Первый этаж</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Екінші қабат</span> <span class="wordItem__ru">Второй этаж</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Үшінші қабат</span> <span class="wordItem__ru">Третий этаж</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Азық-түлік</span> <span class="wordItem__ru">Продукты</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Азық-түлік сатады</span> <span class="wordItem__ru">Продают продукты</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Киім</span> <span class="wordItem__ru">Одежда</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Аяқ киім</span> <span class="wordItem__ru">Обувь</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Алтын</span> <span class="wordItem__ru">Золото</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Техника</span> <span class="wordItem__ru">Техника</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сатып аламын</span> <span class="wordItem__ru">Покупаю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сатып алуға болады</span> <span class="wordItem__ru">Можно купить</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Барамын</span> <span class="wordItem__ru">Хожу</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Әдетте</span> <span class="wordItem__ru">Обычно</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көңіл-күй</span> <span class="wordItem__ru">Настроение</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көңіл-күйімді көтереді</span> <span class="wordItem__ru">Поднимает настроение</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Адамдар</span> <span class="wordItem__ru">Люди</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көп адам</span> <span class="wordItem__ru">Много людей</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бар</span> <span class="wordItem__ru">Есть</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Үлкен</span> <span class="wordItem__ru">Большой</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ыңғайлы</span> <span class="wordItem__ru">Удобный</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Таза</span> <span class="wordItem__ru">Чистый</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Онда</span> <span class="wordItem__ru">Там</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Осында</span> <span class="wordItem__ru">Здесь</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бірге</span> <span class="wordItem__ru">Вместе</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Демалыс күндері</span> <span class="wordItem__ru">В выходные</span></div>
+        </div>
+      
+        <div class="dictNote">
+          <div class="callout">
+            <div class="callout__title">🧠 Есте сақтау</div>
+            <div class="callout__text">
+              <ul>
+                <li>
+                  <strong>1. Қайда? (Где?)</strong> → жалғаулары: <em>-да / -де / -та / -те</em><br>
+                  <span style="font-size:0.9em; color:var(--muted);">(Орталық<strong>та</strong>, Дүкен<strong>де</strong>, Қабат<strong>та</strong>)</span>
+                </li>
+                <li>
+                  <strong>2. Сілтеу есімдіктері:</strong><br>
+                  <em>Онда</em> — Там<br>
+                  <em>Осында</em> — Здесь
+                </li>
+                <li>
+                  <strong>3. Етістік (Глагол):</strong> Сөйлемнің соңында тұрады.<br>
+                  <span style="font-size:0.9em; color:var(--muted);">(Барамын, Сатып аламын)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="block block--accent">
+            <div class="block__title">✏️ Мысалдар</div>
+            <p style="margin-bottom: 8px;"><strong>Мен әдетте дүкенге барамын.</strong><br><span class="muted">Я обычно хожу в магазин.</span></p>
+            <p style="margin-bottom: 8px;"><strong>«Достық» сауда үйі орталық<strong>та</strong> орналасқан.</strong><br><span class="muted">Торговый дом «Достык» расположен в центре.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Бірінші қабат<strong>та</strong> азық-түлік сатады.</strong><br><span class="muted">На первом этаже продают продукты.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Екінші қабат<strong>та</strong> киім сатып алуға болады.</strong><br><span class="muted">На втором этаже можно купить одежду.</span></p>
+            <p style="margin-bottom: 0;"><strong>Үшінші қабат<strong>та</strong> балаларға арналған тауарлар бар.</strong><br><span class="muted">На третьем этаже есть товары для детей.</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="week8" class="dictSection reveal">
+        <div class="dictHeader">
+          <h2 class="dictTitle">8-АПТА</h2>
+          <p class="dictSub">ҚАЛА, КӨШЕ, КӨЛІК</p>
+        </div>
+      
+        <div class="wordList">
+          <div class="wordItem"><span class="wordItem__kz">Қала</span> <span class="wordItem__ru">Город</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көше</span> <span class="wordItem__ru">Улица</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бөкетов көшесі</span> <span class="wordItem__ru">Улица Букетова</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Орталық</span> <span class="wordItem__ru">Центр</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Орталықта</span> <span class="wordItem__ru">В центре</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Үй</span> <span class="wordItem__ru">Дом</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жер үй</span> <span class="wordItem__ru">Частный дом</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жаңа үй</span> <span class="wordItem__ru">Новый дом</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жақын</span> <span class="wordItem__ru">Близко</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Алыс</span> <span class="wordItem__ru">Далеко</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Дүкен</span> <span class="wordItem__ru">Магазин</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Емхана</span> <span class="wordItem__ru">Поликлиника</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Дәріхана</span> <span class="wordItem__ru">Аптека</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мектеп</span> <span class="wordItem__ru">Школа</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Саябақ</span> <span class="wordItem__ru">Парк</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Көлік</span> <span class="wordItem__ru">Транспорт</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Автобус</span> <span class="wordItem__ru">Автобус</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Автобус жүреді</span> <span class="wordItem__ru">Ходит автобус</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Аялдама</span> <span class="wordItem__ru">Остановка</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Маршрут</span> <span class="wordItem__ru">Маршрут</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жаяу</span> <span class="wordItem__ru">Пешком</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Машина</span> <span class="wordItem__ru">Машина</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Такси</span> <span class="wordItem__ru">Такси</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Автобуспен</span> <span class="wordItem__ru">На автобусе</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Машинамен</span> <span class="wordItem__ru">На машине</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Таксимен</span> <span class="wordItem__ru">На такси</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жаяу барамын</span> <span class="wordItem__ru">Хожу пешком</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Университет</span> <span class="wordItem__ru">Университет</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жұмыс</span> <span class="wordItem__ru">Работа</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Барамын</span> <span class="wordItem__ru">Иду / Еду</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жол</span> <span class="wordItem__ru">Дорога</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Уақыт</span> <span class="wordItem__ru">Время</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Минут</span> <span class="wordItem__ru">Минута</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сағат</span> <span class="wordItem__ru">Час</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Кетеді</span> <span class="wordItem__ru">Занимает (время)</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қанша</span> <span class="wordItem__ru">Сколько</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қанша уақыт</span> <span class="wordItem__ru">Сколько времени</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Әдетте</span> <span class="wordItem__ru">Обычно</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тез</span> <span class="wordItem__ru">Быстро</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Баяу</span> <span class="wordItem__ru">Медленно</span></div>
+        </div>
+      
+        <div class="dictNote">
+          <div class="callout">
+            <div class="callout__title">🧠 Есте сақтау</div>
+            <div class="callout__text">
+              <ul>
+                <li>
+                  <strong>1. Қалай барамын? (На чём?)</strong> → жалғаулары: <em>-пен / -мен / -бен</em><br>
+                  <span style="font-size:0.9em; color:var(--muted);">(Автобус<strong>пен</strong>, Машина<strong>мен</strong>, Такси<strong>мен</strong>)</span>
+                </li>
+                <li>
+                  <strong>2. Уақыт (Длительность):</strong><br>
+                  <em>Жолға</em> + уақыт + <em>кетеді</em><br>
+                  <span style="font-size:0.9em; color:var(--muted);">(Жолға 10 минут кетеді)</span>
+                </li>
+                <li>
+                  <strong>3. Сөз тәртібі:</strong> <em>Әдетте, Қазір, Бүгін</em> сөздері сөйлемнің басында тұрады.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="block block--accent">
+            <div class="block__title">✏️ Мысалдар</div>
+            <p style="margin-bottom: 8px;"><strong>Мен жұмысқа автобус<strong>пен</strong> барамын.</strong><br><span class="muted">Я езжу на работу на автобусе.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Мен университетке жаяу барамын.</strong><br><span class="muted">Я хожу в университет пешком.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Мен жұмысқа машина<strong>мен</strong> барамын.</strong><br><span class="muted">Я езжу на работу на машине.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Жолға он минут кетеді.</strong><br><span class="muted">Дорога занимает десять минут.</span></p>
+            <p style="margin-bottom: 0;"><strong>Жолға бір сағат кетеді.</strong><br><span class="muted">Дорога занимает один час.</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="week9" class="dictSection reveal">
+        <div class="dictHeader">
+          <h2 class="dictTitle">9-АПТА</h2>
+          <p class="dictSub">КЕШ, ҮЙ, ХОББИ</p>
+        </div>
+      
+        <div class="wordList">
+          <div class="wordItem"><span class="wordItem__kz">Кеш</span> <span class="wordItem__ru">Вечер</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Кешке</span> <span class="wordItem__ru">Вечером</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Үй</span> <span class="wordItem__ru">Дом</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Үйде</span> <span class="wordItem__ru">Дома</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ерте</span> <span class="wordItem__ru">Рано</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Кеш</span> <span class="wordItem__ru">Поздно</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бесте</span> <span class="wordItem__ru">В пять</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Уақытта</span> <span class="wordItem__ru">Во время</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Әдетте</span> <span class="wordItem__ru">Обычно</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бүгін</span> <span class="wordItem__ru">Сегодня</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Демаламын</span> <span class="wordItem__ru">Отдыхаю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жұмыс істеймін</span> <span class="wordItem__ru">Работаю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Спортзал</span> <span class="wordItem__ru">Спортзал</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Спортзалға барамын</span> <span class="wordItem__ru">Хожу в спортзал</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Фильм</span> <span class="wordItem__ru">Фильм</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Фильм көремін</span> <span class="wordItem__ru">Смотрю фильм</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Теледидар</span> <span class="wordItem__ru">Телевизор</span></div>
+          <div class="wordItem"><span class="wordItem__kz">ТВ қараймын</span> <span class="wordItem__ru">Смотрю ТВ</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бағдарлама</span> <span class="wordItem__ru">Программа</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Шоу</span> <span class="wordItem__ru">Шоу</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Кітап</span> <span class="wordItem__ru">Книга</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Кітап оқимын</span> <span class="wordItem__ru">Читаю книгу</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Детектив</span> <span class="wordItem__ru">Детектив</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Өлең</span> <span class="wordItem__ru">Стихи</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Хобби</span> <span class="wordItem__ru">Хобби</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Хоббиім</span> <span class="wordItem__ru">Моё хобби</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тоқу</span> <span class="wordItem__ru">Вязание</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тоқимын</span> <span class="wordItem__ru">Вяжу</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тамақ</span> <span class="wordItem__ru">Еда</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тамақ дайындаймын</span> <span class="wordItem__ru">Готовлю еду</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бос уақыт</span> <span class="wordItem__ru">Свободное время</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бос уақытым</span> <span class="wordItem__ru">Моё свободное время</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бар</span> <span class="wordItem__ru">Есть</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жоқ</span> <span class="wordItem__ru">Нет</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ұнайды</span> <span class="wordItem__ru">Нравится</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жақсы көремін</span> <span class="wordItem__ru">Люблю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жалғыз</span> <span class="wordItem__ru">Один</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бірге</span> <span class="wordItem__ru">Вместе</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Досыммен</span> <span class="wordItem__ru">С другом</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Отбасыммен</span> <span class="wordItem__ru">С семьёй</span></div>
+        </div>
+      
+        <div class="dictNote">
+          <div class="callout">
+            <div class="callout__title">🧠 Есте сақтау</div>
+            <div class="callout__text">
+              <ul>
+                <li>
+                  <strong>1. Не істеп? (Что делая?)</strong> → жалғаулары: <strong>-ып / -іп / -п</strong><br>
+                  <span style="font-size:0.9em; color:var(--muted);">(Кітап оқ<strong>ып</strong>, Тамақ дайында<strong>п</strong>, ТВ қара<strong>п</strong>)</span>
+                </li>
+                <li>
+                  <strong>2. Уақыт:</strong> <em>Кешке, Бүгін, Әдетте</em> — сөйлемнің басында тұрады.
+                </li>
+                <li>
+                  <strong>3. Тәуелдік:</strong><br>
+                  Хобби → Хобби<strong>ім</strong><br>
+                  Бос уақыт → Бос уақыт<strong>ым</strong>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="block block--accent">
+            <div class="block__title">✏️ Мысалдар</div>
+            <p style="margin-bottom: 8px;"><strong>Кешке мен үйде боламын.</strong><br><span class="muted">Вечером я бываю дома.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Мен кітап оқ<strong>ып</strong> демаламын.</strong><br><span class="muted">Я читаю книгу и отдыхаю.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Кешке тамақ дайында<strong>п</strong> фильм көремін.</strong><br><span class="muted">Вечером, приготовив еду, смотрю фильм.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Мен ТВ қара<strong>п</strong> демаламын.</strong><br><span class="muted">Я смотрю телевизор и отдыхаю.</span></p>
+            <p style="margin-bottom: 0;"><strong>Менің хобби<strong>ім</strong> – тоқу.</strong><br><span class="muted">Моё хобби — вязание.</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="week10" class="dictSection reveal">
+        <div class="dictHeader">
+          <h2 class="dictTitle">10-АПТА</h2>
+          <p class="dictSub">ОТБАСЫ, ӨМІРЛІК ҚҰНДЫЛЫҚТАР</p>
+        </div>
+      
+        <div class="wordList">
+          <div class="wordItem"><span class="wordItem__kz">Отбасы</span> <span class="wordItem__ru">Семья</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Отбасым</span> <span class="wordItem__ru">Моя семья</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Жолдас</span> <span class="wordItem__ru">Супруг</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Әйел</span> <span class="wordItem__ru">Жена</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Күйеу</span> <span class="wordItem__ru">Муж</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Балалар</span> <span class="wordItem__ru">Дети</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Балам</span> <span class="wordItem__ru">Мой ребёнок</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ата-ана</span> <span class="wordItem__ru">Родители</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Әке</span> <span class="wordItem__ru">Отец</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ана</span> <span class="wordItem__ru">Мать</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бауырлар</span> <span class="wordItem__ru">Братья и сёстры</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Туыстар</span> <span class="wordItem__ru">Родственники</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Өмір</span> <span class="wordItem__ru">Жизнь</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Өмірлік</span> <span class="wordItem__ru">Жизненный</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Құндылық</span> <span class="wordItem__ru">Ценность</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Маңызды</span> <span class="wordItem__ru">Важный</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ең маңызды</span> <span class="wordItem__ru">Самый важный</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Байлық</span> <span class="wordItem__ru">Богатство</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бақыт</span> <span class="wordItem__ru">Счастье</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бірлік</span> <span class="wordItem__ru">Единство</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сүйіспеншілік</span> <span class="wordItem__ru">Любовь</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сыйластық</span> <span class="wordItem__ru">Уважение</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Түсіністік</span> <span class="wordItem__ru">Понимание</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Қамқор</span> <span class="wordItem__ru">Заботливый</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мейірімді</span> <span class="wordItem__ru">Добрый</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Үйретемін</span> <span class="wordItem__ru">Учу</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Тәрбиелеймін</span> <span class="wordItem__ru">Воспитываю</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Баланы</span> <span class="wordItem__ru">Ребёнка (вин.п.)</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Үлкендерді</span> <span class="wordItem__ru">Старших</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Сыйлауға</span> <span class="wordItem__ru">Уважать</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мақсат</span> <span class="wordItem__ru">Цель</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мақсатым</span> <span class="wordItem__ru">Моя цель</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Арманы</span> <span class="wordItem__ru">Мечта</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Орындау</span> <span class="wordItem__ru">Исполнять</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Болашақ</span> <span class="wordItem__ru">Будущее</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Мен үшін</span> <span class="wordItem__ru">Для меня</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Ең басты</span> <span class="wordItem__ru">Самое главное</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Отбасында</span> <span class="wordItem__ru">В семье</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Бірге</span> <span class="wordItem__ru">Вместе</span></div>
+          <div class="wordItem"><span class="wordItem__kz">Әрқашан</span> <span class="wordItem__ru">Всегда</span></div>
+        </div>
+      
+        <div class="dictNote">
+          <div class="callout">
+            <div class="callout__title">🧠 Есте сақтау</div>
+            <div class="callout__text">
+              <ul>
+                <li>
+                  <strong>1. Менің (Мой/Моя)</strong> → жалғаулары: <strong>-м / -ым / -ім</strong><br>
+                  <span style="font-size:0.9em; color:var(--muted);">(Отбасы<strong>м</strong>, Бала<strong>м</strong>, Мақсаты<strong>м</strong>)</span>
+                </li>
+                <li>
+                  <strong>2. Кімді? Нені? (Кого? Что?)</strong> → жалғаулары: <strong>-ны / -ні / -ды / -ді</strong><br>
+                  <span style="font-size:0.9em; color:var(--muted);">(Бала<strong>ны</strong>, Үлкендер<strong>ді</strong>)</span>
+                </li>
+                <li>
+                  <strong>3. Жеке пікір:</strong> <em>Мен үшін</em> (Для меня) сөз тіркесі құндылықтар туралы айтқанда қолданылады.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="block block--accent">
+            <div class="block__title">✏️ Мысалдар</div>
+            <p style="margin-bottom: 8px;"><strong>Менің отбасы<strong>м</strong> бар.</strong><br><span class="muted">У меня есть семья.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Мен үшін отбасы<strong>м</strong> — ең маңызды.</strong><br><span class="muted">Для меня моя семья — самое важное.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Мен балам<strong>ды</strong> сыйластыққа үйретемін.</strong><br><span class="muted">Я учу своего ребёнка уважению.</span></p>
+            <p style="margin-bottom: 8px;"><strong>Мен үлкендер<strong>ді</strong> әрқашан сыйлаймын.</strong><br><span class="muted">Я всегда уважаю старших.</span></p>
+            <p style="margin-bottom: 0;"><strong>Отбасында біз әрқашан бірге боламыз.</strong><br><span class="muted">В семье мы всегда вместе.</span></p>
+          </div>
+        </div>
+      </section>
+      <div class="navBottom">
+        <a class="btn" href="week10.html">← 10-апта</a>
+        <a class="btn btn--primary" href="index.html">Басты бетке оралу 🏠</a>
+      </div>
+    <footer class="footer reveal" role="contentinfo">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__brand">
+            <span class="brand__mark brand__mark--sm" aria-hidden="true"></span>
+            <div>
+              <div class="footer__title">Ситуативтік қазақ тілі</div>
+              <div class="footer__sub">Онлайн курс</div>
+            </div>
+          </div>
+          <p class="footer__text">Авторы: Ахметова Татьяна Алимжановна</p>
+        </div>
+        <div>
+          <div class="footer__cap">Жылдам</div>
+          <div class="footer__links">
+            <a class="link" href="index.html">Басты бет</a>
+            <a class="link" href="#">Сөздік</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span class="muted">© Kazakh Course</span>
+        <span class="muted">2026</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+      // 1. Анимацияны қосу (бет жүктелгенде)
+      document.addEventListener('DOMContentLoaded', () => {
+        document.documentElement.classList.add('reveal-ready');
+        setTimeout(() => {
+          document.querySelectorAll('.reveal').forEach((el, i) => {
+            setTimeout(() => el.classList.add('is-in'), i * 50);
+          });
+        }, 100);
+      });
+    
+      // 2. АҚЫЛДЫ ІЗДЕУ (FILTER)
+      function filterWords() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase().trim();
+        
+        // Барлық сөздерді (барлық апталардан) аламыз
+        const allWords = document.querySelectorAll('.wordItem');
+        const allHeaders = document.querySelectorAll('.dictHeader'); // Апта тақырыптары
+    
+        // Егер іздеу бос болса, бәрін көрсетеміз
+        if (filter === "") {
+          allWords.forEach(word => word.style.display = "");
+          allHeaders.forEach(header => header.style.display = "");
+          return;
+        }
+    
+        // Сөздерді сүзу
+        allWords.forEach(word => {
+          const kz = word.querySelector('.wordItem__kz').innerText.toLowerCase();
+          const ru = word.querySelector('.wordItem__ru').innerText.toLowerCase();
+          
+          if (kz.includes(filter) || ru.includes(filter)) {
+            word.style.display = ""; // Көрсету
+            // Карточкаға "табылды" деген анимация беру (опционалды)
+            word.style.animation = "fadeIn 0.3s ease";
+          } else {
+            word.style.display = "none"; // Жасыру
+          }
+        });
+    
+        // Егер апта ішінде сөз қалмаса, тақырыбын да жасыру (қосымша әдемілік үшін)
+        document.querySelectorAll('.dictSection').forEach(section => {
+          const visibleWords = section.querySelectorAll('.wordItem:not([style*="display: none"])');
+          const header = section.querySelector('.dictHeader');
+          if (header) {
+            header.style.display = visibleWords.length > 0 ? "" : "none";
+          }
+        });
+      }
+    </script>
+
+</body>
+</html>

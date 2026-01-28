@@ -1,0 +1,1172 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>6-апта: Жыл мезгілдері • Ситуативтік қазақ тілі</title>
+  <meta name="description" content="6-апта: Жыл мезгілдері, ауа райы, қысқы мерекелер және Жаңа жыл." />
+  <meta name="color-scheme" content="light" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* =========================================
+       WEEK 6 (Reusing Design System)
+       ========================================= */
+
+    /* Hero adjustments */
+    body[data-page="week6"] .hero {
+      padding-bottom: 20px;
+    }
+
+    /* LEXICON GRID */
+    .lexGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .lexCard {
+      padding: 16px;
+      border-radius: var(--r-lg);
+      border: 1px solid var(--stroke);
+      background: color-mix(in oklab, var(--surface) 80%, transparent);
+      box-shadow: var(--shadow-1);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform var(--dur-1) var(--ease), border-color var(--dur-1);
+    }
+    
+    .lexCard:hover {
+      border-color: var(--stroke2);
+      transform: translateY(-2px);
+    }
+
+    .lexCard__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .lexCard__icon {
+      font-size: 20px;
+      opacity: 0.8;
+    }
+
+    .lexCard__badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 99px;
+      background: color-mix(in oklab, var(--surface2) 90%, transparent);
+      border: 1px solid var(--stroke);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    .lexCard__word {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .lexCard__trans {
+      font-size: 0.95rem;
+      color: var(--muted);
+      border-top: 1px dashed var(--stroke);
+      padding-top: 8px;
+      margin-top: auto;
+    }
+
+    /* CHAT UI */
+    .chatBox {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: color-mix(in oklab, var(--surface2) 60%, transparent);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      border: 1px solid var(--stroke);
+    }
+
+    .chatMsg {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      font-size: 1rem;
+      line-height: 1.5;
+      position: relative;
+      animation: fadeUp 0.4s var(--ease) forwards;
+    }
+
+    .chatMsg--left {
+      align-self: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-bottom-left-radius: 4px;
+      color: var(--text);
+    }
+
+    .chatMsg--right {
+      align-self: flex-end;
+      background: linear-gradient(135deg, color-mix(in oklab, var(--a) 12%, transparent), color-mix(in oklab, var(--b) 8%, transparent));
+      border: 1px solid color-mix(in oklab, var(--a) 20%, var(--stroke));
+      border-bottom-right-radius: 4px;
+      color: var(--text);
+    }
+
+    .chatMsg__auth {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+      display: block;
+      font-weight: 700;
+    }
+
+    /* RESULT BOX */
+    .resultBox {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: var(--r-lg);
+      text-align: center;
+      display: none;
+    }
+    .resultBox.is-good {
+      background: color-mix(in oklab, var(--b) 15%, transparent);
+      border: 1px solid color-mix(in oklab, var(--b) 30%, transparent);
+      color: #1e6f43;
+    }
+    .resultBox.is-bad {
+      background: color-mix(in oklab, rgba(255,82,82,1) 12%, transparent);
+      border: 1px solid color-mix(in oklab, rgba(255,82,82,1) 30%, transparent);
+      color: #991b1b;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body data-page="week6">
+  <a class="skip-link" href="#main">Негізгі мазмұнға өту</a>
+
+  <header class="topbar" role="banner">
+    <div class="topbar__inner container">
+      <div class="brand" aria-label="Kazakh Course">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <div class="brand__text">
+          <div class="brand__title">Ситуативтік қазақ тілі</div>
+          <div class="brand__sub">Онлайн курс • 10 апта</div>
+        </div>
+      </div>
+
+      <nav class="nav nav--weeks" aria-label="Апталар (десктоп)">
+        <a class="nav__link" data-page="index" href="index.html">Басты</a>
+        <a class="nav__link" data-page="week1" href="week1.html">1</a>
+        <a class="nav__link" data-page="week2" href="week2.html">2</a>
+        <a class="nav__link" data-page="week3" href="week3.html">3</a>
+        <a class="nav__link" data-page="week4" href="week4.html">4</a>
+        <a class="nav__link" data-page="week5" href="week5.html">5</a>
+        <a class="nav__link is-active" data-page="week6" href="week6.html" aria-current="page">6</a>
+        <a class="nav__link" data-page="week7" href="week7.html">7</a>
+        <a class="nav__link" data-page="week8" href="week8.html">8</a>
+        <a class="nav__link" data-page="week9" href="week9.html">9</a>
+        <a class="nav__link" data-page="week10" href="week10.html">10</a>
+        <a class="nav__link" data-page="dictionary" href="dictionary.html">Сөздік</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    
+    <section class="hero reveal">
+      <div class="hero__grid">
+        <div>
+          <div class="pill">
+            <span class="pill__dot" aria-hidden="true"></span>
+            <span>6-апта</span>
+          </div>
+
+          <h1 class="h1">Жыл мезгілдері мен <span class="h1__accent">Мерекелер</span></h1>
+
+          <p class="lead">
+            Бұл сабақта біз ауа райы, қысқы мерекелер (Жаңа жыл) және жыл мезгілдерін сипаттауды үйренеміз.
+          </p>
+
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#lexika">
+              Бастау <span class="btn__arrow" aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </div>
+
+        <aside class="glassPanel reveal">
+          <div class="glassPanel__top">
+            <div class="glassPanel__badge">Прогресс</div>
+            <div class="glassPanel__hint">6 / 10</div>
+          </div>
+
+          <div class="glassPanel__body">
+            <div class="progress__bar">
+              <span class="progress__fill" style="width: 60%"></span>
+            </div>
+            <div class="progress__note">Курстың 60% оқылды</div>
+            
+            <div class="miniGrid" style="margin-top:20px">
+               <a class="miniCard" href="week1.html">1</a>
+               <a class="miniCard" href="week2.html">2</a>
+               <a class="miniCard" href="week3.html">3</a>
+               <a class="miniCard" href="week4.html">4</a>
+               <a class="miniCard" href="week5.html">5</a>
+               <a class="miniCard" style="border-color:var(--a); background:rgba(77,163,255,0.1); color:var(--text);" href="#">6</a>
+               <a class="miniCard" href="week7.html">7</a>
+               <a class="miniCard" href="week8.html">8</a>
+               <a class="miniCard" href="week9.html">9</a>
+               <a class="miniCard" href="week10.html">10</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="lexika" class="weekSection reveal">
+      <div class="weekSection__head">
+        <div>
+          <h2 class="h2 weekSection__title">1. Жаңа сөздер</h2>
+          <p class="section__sub">Мезгілдер, ауа райы және табиғат.</p>
+        </div>
+        <div class="weekSection__meta">
+          <button class="chip" id="toggleLexBtn" aria-expanded="false" onclick="toggleLex()">
+            <span class="chip__icon">👁</span>
+            <span class="chip__text">Аударма</span>
+          </button>
+        </div>
+      </div>
+
+      <style>
+        .lexGrid--compact {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Карточкалар кішірек */
+          gap: 12px;
+          margin-bottom: 24px;
+        }
+
+        .miniCard {
+          background: #ffffff;
+          border: 1px solid var(--stroke);
+          border-radius: 12px;
+          padding: 12px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          transition: transform 0.2s, box-shadow 0.2s;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .miniCard:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+          border-color: var(--a);
+        }
+
+        .miniIcon {
+          font-size: 1.5rem;
+          background: var(--surface2);
+          width: 40px; height: 40px;
+          border-radius: 8px;
+          display: flex; align-items: center; justify-content: center;
+        }
+
+        .miniContent { flex: 1; }
+        .miniWord { font-weight: 700; font-size: 1rem; color: var(--text); line-height: 1.2; }
+        .miniTrans { font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
+        
+        /* Фразаларға арналған стиль */
+        .phraseGrid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 10px;
+        }
+        .phraseItem {
+          background: #f8fafc;
+          border-left: 3px solid var(--b); /* Жасыл сызық */
+          padding: 10px 14px;
+          border-radius: 8px;
+          font-size: 0.95rem;
+        }
+        .phraseKz { font-weight: 700; color: var(--text); display: block; }
+        .phraseRu { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+        
+        /* Жасыру логикасы */
+        .is-hidden { display: none; }
+      </style>
+
+      <div class="weekSection__body">
+        
+        <h3 class="h3" style="font-size:1rem; color:var(--muted); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">Сөздік:</h3>
+        <div class="lexGrid--compact">
+          <article class="miniCard">
+            <div class="miniIcon">❄️</div>
+            <div class="miniContent">
+              <div class="miniWord">Қыс</div>
+              <div class="miniTrans is-hidden" data-lex-target>Зима</div>
+            </div>
+          </article>
+          <article class="miniCard">
+            <div class="miniIcon">🌱</div>
+            <div class="miniContent">
+              <div class="miniWord">Көктем</div>
+              <div class="miniTrans is-hidden" data-lex-target>Весна</div>
+            </div>
+          </article>
+          <article class="miniCard">
+            <div class="miniIcon">☀️</div>
+            <div class="miniContent">
+              <div class="miniWord">Жаз</div>
+              <div class="miniTrans is-hidden" data-lex-target>Лето</div>
+            </div>
+          </article>
+          <article class="miniCard">
+            <div class="miniIcon">🍂</div>
+            <div class="miniContent">
+              <div class="miniWord">Күз</div>
+              <div class="miniTrans is-hidden" data-lex-target>Осень</div>
+            </div>
+          </article>
+          <article class="miniCard">
+            <div class="miniIcon">🌦️</div>
+            <div class="miniContent">
+              <div class="miniWord">Ауа райы</div>
+              <div class="miniTrans is-hidden" data-lex-target>Погода</div>
+            </div>
+          </article>
+          <article class="miniCard">
+            <div class="miniIcon">🎉</div>
+            <div class="miniContent">
+              <div class="miniWord">Мереке</div>
+              <div class="miniTrans is-hidden" data-lex-target>Праздник</div>
+            </div>
+          </article>
+          <article class="miniCard">
+            <div class="miniIcon">🌧️</div>
+            <div class="miniContent">
+              <div class="miniWord">Жаңбыр</div>
+              <div class="miniTrans is-hidden" data-lex-target>Дождь</div>
+            </div>
+          </article>
+          <article class="miniCard">
+            <div class="miniIcon">🌨️</div>
+            <div class="miniContent">
+              <div class="miniWord">Қар</div>
+              <div class="miniTrans is-hidden" data-lex-target>Снег</div>
+            </div>
+          </article>
+        </div>
+
+        <h3 class="h3" style="font-size:1rem; color:var(--muted); margin:24px 0 12px 0; text-transform:uppercase; letter-spacing:0.5px;">Пайдалы фразалар:</h3>
+        <div class="phraseGrid">
+          <div class="phraseItem">
+            <span class="phraseKz">Күн ашық ☀️</span>
+            <span class="phraseRu is-hidden" data-lex-target>Ясный день</span>
+          </div>
+          <div class="phraseItem">
+            <span class="phraseKz">Күн суық 🥶</span>
+            <span class="phraseRu is-hidden" data-lex-target>Холодно (Погода холодная)</span>
+          </div>
+          <div class="phraseItem">
+            <span class="phraseKz">Қар жауып тұр 🌨️</span>
+            <span class="phraseRu is-hidden" data-lex-target>Идет снег</span>
+          </div>
+          <div class="phraseItem">
+            <span class="phraseKz">Қатты жел соғады 💨</span>
+            <span class="phraseRu is-hidden" data-lex-target>Дует сильный ветер</span>
+          </div>
+          <div class="phraseItem" style="border-left-color: #ef4444;">
+            <span class="phraseKz">Мереке құтты болсын! 🎉</span>
+            <span class="phraseRu is-hidden" data-lex-target>С праздником!</span>
+          </div>
+          <div class="phraseItem">
+            <span class="phraseKz">Жаңбыр жауып тұр ☔</span>
+            <span class="phraseRu is-hidden" data-lex-target>Идет дождь</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    <style>
+      /* НЕГІЗГІ ГРИД (Екі баған: Диалог + Грамматика) */
+      .splitLayout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        align-items: start;
+        margin-bottom: 40px;
+      }
+
+      /* СОЛ ЖАҚ: ДИАЛОГ */
+      .chatCard {
+        background: #ffffff;
+        border: 1px solid var(--stroke);
+        border-radius: 16px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .chatHeader {
+        background: #f8fafc;
+        padding: 16px;
+        border-bottom: 1px solid var(--stroke);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .chatBody {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 600px; /* Скролл болмас үшін */
+        overflow-y: auto;
+      }
+      
+      /* Хабарлама стильдері */
+      .msgBubble {
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        max-width: 90%;
+        position: relative;
+      }
+      .msg--left {
+        align-self: flex-start;
+        background: #f1f5f9;
+        color: var(--text);
+        border-bottom-left-radius: 2px;
+      }
+      .msg--right {
+        align-self: flex-end;
+        background: #eff6ff;
+        color: var(--text);
+        border: 1px solid #dbeafe;
+        border-bottom-right-radius: 2px;
+      }
+      .msgAuth {
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        display: block;
+        opacity: 0.7;
+      }
+      .msgTrans {
+        display: block;
+        margin-top: 6px;
+        padding-top: 6px;
+        border-top: 1px dashed rgba(0,0,0,0.1);
+        font-size: 0.85rem;
+        color: #6b7280;
+      }
+
+      /* ОҢ ЖАҚ: ГРАММАТИКА */
+      .ruleCard {
+        background: #ffffff;
+        border: 1px solid var(--stroke);
+        border-radius: 16px;
+        padding: 20px;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      }
+      /* Декор сызық */
+      .ruleCard::before {
+        content: ""; position: absolute; top: 0; left: 20px; right: 20px; height: 4px;
+        background: linear-gradient(90deg, #10b981, #3b82f6);
+        border-radius: 0 0 4px 4px;
+      }
+
+      .ruleBlock { margin-bottom: 24px; }
+      .ruleTitle {
+        font-weight: 800; font-size: 1rem; color: var(--text);
+        margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+      }
+      .ruleBox {
+        background: #f9fafb;
+        border: 1px solid var(--stroke);
+        border-radius: 10px;
+        padding: 12px;
+      }
+      
+      /* Ерекшелеу (Highlighting) */
+      .hl-root { font-weight: 600; color: var(--text); }
+      .hl-end { color: #ef4444; font-weight: 800; text-decoration: underline; text-decoration-color: rgba(239,68,68,0.3); }
+      .hl-blue { color: #3b82f6; font-weight: 800; }
+
+      .exampleList {
+        list-style: none;
+        padding: 0;
+        margin-top: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .exItem {
+        font-size: 0.9rem;
+        padding-left: 10px;
+        border-left: 3px solid #e5e7eb;
+      }
+
+      /* ТАПСЫРМА БЛОГЫ */
+      .taskMini {
+        background: #fffbeb;
+        border: 1px solid #fcd34d;
+        border-radius: 10px;
+        padding: 14px;
+        margin-top: 20px;
+      }
+      .taskTitle { color: #92400e; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 4px; }
+
+      /* Жасыру класы */
+      .d-none { display: none; }
+
+      /* Мобильді адаптация */
+      @media (max-width: 800px) {
+        .splitLayout { grid-template-columns: 1fr; }
+      }
+    </style>
+
+    <div class="splitLayout reveal">
+      
+      <div class="chatCard">
+        <div class="chatHeader">
+          <div>
+            <h2 class="h2" style="font-size:1.1rem; margin:0;">2. Диалог</h2>
+            <p style="font-size:0.85rem; color:var(--muted); margin:0;">Жаңа жыл және қыс</p>
+          </div>
+          <button class="btn btn--ghost" style="padding:6px 12px; font-size:0.8rem;" onclick="toggleDialogTrans()">
+            Аударма 👁️
+          </button>
+        </div>
+
+        <div class="chatBody">
+          <div class="msgBubble msg--left">
+            <span class="msgAuth">Азамат</span>
+            Сәлеметсіз бе! Сізге қай жыл мезгілі ұнайды?
+            <span class="msgTrans d-none">Здравствуйте! Какое время года вам нравится?</span>
+          </div>
+          <div class="msgBubble msg--right">
+            <span class="msgAuth">Әсел</span>
+            Сәлеметсіз бе! Маған қыс ұнайды. Қыс — менің сүйікті жыл мезгілім.
+            <span class="msgTrans d-none">Здравствуйте! Мне нравится зима. Зима — мое любимое время года.</span>
+          </div>
+          <div class="msgBubble msg--left">
+            <span class="msgAuth">Азамат</span>
+            Бүгін ауа райы қандай?
+            <span class="msgTrans d-none">Какая сегодня погода?</span>
+          </div>
+          <div class="msgBubble msg--right">
+            <span class="msgAuth">Әсел</span>
+            Бүгін қатты жел соғады және қар жауып тұр. Күн суық.
+            <span class="msgTrans d-none">Сегодня дует сильный ветер и идет снег. Холодно.</span>
+          </div>
+          <div class="msgBubble msg--left">
+            <span class="msgAuth">Азамат</span>
+            Қыста қандай мерекелер бар?
+            <span class="msgTrans d-none">Какие праздники есть зимой?</span>
+          </div>
+          <div class="msgBubble msg--right">
+            <span class="msgAuth">Әсел</span>
+            Қыста Тәуелсіздік күні және Жаңа жыл мерекесі бар.
+            <span class="msgTrans d-none">Зимой есть День Независимости и праздник Новый год.</span>
+          </div>
+          <div class="msgBubble msg--left">
+            <span class="msgAuth">Азамат</span>
+            Жаңа жылыңызбен! Мерекені қалай тойлайсыз?
+            <span class="msgTrans d-none">С Новым годом! Как вы празднуете?</span>
+          </div>
+          <div class="msgBubble msg--right">
+            <span class="msgAuth">Әсел</span>
+            Бірге болсын! Біз үйде, отбасымызбен тойлаймыз. Бесбармақ жейміз, шаңғы тебеміз.
+            <span class="msgTrans d-none">И вас также! Мы празднуем дома, с семьей. Едим бешбармак, катаемся на лыжах.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ruleCard">
+        <div style="font-size:0.8rem; text-transform:uppercase; color:#9ca3af; font-weight:700; margin-bottom:12px; letter-spacing:1px;">3. Грамматикалық анықтама</div>
+
+        <div class="ruleBlock">
+          <div class="ruleTitle">📍 Қай кезде? (Когда?)</div>
+          <div class="ruleBox">
+            <div style="text-align:center; font-family:monospace; margin-bottom:8px;">
+              Мезгіл + <span class="hl-end">–да / –де / –та / –те</span>
+            </div>
+            <ul class="exampleList">
+              <li class="exItem"><span class="hl-root">Қыс</span><span class="hl-end">та</span> (Зимой) — <em>қатаң (твердый)</em></li>
+              <li class="exItem"><span class="hl-root">Жаз</span><span class="hl-end">да</span> (Летом) — <em>жуан (твердый)</em></li>
+              <li class="exItem"><span class="hl-root">Күз</span><span class="hl-end">де</span> (Осенью) — <em>жіңішке (мягкий)</em></li>
+              <li class="exItem"><span class="hl-root">Көктем</span><span class="hl-end">де</span> (Весной)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ruleBlock">
+          <div class="ruleTitle">⚡ Қазіргі сәт (Процесс)</div>
+          <div class="ruleBox">
+            <p style="font-size:0.9rem; color:#4b5563; margin-bottom:6px;">Табиғат құбылыстары үшін:</p>
+            <div style="text-align:center; font-family:monospace; margin-bottom:8px;">
+              Түбір + <span class="hl-blue">–ып / –іп</span> + <span class="hl-root">тұр</span>
+            </div>
+            <ul class="exampleList">
+              <li class="exItem">Қар <span class="hl-blue">жауып</span> тұр. (Идет снег)</li>
+              <li class="exItem">Жаңбыр <span class="hl-blue">жауып</span> тұр. (Идет дождь)</li>
+              <li class="exItem">Жел <span class="hl-blue">соғып</span> тұр. (Дует ветер)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="taskMini">
+          <div class="taskTitle">🗣️ Мини-тапсырма:</div>
+          <p style="font-size:0.9rem; line-height:1.4;">
+            Серіктесіңізге сұрақ қойыңыз:<br>
+            1. Саған қай жыл мезгілі ұнайды?<br>
+            2. Қазір ауа райы қандай? (жаңбыр/қар жауып тұр ма?)
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      function toggleDialogTrans() {
+        const transSpans = document.querySelectorAll('.msgTrans');
+        transSpans.forEach(span => span.classList.toggle('d-none'));
+      }
+    </script>
+    <section class="weekSection reveal">
+      <div class="weekSection__head">
+        <h2 class="h2 weekSection__title">3. Сөйлеу клишелері</h2>
+      </div>
+
+      <div class="weekSection__body">
+        <div class="steps" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+          
+          <div class="stepCard">
+            <div class="stepCard__icon">1</div>
+            <div class="stepCard__title">Жыл мезгілі</div>
+            <div class="stepCard__text">
+              Маған <span style="color:var(--a); font-weight:700">қыс</span> ұнайды.<br>
+              Маған <span style="color:var(--a); font-weight:700">көктем</span> ұнамайды.<br>
+              <span class="muted small">Мне нравится зима / Не нравится весна.</span>
+            </div>
+          </div>
+
+          <div class="stepCard">
+            <div class="stepCard__icon">2</div>
+            <div class="stepCard__title">Ауа райы</div>
+            <div class="stepCard__text">
+              Бүгін күн <span style="color:var(--a); font-weight:700">ашық</span>.<br>
+              <span style="color:var(--a); font-weight:700">Қар</span> жауып тұр.<br>
+              <span class="muted small">Сегодня ясно / Идет снег.</span>
+            </div>
+          </div>
+
+          <div class="stepCard">
+            <div class="stepCard__icon">3</div>
+            <div class="stepCard__title">Мереке</div>
+            <div class="stepCard__text">
+              Біз <span style="color:var(--a); font-weight:700">үйде</span> тойлаймыз.<br>
+              Мерекелік <span style="color:var(--a); font-weight:700">дастархан</span> жасаймыз.<br>
+              <span class="muted small">Празднуем дома / Накрываем стол.</span>
+            </div>
+          </div>
+
+        </div>
+        <section class="weekSection reveal">
+          <div class="weekSection__head">
+            <h3 class="h3 weekSection__title">3.1 Мәтінді құрастырыңыз</h3>
+            <p class="section__sub">Төмендегі сөздерді басып, бос орындарға дұрыс ретпен қойыңыз.</p>
+          </div>
+    
+          <style>
+            /* НЕГІЗГІ ГРИД */
+            .storyGrid { display: grid; grid-template-columns: 1fr; gap: 40px; }
+    
+            /* КАРТОЧКА СТИЛІ */
+            .storyCard {
+              background: #ffffff;
+              border-radius: 20px;
+              padding: 30px;
+              position: relative;
+              box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+              overflow: hidden;
+            }
+    
+            /* 1-МӘТІН: ҚЫС (Көк стиль) */
+            .storyCard--winter {
+              border: 2px solid #dbeafe;
+              background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%);
+            }
+            .storyCard--winter::before {
+              content: "❄️"; position: absolute; top: -10px; right: 20px;
+              font-size: 8rem; opacity: 0.05; pointer-events: none;
+            }
+            .tag--winter { background: #dbeafe; color: #1e40af; }
+    
+            /* 2-МӘТІН: КҮЗ (Сарғыш стиль) */
+            .storyCard--autumn {
+              border: 2px solid #ffedd5;
+              background: linear-gradient(180deg, #ffffff 0%, #fff7ed 100%);
+            }
+            .storyCard--autumn::before {
+              content: "🍂"; position: absolute; top: -10px; right: 20px;
+              font-size: 8rem; opacity: 0.05; pointer-events: none;
+            }
+            .tag--autumn { background: #ffedd5; color: #9a3412; }
+    
+            /* HEADER */
+            .storyHeader {
+              display: flex; justify-content: space-between; align-items: center;
+              margin-bottom: 20px; border-bottom: 2px dashed rgba(0,0,0,0.1);
+              padding-bottom: 10px;
+            }
+            .storyBadge {
+              font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
+              padding: 6px 12px; border-radius: 50px;
+            }
+    
+            /* МӘТІН ЖӘНЕ СЛОТТАР */
+            .storyText {
+              font-size: 1.1rem;
+              line-height: 2.4; /* Сөздер сыю үшін биіктік */
+              color: #374151;
+              margin-bottom: 30px;
+            }
+    
+            .slot {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              min-width: 80px;
+              height: 32px;
+              border-bottom: 2px dashed #9ca3af; /* Пунктир сызық - бос екенін білдіреді */
+              margin: 0 4px;
+              padding: 0 6px;
+              color: #9ca3af;
+              font-weight: 600;
+              font-size: 0.9rem;
+              cursor: pointer;
+              transition: all 0.2s;
+              vertical-align: middle;
+              background: rgba(255,255,255,0.5);
+              border-radius: 6px;
+            }
+            /* Сөз қойылған кездегі стиль */
+            .slot.filled {
+              border-bottom: 2px solid #4f46e5;
+              color: #ffffff;
+              background: #4f46e5;
+              box-shadow: 0 2px 5px rgba(79, 70, 229, 0.3);
+            }
+            /* Дұрыс/Бұрыс нәтиже */
+            .slot.is-correct { background: #10b981; border-color: #10b981; color: white; }
+            .slot.is-wrong { background: #ef4444; border-color: #ef4444; color: white; animation: shake 0.4s; }
+    
+            @keyframes shake {
+              0%, 100% { transform: translateX(0); }
+              25% { transform: translateX(-5px); }
+              75% { transform: translateX(5px); }
+            }
+    
+            /* СӨЗДЕР БАНКІ */
+            .wordBank {
+              background: rgba(255,255,255,0.6);
+              padding: 20px;
+              border-radius: 16px;
+              border: 1px solid rgba(0,0,0,0.1);
+              display: flex;
+              flex-wrap: wrap;
+              gap: 10px;
+              justify-content: center;
+              min-height: 60px;
+            }
+            .wordBtn {
+              background: #ffffff;
+              border: 1px solid #e5e7eb;
+              padding: 8px 16px;
+              border-radius: 12px;
+              cursor: pointer;
+              font-weight: 700;
+              font-size: 0.95rem;
+              color: #374151;
+              box-shadow: 0 3px 0 #e5e7eb; /* 3D кнопка */
+              transition: transform 0.1s, opacity 0.2s;
+              user-select: none;
+            }
+            .wordBtn:hover { transform: translateY(-2px); box-shadow: 0 5px 0 #e5e7eb; }
+            .wordBtn:active { transform: translateY(0); box-shadow: 0 1px 0 #e5e7eb; }
+            
+            /* Сөз таңдалғанда жасырылады */
+            .wordBtn.used {
+              opacity: 0; pointer-events: none; width: 0; padding: 0; margin: 0; border:none; overflow: hidden;
+            }
+    
+            /* ТӨМЕНГІ БӨЛІК */
+            .titleInputArea {
+              margin-top: 20px;
+              display: flex;
+              gap: 10px;
+              align-items: center;
+              background: #fff;
+              padding: 10px;
+              border-radius: 12px;
+              border: 1px solid #e5e7eb;
+            }
+            .titleInput { border: none; flex: 1; font-size: 1rem; font-weight: 600; color: var(--text); outline: none; }
+            
+            .checkBtn {
+              margin-top: 20px; width: 100%; padding: 14px; border-radius: 12px; border: none;
+              font-weight: 800; font-size: 1rem; cursor: pointer; color: white; background: var(--text);
+              transition: opacity 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            }
+            .checkBtn:hover { opacity: 0.9; transform: translateY(-1px); }
+          </style>
+    
+          <div class="storyGrid">
+    
+            <div class="storyCard storyCard--winter" id="story1">
+              <div class="storyHeader">
+                <span class="storyBadge tag--winter">1-Тапсырма</span>
+                <span style="font-size:1.5rem;">☃️</span>
+              </div>
+    
+              <div class="storyText">
+                Менің атым – <span class="slot" data-ans="Айдана">...</span>.
+                Менің сүйікті жыл мезгілім – <span class="slot" data-ans="қыс">...</span>.
+                <span class="slot" data-ans="Қыста">...</span> ауа райы көбінесе <span class="slot" data-ans="суық">...</span> болады.
+                Бұл кезде табиғат әдемі көрінеді.
+                Қыста біз үлкен мереке – <span class="slot" data-ans="Жаңа жылды">...</span> тойлаймыз.
+                Бұл мерекені біз әдетте <span class="slot" data-ans="үйде">...</span> қарсы аламыз.
+                Мереке күні мерекелік дастархан жасап, <span class="slot" data-ans="туыстарымыз">...</span>, <span class="slot" data-ans="достарымыз">...</span> қонаққа келеді.
+              </div>
+    
+              <div class="wordBank" id="bank1">
+                <button class="wordBtn" onclick="fillSlot(this, 'story1')">қыс</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story1')">туыстарымыз</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story1')">суық</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story1')">үйде</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story1')">Айдана</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story1')">достарымыз</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story1')">Қыста</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story1')">Жаңа жылды</button>
+              </div>
+    
+              <div class="titleInputArea">
+                <span style="font-size:1.2rem;">🏷️</span>
+                <input type="text" class="titleInput" placeholder="Мәтінге атау ойлап жазыңыз...">
+              </div>
+    
+              <button class="checkBtn" style="background:#2563eb;" onclick="checkStory('story1')">Тексеру</button>
+            </div>
+    
+            <div class="storyCard storyCard--autumn" id="story2">
+              <div class="storyHeader">
+                <span class="storyBadge tag--autumn">2-Тапсырма</span>
+                <span style="font-size:1.5rem;">🌆</span>
+              </div>
+    
+              <div class="storyText">
+                Мен <span class="slot" data-ans="Алматы">...</span> қаласында тұрамын.
+                Біздің аймақта жыл мезгілдері анық байқалады.
+                Маған әсіресе <span class="slot" data-ans="күз">...</span> мезгілі ұнайды, өйткені бұл кезде ауа райы <span class="slot" data-ans="салқын">...</span> болады.
+                Кей күндері <span class="slot" data-ans="жаңбыр">...</span> жауады, ал кейде күн ашық болады.
+                Қыста біз <span class="slot" data-ans="Тәуелсіздік">...</span> мерекесін атап өтеміз.
+                Бұл күні <span class="slot" data-ans="отбасымызбен">...</span> жиналып, ұлттық тағамдар дайындаймыз және <span class="slot" data-ans="жақындарымызбен">...</span> бірге уақыт өткіземіз.
+              </div>
+    
+              <div class="wordBank" id="bank2">
+                <button class="wordBtn" onclick="fillSlot(this, 'story2')">салқын</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story2')">отбасымызбен</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story2')">Алматы</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story2')">жақындарымызбен</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story2')">күз</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story2')">Тәуелсіздік</button>
+                <button class="wordBtn" onclick="fillSlot(this, 'story2')">жаңбыр</button>
+              </div>
+    
+              <div class="titleInputArea">
+                <span style="font-size:1.2rem;">🏷️</span>
+                <input type="text" class="titleInput" placeholder="Мәтінге атау ойлап жазыңыз...">
+              </div>
+    
+              <button class="checkBtn" style="background:#ea580c;" onclick="checkStory('story2')">Тексеру</button>
+            </div>
+    
+          </div>
+        </section>
+    
+        <script>
+          // 1. Сөздерді автоматты түрде араластыру (Shuffle)
+          document.addEventListener('DOMContentLoaded', () => {
+            shuffleChildren('bank1');
+            shuffleChildren('bank2');
+          });
+    
+          function shuffleChildren(containerId) {
+            const container = document.getElementById(containerId);
+            for (let i = container.children.length; i >= 0; i--) {
+              container.appendChild(container.children[Math.random() * i | 0]);
+            }
+          }
+    
+          // 2. Сөзді таңдап, бос орынға қою
+          function fillSlot(btn, storyId) {
+            const story = document.getElementById(storyId);
+            const slots = story.querySelectorAll('.slot');
+            let emptySlot = null;
+    
+            // "filled" класы жоқ бірінші слотты іздейміз
+            for (let slot of slots) {
+              if (!slot.classList.contains('filled')) {
+                emptySlot = slot;
+                break;
+              }
+            }
+    
+            if (emptySlot) {
+              // Анимация және қою
+              emptySlot.innerText = btn.innerText;
+              emptySlot.classList.add('filled');
+              
+              // Сөзді қайтару логикасы (басқанда кері қайтады)
+              emptySlot.onclick = function() { returnWord(this, btn); };
+              
+              // Батырманы жасырамыз
+              btn.classList.add('used');
+            } else {
+              // Егер бос орын жоқ болса
+              alert("Бос орын қалмады! Қате сөзді басып, алып тастаңыз.");
+            }
+          }
+    
+          // 3. Сөзді слоттан алып тастау (қайтару)
+          function returnWord(slot, btn) {
+            slot.innerText = "...";
+            slot.classList.remove('filled', 'is-correct', 'is-wrong');
+            slot.onclick = null; // Оқиғаны өшіреміз
+            btn.classList.remove('used');
+          }
+    
+          // 4. Тексеру функциясы
+          function checkStory(storyId) {
+            const story = document.getElementById(storyId);
+            const slots = story.querySelectorAll('.slot');
+            let correctCount = 0;
+    
+            slots.forEach(slot => {
+              // Егер слот бос болса, ештеңе істемейміз немесе қате деп белгілейміз
+              if (!slot.classList.contains('filled')) {
+                 slot.classList.add('is-wrong');
+                 return;
+              }
+    
+              const answer = slot.getAttribute('data-ans').trim().toLowerCase();
+              const userWord = slot.innerText.trim().toLowerCase();
+              
+              if (userWord === answer) {
+                slot.classList.add('is-correct');
+                slot.classList.remove('is-wrong');
+                correctCount++;
+              } else {
+                slot.classList.add('is-wrong');
+                slot.classList.remove('is-correct');
+              }
+            });
+    
+            if (correctCount === slots.length) {
+              // Жеңіс эффектісі
+              alert("Жарайсыз! Мәтін дұрыс құралды! 🎉");
+            }
+          }
+        </script>
+      </div>
+    </section>
+
+    <section class="section reveal" id="test">
+      <div class="section__head">
+        <h2 class="h2">Өзіңізді тексеріңіз</h2>
+        <p class="section__sub">8 сұраққа жауап беріңіз.</p>
+      </div>
+
+      <div class="weekSection"> 
+        <div class="weekSection__body">
+          <form id="quizForm">
+            
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">1. «Зима» қазақша қалай болады?</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q1" value="1"> Қыс</label>
+                <label class="testItem"><input type="radio" name="q1" value="0"> Жаз</label>
+                <label class="testItem"><input type="radio" name="q1" value="0"> Күз</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">2. «Погода» сөзінің аудармасы:</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q2" value="0"> Мереке</label>
+                <label class="testItem"><input type="radio" name="q2" value="1"> Ауа райы</label>
+                <label class="testItem"><input type="radio" name="q2" value="0"> Жыл</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">3. «Ясный день»:</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q3" value="0"> Қар жауып тұр</label>
+                <label class="testItem"><input type="radio" name="q3" value="1"> Күн ашық</label>
+                <label class="testItem"><input type="radio" name="q3" value="0"> Жел соғады</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">4. «Маған қыс ...» (Мне нравится зима):</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q4" value="1"> ұнайды</label>
+                <label class="testItem"><input type="radio" name="q4" value="0"> ұнамайды</label>
+                <label class="testItem"><input type="radio" name="q4" value="0"> жақсы көремін</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">5. «День Независимости»:</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q5" value="1"> Тәуелсіздік күні</label>
+                <label class="testItem"><input type="radio" name="q5" value="0"> Жаңа жыл</label>
+                <label class="testItem"><input type="radio" name="q5" value="0"> Туған күн</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">6. «Мы празднуем дома»:</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q6" value="0"> Біз далада тойлаймыз</label>
+                <label class="testItem"><input type="radio" name="q6" value="1"> Біз үйде тойлаймыз</label>
+                <label class="testItem"><input type="radio" name="q6" value="0"> Біз жұмыста тойлаймыз</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">7. «Идет снег»:</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q7" value="0"> Жаңбыр жауып тұр</label>
+                <label class="testItem"><input type="radio" name="q7" value="1"> Қар жауып тұр</label>
+                <label class="testItem"><input type="radio" name="q7" value="0"> Күн жылы</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">8. «Елка» қазақша:</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q8" value="0"> Орталық</label>
+                <label class="testItem"><input type="radio" name="q8" value="1"> Шырша</label>
+                <label class="testItem"><input type="radio" name="q8" value="0"> Орман</label>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn--primary" style="margin-top: 16px; width: 100%;" onclick="checkQuiz()">
+              Нәтижені тексеру
+            </button>
+          </form>
+
+          <div id="quizResult" class="resultBox"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="navBottom">
+      <a class="btn" href="week5.html">← 5-апта</a>
+      <a class="btn btn--primary" href="week7.html">7-аптаға өту →</a>
+    </div>
+
+    <footer class="footer reveal" role="contentinfo">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__brand">
+            <span class="brand__mark brand__mark--sm" aria-hidden="true"></span>
+            <div>
+              <div class="footer__title">Ситуативтік қазақ тілі</div>
+              <div class="footer__sub">Онлайн курс</div>
+            </div>
+          </div>
+          <p class="footer__text">Авторы: Ахметова Татьяна Алимжановна</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span class="muted">© Kazakh Course 2026</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    // Reveal animation trigger
+    document.addEventListener('DOMContentLoaded', () => {
+      document.documentElement.classList.add('reveal-ready');
+      setTimeout(() => {
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach((el, i) => {
+          setTimeout(() => el.classList.add('is-in'), i * 100);
+        });
+      }, 100);
+    });
+
+    // Toggle Lexicon
+    function toggleLex() {
+      const btn = document.getElementById('toggleLexBtn');
+      const targets = document.querySelectorAll('[data-lex-target]');
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+
+      btn.setAttribute('aria-expanded', !isExpanded);
+      targets.forEach(t => t.classList.toggle('is-hidden'));
+    }
+
+    // Quiz Engine
+    function checkQuiz() {
+      const form = document.getElementById('quizForm');
+      const resultBox = document.getElementById('quizResult');
+      let score = 0;
+      const total = 8;
+
+      // Simple check logic
+      for (let i = 1; i <= total; i++) {
+        const selected = form.querySelector(`input[name="q${i}"]:checked`);
+        if (selected && selected.value === "1") {
+          score++;
+          selected.parentElement.style.borderColor = "var(--b)";
+          selected.parentElement.style.backgroundColor = "color-mix(in oklab, var(--b) 10%, transparent)";
+        } else if (selected) {
+          selected.parentElement.style.borderColor = "red";
+        }
+      }
+
+      resultBox.style.display = 'block';
+      resultBox.className = 'resultBox ' + (score >= 6 ? 'is-good' : 'is-bad');
+      
+      if (score === total) {
+        resultBox.innerHTML = `<strong>Тамаша! 🏆</strong><br>Сіз барлық сұраққа дұрыс жауап бердіңіз (${score}/${total}).`;
+      } else if (score >= 5) {
+        resultBox.innerHTML = `<strong>Жақсы! 👍</strong><br>Нәтиже: ${score}/${total}. Қателерді қарап шығыңыз.`;
+      } else {
+        resultBox.innerHTML = `<strong>Қайталау керек 📚</strong><br>Нәтиже: ${score}/${total}. Сабақты қайталап өтіңіз.`;
+      }
+      
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+</body>
+</html>

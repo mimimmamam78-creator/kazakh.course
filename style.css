@@ -1,0 +1,3093 @@
+/* =========================
+   TOKENS — LIGHT ONLY (single source of truth)
+   Kazakh Course • stable UI • no tilt/rotation
+   ========================= */
+   :root{
+    /* Typography */
+    --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  
+    /* Layout */
+    --container: 1160px;
+  
+    /* Radius */
+    --r-xl: 26px;
+    --r-lg: 20px;
+    --r-md: 16px;
+    --r-sm: 12px;
+  
+    /* Motion (soft, no вращения) */
+    --dur-1: 140ms;
+    --dur-2: 220ms;
+    --dur-3: 420ms;
+    --ease: cubic-bezier(.2,.8,.2,1);
+  
+    /* Scale (не используем focus-mode; держим базу) */
+    --scale: 1;
+  
+    /* Shadow (light) */
+    --shadow-1: 0 12px 40px rgba(10,15,26,.10);
+    --shadow-2: 0 22px 70px rgba(10,15,26,.14);
+    --shadow-3: 0 40px 120px rgba(10,15,26,.16);
+  
+    /* Theme tokens — LIGHT ONLY */
+    --bg: #f6f8ff;
+    --bg2: #eef3ff;
+  
+    --surface: rgba(255,255,255,.78);
+    --surface2: rgba(255,255,255,.62);
+  
+    --stroke: rgba(10,15,26,.10);
+    --stroke2: rgba(10,15,26,.14);
+  
+    --text: rgba(10,15,26,.92);
+    --muted: rgba(10,15,26,.62);
+  
+    /* Accents */
+    --a: #4da3ff;
+    --b: #27ae60;
+    --c: #9b7bff;
+  
+    /* Premium hero gradient */
+    --grad-hero:
+      radial-gradient(1100px 740px at 18% 10%, rgba(77,163,255,.18), transparent 60%),
+      radial-gradient(900px 700px at 82% 18%, rgba(39,174,96,.12), transparent 55%),
+      radial-gradient(820px 640px at 65% 80%, rgba(155,123,255,.11), transparent 60%);
+  
+    /* Safe area */
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --safe-t: env(safe-area-inset-top, 0px);
+  }
+  
+  /* Compatibility: если в HTML остался data-theme — не ломаем, но всегда light */
+  html,
+  html[data-theme="light"],
+  html[data-theme="dark"]{
+    color-scheme: light;
+  }
+  
+  /* Base page */
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  
+  body{
+    margin: 0;
+    font-family: var(--font);
+    color: var(--text);
+    background: var(--grad-hero), linear-gradient(180deg, var(--bg), var(--bg2));
+    min-height: 100dvh;
+    line-height: 1.55;
+    font-size: calc(16px * var(--scale));
+    padding-bottom: var(--safe-b);
+  }
+  
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ transition: none !important; animation: none !important; }
+  }
+  
+  /* =========================
+     NO FOCUS MODE (hard-off)
+     ========================= */
+  body.is-focus{ --scale: 1 !important; }
+  
+  /* =========================
+     NAV WEEKS — responsive horizontal scroll
+     ========================= */
+  .nav.nav--weeks{
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    max-width: 100%;
+    justify-content: flex-start;
+  }
+  .nav.nav--weeks::-webkit-scrollbar{ display:none; }
+  
+  .nav.nav--weeks .nav__link{
+    padding: 10px 12px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+  
+  @media (max-width: 980px){
+    .topbar__inner{
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      padding: 12px 0;
+    }
+    .brand{
+      justify-content: center;
+      text-align: center;
+      min-width: auto; /* важно: без ломания сетки */
+    }
+    .nav{ border-radius: 18px; }
+    .nav.nav--weeks{ padding: 8px; }
+  }
+  
+  @media (max-width: 480px){
+    .nav.nav--weeks .nav__link{ padding: 9px 10px; }
+    .brand__title{ font-size: 1.02em; }
+    .brand__sub{ font-size: .82em; }
+  }
+  /* =========================================
+   Main content background (GLOBAL)
+   ========================================= */
+
+main {
+  background: var(--bg);
+  padding-bottom: 64px;
+}
+
+  /* =========================
+   LAYOUT HELPERS
+   container + accessibility
+   ========================= */
+
+.container{
+  width: min(var(--container), calc(100% - 36px));
+  margin-inline: auto;
+}
+
+/* Skip link — доступность (показывается при Tab) */
+.skip-link{
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke2);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transform: translateY(-140%);
+  transition: transform var(--dur-2) var(--ease);
+  z-index: 9999;
+}
+.skip-link:focus{ transform: translateY(0); outline: none; }
+.skip-link:focus-visible{
+  outline: 3px solid color-mix(in oklab, var(--a) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* Чтобы якоря не прятались под sticky topbar */
+:target{ scroll-margin-top: 96px; }
+
+/* =========================
+   TOPBAR (sticky header)
+   ========================= */
+
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--bg) 70%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding-top: var(--safe-t);
+}
+
+/* Fallback если backdrop-filter не поддерживается */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
+  .topbar{ background: color-mix(in oklab, var(--bg) 92%, transparent); }
+}
+
+.topbar__inner{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+}
+
+/* =========================
+   BRAND (logo + title)
+   ========================= */
+
+.brand{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px; /* на desktop удобно, но см. media ниже */
+}
+
+.brand__mark{
+  width: 36px;
+  height: 36px;
+  border-radius: 14px;
+  background:
+    radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,.45), transparent 60%),
+    linear-gradient(135deg, rgba(77,163,255,.95), rgba(39,174,96,.90));
+  box-shadow: 0 12px 34px rgba(77,163,255,.18);
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.brand__mark::after{
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.25);
+  opacity: .55;
+}
+
+.brand__mark--sm{
+  width: 28px;
+  height: 28px;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(77,163,255,.16);
+}
+
+.brand__title{
+  font-weight: 880;
+  letter-spacing: .2px;
+  line-height: 1;
+  margin: 0; /* на случай если это h/div */
+}
+
+.brand__sub{
+  color: var(--muted);
+  font-size: .85em;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+/* Адаптив: чтобы min-width не ломал мобилу */
+@media (max-width: 980px){
+  .brand{ min-width: auto; justify-content: center; text-align: center; }
+}
+/* =========================
+   NAVIGATION (универсальная навигация)
+   .nav — контейнер «пилюль» (pill bar)
+   .nav__link — отдельная ссылка (кнопка-пилюля)
+   Используется для:
+   - nav по неделям (nav--weeks)
+   - любые мини-меню внутри страниц
+   ========================= */
+
+/* Контейнер навигации:
+   - flex: чтобы ссылки стояли в ряд
+   - wrap: по умолчанию можно переносить (для обычных nav)
+   - gap: расстояние между пилюлями
+   - padding + radius: «капсула» вокруг навигации
+   - background/бордер/тень: «стеклянная» панель */
+   .nav{
+    display: flex;
+    flex-wrap: wrap;                 /* по умолчанию переносить можно */
+    gap: 8px;
+    justify-content: center;         /* центрируем, красиво на десктопе */
+    align-items: center;
+    padding: 6px 8px;
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface) 80%, transparent);
+    border-radius: 999px;            /* идеальная pill-форма */
+    box-shadow: var(--shadow-1);
+  }
+  
+  /* Ссылка в навигации:
+     - muted цвет в покое
+     - padding/radius = пилюля
+     - border прозрачный (чтобы при hover не «прыгало»)
+     - transition — мягкая интерактивность (без вращений) */
+  .nav__link{
+    color: var(--muted);
+    text-decoration: none;
+    padding: 10px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;   /* важно: чтобы не дергалось при hover */
+    user-select: none;
+    outline: none;
+  
+    transition:
+      transform var(--dur-1) var(--ease),
+      background var(--dur-2) var(--ease),
+      border-color var(--dur-2) var(--ease),
+      color var(--dur-2) var(--ease);
+  }
+  
+  /* Hover (мышь):
+     - чуть поднимаем (depth)
+     - включаем фон/бордер
+     - усиливаем цвет текста */
+  .nav__link:hover{
+    color: var(--text);
+    background: color-mix(in oklab, var(--surface) 70%, transparent);
+    border-color: var(--stroke2);
+    transform: translateY(-1px);
+  }
+  
+  /* Focus (клавиатура / accessibility):
+     - четкий обвод, чтобы было видно Tab-навигацию */
+  .nav__link:focus-visible{
+    outline: 3px solid color-mix(in oklab, var(--a) 55%, transparent);
+    outline-offset: 2px;
+  }
+  
+  /* Активная ссылка (текущая страница):
+     - градиентный фон
+     - усиленный бордер
+     - текст белее/контрастнее */
+  .nav__link.is-active{
+    color: var(--text);
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--a) 18%, transparent),
+      color-mix(in oklab, var(--b) 16%, transparent)
+    );
+    border-color: color-mix(in oklab, var(--a) 35%, var(--stroke2));
+  }
+  
+  
+  /* =========================
+     TOPBAR TOOLS (правые кнопки в шапке)
+     В нашем проекте:
+     - тумблер темы не нужен (light-only)
+     - focus-mode не нужен
+     Поэтому этот блок должен быть «не мешающим»:
+     - если в HTML он есть — пусть не ломает верстку
+     - если его нет — ничего страшного
+     ========================= */
+  
+  .topbar__tools{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+  
+    /* Важно:
+       min-width часто ломает мобильный/центровку.
+       Оставляем только на десктопе, а в media снимаем. */
+    min-width: 220px;
+  }
+  
+  /* =========================
+     CHIP (кнопка-пилюля с иконкой)
+     Использование:
+     - мини-действия (например “Ойнату”, “Көрсету” и т.д.)
+     - toggle-кнопки (aria-pressed=true)
+     ========================= */
+  
+  .chip{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  
+    border-radius: 999px;
+    padding: 10px 12px;
+  
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface) 85%, transparent);
+    color: var(--text);
+  
+    cursor: pointer;
+    box-shadow: var(--shadow-1);
+  
+    transition:
+      transform var(--dur-1) var(--ease),
+      border-color var(--dur-2) var(--ease),
+      background var(--dur-2) var(--ease);
+  }
+  
+  /* Небольшая «глубина» при наведении */
+  .chip:hover{
+    transform: translateY(-1px);
+    border-color: var(--stroke2);
+  }
+  
+  /* Active: кнопка «прижалась» обратно */
+  .chip:active{
+    transform: translateY(0);
+  }
+  
+  /* Focus: доступность с клавиатуры */
+  .chip:focus-visible{
+    outline: 3px solid color-mix(in oklab, var(--b) 55%, transparent);
+    outline-offset: 2px;
+  }
+  
+  /* Внутренняя иконка:
+     - квадрат с мягким фоном
+     - моношрифт для лаконичных символов */
+  .chip__icon{
+    width: 26px;
+    height: 26px;
+  
+    display: inline-grid;
+    place-items: center;
+  
+    border-radius: 10px;
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 90%, transparent);
+  
+    font-family: var(--mono);
+    font-weight: 800;
+    font-size: 14px;
+  }
+  
+  /* Текст:
+     - чуть более спокойный, но читаемый */
+  .chip__text{
+    font-weight: 720;
+    font-size: .95em;
+    color: var(--muted);
+  }
+  
+  /* Toggle-состояние:
+     aria-pressed=true используется для кнопок-переключателей */
+  .chip[aria-pressed="true"]{
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--a) 16%, transparent),
+      color-mix(in oklab, var(--b) 14%, transparent)
+    );
+    border-color: color-mix(in oklab, var(--a) 30%, var(--stroke2));
+  }
+  .chip[aria-pressed="true"] .chip__text{
+    color: var(--text);
+  }
+  
+  
+  /* =========================
+     HERO (верхний блок страницы)
+     hero__grid — двуколоночная сетка:
+     - слева: заголовок/описание
+     - справа: карточка/панель/прогресс
+     На мобиле — в одну колонку
+     ========================= */
+  
+  .hero{
+    padding: 26px 0 10px;
+  }
+  
+  .hero__grid{
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 18px;
+    align-items: start;
+  }
+  
+  /* =========================
+     RESPONSIVE (адаптив для шапки и hero)
+     ========================= */
+  @media (max-width: 980px){
+    /* Шапка становится более «центровой» и компактной */
+    .topbar__inner{
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  
+    /* Не даем brand/tools раздувать ширину */
+    .brand,
+    .topbar__tools{
+      min-width: auto;
+    }
+  
+    /* Hero — в одну колонку */
+    .hero__grid{
+      grid-template-columns: 1fr;
+    }
+  
+    /* У nav чуть менее круглые края (приятнее на узких экранах) */
+    .nav{
+      border-radius: 22px;
+    }
+  }
+  /* =========================
+   HERO UI: small pill + headings + lead text
+   Используется в верхнем блоке (Hero) на страницах:
+   - Плашка (pill) “10 апта / модуль / т.б.”
+   - Главный заголовок (h1)
+   - Подзаголовок (lead)
+   ========================= */
+
+/* PILL — маленькая плашка-ярлык над заголовком
+   Пример: "10 модуль • 36 сағат" и т.п. */
+.pill{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 999px;
+
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface) 78%, transparent);
+  color: var(--muted);
+
+  box-shadow: var(--shadow-1);
+  margin-bottom: 12px;
+}
+
+/* Маленькая точка-акцент внутри pill */
+.pill__dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 99px;
+
+  background: linear-gradient(135deg, var(--a), var(--b));
+  box-shadow: 0 10px 26px rgba(77,163,255,.18);
+}
+
+/* H1 — главный заголовок
+   clamp: адаптивный размер от 34px до 52px */
+.h1{
+  font-size: clamp(34px, calc(4.2vw * var(--scale)), 52px);
+  letter-spacing: -.5px;
+  line-height: 1.06;
+  margin: 0 0 12px;
+}
+
+/* Подсветка части заголовка градиентом (например слово “Kazakh”) */
+.h1__accent{
+  background: linear-gradient(135deg, var(--a), var(--b));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* “Мягкая” часть заголовка (обычно второе предложение/часть) */
+.h1__soft{
+  color: var(--muted);
+  font-weight: 720;
+}
+
+/* LEAD — основной вводный текст под заголовком
+   max-width: ограничивает длину строки, чтобы было читабельно */
+.lead{
+  color: var(--muted);
+  font-size: calc(16.8px * var(--scale));
+  margin: 0 0 16px;
+  max-width: 70ch;
+}
+
+
+/* =========================
+   HERO ACTIONS: buttons row
+   .hero__cta — ряд кнопок в hero
+   .btn — базовый стиль кнопки
+   модификаторы:
+   - .btn--primary: акцентная
+   - .btn--ghost: прозрачная
+   ========================= */
+
+.hero__cta{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;          /* на узких экранах кнопки переносятся */
+  margin: 12px 0 16px;
+}
+
+/* Базовая кнопка */
+.btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 12px 14px;
+  border-radius: 18px;
+  min-height: 46px;
+
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface2) 85%, transparent);
+  color: var(--text);
+
+  text-decoration: none;
+  box-shadow: var(--shadow-1);
+
+  transition:
+    transform var(--dur-1) var(--ease),
+    border-color var(--dur-2) var(--ease),
+    background var(--dur-2) var(--ease);
+}
+
+/* Hover: легкая глубина */
+.btn:hover{
+  transform: translateY(-1px);
+  border-color: var(--stroke2);
+}
+
+/* Active: возвращаем на место */
+.btn:active{ transform: translateY(0); }
+
+/* Focus: доступность с клавиатуры */
+.btn:focus-visible{
+  outline: 3px solid color-mix(in oklab, var(--a) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* Иконка/стрелка внутри кнопки (если есть span) */
+.btn__arrow{ opacity: .9; }
+
+/* Primary — акцентная кнопка */
+.btn--primary{
+  border-color: color-mix(in oklab, var(--a) 28%, var(--stroke2));
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--a) 22%, transparent),
+    color-mix(in oklab, var(--b) 18%, transparent)
+  );
+}
+
+/* Ghost — “прозрачная” кнопка (обычно вторичная ссылка) */
+.btn--ghost{
+  background: transparent;
+}
+
+
+/* =========================
+   META CARDS: 2 карточки под hero (инфо-виджеты)
+   .meta — grid 2 колонки (на мобиле 1 колонка)
+   .meta__card — карточка со значениями
+   ========================= */
+
+.meta{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 720px){
+  .meta{ grid-template-columns: 1fr; }
+}
+
+/* Карточка мета-инфо */
+.meta__card{
+  padding: 14px;
+  border-radius: var(--r-lg);
+
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface2) 80%, transparent);
+  box-shadow: var(--shadow-1);
+}
+
+/* Подпись (ключ) */
+.meta__k{
+  color: var(--muted);
+  font-size: .92em;
+  margin-bottom: 6px;
+}
+
+/* Значение */
+.meta__v{
+  font-weight: 860;
+  letter-spacing: -.2px;
+}
+
+/* Подстрочный поясняющий текст */
+.meta__s{
+  color: var(--muted);
+  margin-top: 6px;
+  font-size: .96em;
+}
+
+
+/* =========================
+   GLASS PANEL (универсальная «стеклянная панель»)
+   Использование:
+   - правая колонка hero (прогресс/мини-навигация)
+   - любые “панели” с подсказкой и шапкой
+   Важно: НЕТ 3D/tilt, только мягкая глубина
+   ========================= */
+
+.glassPanel{
+  border-radius: calc(var(--r-xl) + 4px);
+  border: 1px solid var(--stroke);
+
+  background:
+    radial-gradient(420px 260px at 18% 18%, color-mix(in oklab, var(--a) 14%, transparent), transparent 64%),
+    radial-gradient(380px 280px at 90% 10%, color-mix(in oklab, var(--b) 13%, transparent), transparent 60%),
+    color-mix(in oklab, var(--surface) 80%, transparent);
+
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Лёгкая “шум/сетка” для премиум-эффекта */
+.glassPanel::before{
+  content:"";
+  position: absolute;
+  inset: -2px;
+  pointer-events: none;
+
+  opacity: .18;
+  background:
+    radial-gradient(circle at 12px 12px, rgba(255,255,255,.35) 0 1px, transparent 1px 100%),
+    radial-gradient(circle at 0 0, rgba(255,255,255,.15) 0 1px, transparent 1px 100%);
+
+  background-size: 26px 26px, 52px 52px;
+  mix-blend-mode: overlay;
+}
+
+/* Если панель фокусируется (tab), подсветить */
+.glassPanel:focus-visible{
+  outline: 3px solid color-mix(in oklab, var(--b) 55%, transparent);
+  outline-offset: 3px;
+}
+
+/* Верхняя часть панели (badge + hint) */
+.glassPanel__top{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+
+  padding: 14px 14px 10px;
+}
+
+/* Бейдж в панели (например "Week progress") */
+.glassPanel__badge{
+  font-weight: 860;
+  letter-spacing: .2px;
+
+  padding: 8px 10px;
+  border-radius: 999px;
+
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface2) 82%, transparent);
+}
+
+/* Подсказка справа в панели */
+.glassPanel__hint{
+  color: var(--muted);
+  font-size: .92em;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* KBD — оформление клавиш (например “Alt”, “K”) */
+kbd{
+  font-family: var(--mono);
+  font-size: .9em;
+
+  padding: 3px 8px;
+  border-radius: 10px;
+
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface2) 88%, transparent);
+  color: var(--text);
+}
+/* =========================
+   GLASS PANEL — внутренняя структура
+   .glassPanel__body   — “контентная” часть панели
+   .glassPanel__bottom — нижняя “подписи/теги” часть панели
+   ========================= */
+
+   .glassPanel__body{
+    padding: 6px 14px 12px; /* чуть меньше сверху, чтобы не было “пустоты” */
+  }
+  
+  /* =========================
+     PROGRESS (полоса прогресса)
+     Использование:
+     - показать “прогресс недели / модуля”
+     - легкая анимация без вращений
+     ========================= */
+  
+  .progress__label{
+    color: var(--muted);
+    font-size: .95em;
+  }
+  
+  /* Контейнер прогресса (фон + рамка) */
+  .progress__bar{
+    height: 10px;
+    border-radius: 999px; /* полный pill */
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 86%, transparent);
+    margin: 10px 0 8px;
+    overflow: hidden;     /* чтобы fill не выходил за скругления */
+  }
+  
+  /* Заполнение прогресса
+     Важно: scaleX — это НЕ “вращение”, это безопасное растяжение по ширине */
+  .progress__fill{
+    display: block;
+    height: 100%;
+    width: 100%; /* базово 100% (можно менять inline-стилем/JS под реальный процент) */
+  
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--a) 55%, transparent),
+      color-mix(in oklab, var(--b) 45%, transparent)
+    );
+  
+    border-radius: 999px;
+    opacity: .9;
+  
+    transform-origin: left;
+    animation: fillPulse 2.8s var(--ease) infinite;
+  }
+  
+  /* Мягкая “пульсация” (не резкая, без скачков) */
+  @keyframes fillPulse{
+    0%, 100%{
+      transform: scaleX(.86);
+      filter: saturate(1.05);
+    }
+    50%{
+      transform: scaleX(.98);
+      filter: saturate(1.15);
+    }
+  }
+  
+  /* Примечание под прогрессом */
+  .progress__note{
+    color: var(--muted);
+    font-size: .94em;
+  }
+  
+  /* Если пользователь просит меньше движений — отключаем анимацию */
+  @media (prefers-reduced-motion: reduce){
+    .progress__fill{ animation: none; transform: none; }
+  }
+  
+  
+  /* =========================
+     MINI GRID (мини-навигация/кнопки внутри панели)
+     .miniGrid  — сетка
+     .miniCard  — кнопка/ссылка (week shortcuts)
+     .miniCard--wide — широкая кнопка на всю строку
+     ========================= */
+  
+  .miniGrid{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* на десктопе: 5 в ряд */
+    gap: 10px;
+    margin-top: 12px;
+  }
+  
+  /* Адаптив miniGrid — чтобы не сжималось в “крошку” на телефоне */
+  @media (max-width: 980px){
+    .miniGrid{ grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 520px){
+    .miniGrid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 360px){
+    .miniGrid{ grid-template-columns: 1fr; }
+  }
+  
+  /* Сама карточка-кнопка */
+  .miniCard{
+    height: 48px;
+    border-radius: 16px;
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 84%, transparent);
+    box-shadow: var(--shadow-1);
+  
+    display: grid;
+    place-items: center;
+  
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 860;
+  
+    user-select: none;
+    transition:
+      transform var(--dur-1) var(--ease),
+      border-color var(--dur-2) var(--ease),
+      background var(--dur-2) var(--ease);
+  }
+  
+  .miniCard:hover{
+    transform: translateY(-1px);
+    border-color: var(--stroke2);
+  }
+  
+  .miniCard:focus-visible{
+    outline: 3px solid color-mix(in oklab, var(--a) 55%, transparent);
+    outline-offset: 2px;
+  }
+  
+  /* Широкая карточка (на всю ширину)
+     Использование: “Сөздік”, “Барлық апта”, “Жалғастыру” и т.п. */
+  .miniCard--wide{
+    grid-column: 1 / -1;
+    height: 52px;
+    font-weight: 880;
+  
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--a) 15%, transparent),
+      color-mix(in oklab, var(--b) 13%, transparent)
+    );
+  }
+  
+  
+  /* =========================
+     GLASS PANEL — нижняя зона (теги/подсказки)
+     ========================= */
+  
+  .glassPanel__bottom{
+    display: flex;
+    flex-wrap: wrap; /* теги красиво переносятся */
+    gap: 8px;
+  
+    padding: 12px 14px 14px;
+    border-top: 1px solid color-mix(in oklab, var(--stroke) 80%, transparent);
+  }
+  
+  /* TAG — маленький “бейдж” для ключевых слов */
+  .tag{
+    padding: 8px 10px;
+    border-radius: 999px;
+  
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 86%, transparent);
+  
+    color: var(--muted);
+    font-size: .92em;
+  }
+  
+  
+  /* =========================
+     NOTE CARD (вставка-пояснение на странице)
+     Использование:
+     - короткое объяснение/подсказка/комментарий методиста
+     ========================= */
+  
+  .noteCard{
+    margin-top: 12px;
+    padding: 14px;
+  
+    border-radius: var(--r-xl);
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 84%, transparent);
+    box-shadow: var(--shadow-1);
+  }
+  
+  .noteCard__title{
+    font-weight: 900;
+    letter-spacing: -.2px;
+    margin-bottom: 6px;
+  }
+  
+  .noteCard__text{
+    color: var(--muted);
+  }
+  
+  
+  /* =========================
+     SECTION (универсальная секция страницы)
+     .section__head — шапка секции (заголовок + подпись)
+     .h2 — заголовок секции
+     .section__sub — подзаголовок/описание
+     ========================= */
+  
+  .section{ padding: 18px 0; }
+  
+  .section__head{
+    margin: 10px 0 14px;
+  
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  
+  /* H2 — заголовок секции */
+  .h2{
+    font-size: clamp(24px, calc(2.2vw * var(--scale)), 34px);
+    margin: 0;
+    letter-spacing: -.3px;
+  }
+  
+  /* Подпись под заголовком (описание секции) */
+  .section__sub{
+    margin: 0;
+    color: var(--muted);
+    max-width: 78ch;
+  }
+  
+  
+  /* =========================
+     INDEX WEEK GRID (карточки недель на главной)
+     weekGrid — сетка карточек
+     weekCard — карточка недели
+     ========================= */
+  
+  .weekGrid{
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+  }
+  
+  /* Адаптив сетки недель */
+  @media (max-width: 1100px){
+    .weekGrid{ grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 720px){
+    .weekGrid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px){
+    .weekGrid{ grid-template-columns: 1fr; }
+  }
+  
+  /* Карточка недели — кликабельный блок */
+  .weekCard{
+    border-radius: var(--r-xl);
+    border: 1px solid var(--stroke);
+  
+    background:
+      radial-gradient(220px 160px at 12% 12%, color-mix(in oklab, var(--a) 12%, transparent), transparent 66%),
+      radial-gradient(200px 160px at 92% 10%, color-mix(in oklab, var(--b) 10%, transparent), transparent 62%),
+      color-mix(in oklab, var(--surface) 82%, transparent);
+  
+    box-shadow: var(--shadow-1);
+    padding: 14px;
+  
+    text-decoration: none;
+    color: var(--text);
+  
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  
+    min-height: 160px;
+  
+    transition:
+      transform var(--dur-1) var(--ease),
+      border-color var(--dur-2) var(--ease),
+      background var(--dur-2) var(--ease);
+  }
+  
+  /* Hover: карточка “поднимается” */
+  .weekCard:hover{
+    border-color: var(--stroke2);
+    transform: translateY(-2px);
+  }
+  
+  /* Focus: доступность */
+  .weekCard:focus-visible{
+    outline: 3px solid color-mix(in oklab, var(--b) 55%, transparent);
+    outline-offset: 3px;
+  }
+  
+  /* Верх карточки: номер + мини-чип справа */
+  .weekCard__top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Номер недели */
+  .weekCard__num{
+    font-family: var(--mono);
+    font-weight: 900;
+    letter-spacing: .6px;
+    color: color-mix(in oklab, var(--text) 85%, var(--muted));
+  }
+  
+  /* Маленький чип (например “2–4 сағ/апта”) */
+  .weekCard__chip{
+    padding: 7px 9px;
+    border-radius: 999px;
+  
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 86%, transparent);
+  
+    color: var(--muted);
+    font-size: .9em;
+  }
+  
+  /* Заголовок недели */
+  .weekCard__title{
+    font-weight: 920;
+    letter-spacing: -.2px;
+    font-size: 1.18em;
+  }
+  
+  /* Описание недели */
+  .weekCard__desc{ color: var(--muted); }
+  
+  /* Нижние метки (если есть) */
+  .weekCard__meta{
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  /* Маленькие метки внизу карточки */
+  .dotMeta{
+    padding: 7px 9px;
+    border-radius: 999px;
+  
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 86%, transparent);
+  
+    color: var(--muted);
+    font-size: .9em;
+  }
+  /* =========================
+   STEPS (карточки “как учиться / что делать дальше”)
+   Использование:
+   - на главной странице index.html (блок шагов)
+   - иногда в неделях (мини-инструкция)
+   ========================= */
+
+/* Сетка шагов:
+   - на десктопе: 4 карточки в ряд
+   - на планшете: 2
+   - на телефоне: 1 */
+.steps{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 980px){
+  .steps{ grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 520px){
+  .steps{ grid-template-columns: 1fr; }
+}
+
+/* Карточка шага:
+   - единый стиль “premium” (скругление + стеклянный фон)
+   - min-height чтобы карточки были одинаковыми по высоте */
+.stepCard{
+  border-radius: var(--r-xl);
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface2) 84%, transparent);
+  box-shadow: var(--shadow-1);
+
+  padding: 14px;
+  min-height: 150px;
+}
+
+/* Иконка шага:
+   - фиксированный размер, чтобы сетка “держалась”
+   - моношрифт — удобно для символов/цифр */
+.stepCard__icon{
+  width: 38px;
+  height: 38px;
+
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--a) 18%, transparent),
+    color-mix(in oklab, var(--b) 14%, transparent)
+  );
+
+  display: grid;
+  place-items: center;
+
+  font-family: var(--mono);
+  font-weight: 900;
+
+  margin-bottom: 10px;
+}
+
+/* Заголовок и текст шага */
+.stepCard__title{
+  font-weight: 900;
+  letter-spacing: -.2px;
+  margin-bottom: 6px;
+}
+.stepCard__text{ color: var(--muted); }
+
+
+/* =========================
+   CALLOUT (важный выделенный блок)
+   Использование:
+   - “совет”, “важно”, “как пользоваться курсом”
+   - CTA блок перед переходом к неделе
+   ========================= */
+
+.callout{
+  margin-top: 14px;
+
+  border-radius: calc(var(--r-xl) + 2px);
+  border: 1px solid var(--stroke);
+
+  /* Премиум фон: 2 мягких радиальных пятна + поверхность */
+  background:
+    radial-gradient(520px 280px at 20% 20%, color-mix(in oklab, var(--a) 12%, transparent), transparent 70%),
+    radial-gradient(520px 280px at 80% 10%, color-mix(in oklab, var(--b) 11%, transparent), transparent 68%),
+    color-mix(in oklab, var(--surface) 82%, transparent);
+
+  box-shadow: var(--shadow-2);
+  padding: 16px;
+}
+
+.callout__title{
+  font-weight: 950;
+  letter-spacing: -.3px;
+  font-size: 1.05em;
+}
+
+.callout__text{
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* Ряд кнопок внутри callout */
+.callout__actions{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+
+/* =========================
+   FOOTER (низ страницы)
+   Использование:
+   - index.html (информация о курсе + ссылки)
+   - может быть общий футер на всех страницах
+   ========================= */
+
+.footer{
+  margin: 18px 0 26px;
+  padding: 18px;
+
+  border-radius: var(--r-xl);
+  border: 1px solid var(--stroke);
+
+  background: color-mix(in oklab, var(--surface2) 82%, transparent);
+  box-shadow: var(--shadow-2);
+}
+
+/* Сетка футера:
+   - на десктопе 3 колонки
+   - на мобиле 1 колонка */
+.footer__grid{
+  display: grid;
+  grid-template-columns: 1.25fr .95fr .7fr;
+  gap: 14px;
+  align-items: start;
+}
+
+@media (max-width: 980px){
+  .footer__grid{ grid-template-columns: 1fr; }
+}
+
+/* Бренд/логотип в футере */
+.footer__brand{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.footer__title{
+  font-weight: 950;
+  letter-spacing: -.2px;
+}
+
+.footer__sub{ color: var(--muted); }
+
+.footer__text{
+  color: var(--muted);
+  margin: 10px 0 0;
+}
+
+/* “Шапка” списков в футере */
+.footer__cap{
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+/* Список пунктов (без маркеров) */
+.footer__list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: var(--muted);
+
+  display: grid;
+  gap: 10px;
+}
+
+/* Строка “kbd + текст” (если показываем горячие клавиши) */
+.kbdRow{
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  margin-right: 8px;
+}
+
+/* Блок ссылок справа */
+.footer__links{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Ссылка-кнопка в футере:
+   - выглядит как маленькая карточка
+   - hover дает глубину */
+.link{
+  color: var(--text);
+  text-decoration: none;
+
+  padding: 10px 12px;
+  border-radius: 14px;
+
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface2) 84%, transparent);
+
+  box-shadow: var(--shadow-1);
+  transition:
+    transform var(--dur-1) var(--ease),
+    border-color var(--dur-2) var(--ease);
+}
+
+.link:hover{
+  transform: translateY(-1px);
+  border-color: var(--stroke2);
+}
+
+.link:focus-visible{
+  outline: 3px solid color-mix(in oklab, var(--a) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* Нижняя линия футера (копирайт/подпись) */
+.footer__bottom{
+  margin-top: 14px;
+  padding-top: 12px;
+
+  border-top: 1px solid color-mix(in oklab, var(--stroke) 80%, transparent);
+
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Общий “приглушенный” текст (универсальный utility) */
+.muted{ color: var(--muted); }
+
+
+/* =========================
+   Scroll reveal — безопасная версия
+   По умолчанию элементы видимы.
+   Прятать начинаем только после того, как JS поставит html.reveal-ready
+   ========================= */
+
+   .reveal{
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: opacity var(--dur-3) var(--ease), transform var(--dur-3) var(--ease), filter var(--dur-3) var(--ease);
+  }
+  
+  /* Только когда JS готов — включаем “скрытую стартовую” фазу */
+  html.reveal-ready .reveal{
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(6px);
+  }
+  
+  html.reveal-ready .reveal.is-in{
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+  
+/* =========================
+   TOGGLE (показать/скрыть перевод, ответы, подсказки)
+   Использование:
+   - кнопка “Аудармасын көрсету/жасыру”
+   - блок с переводом/ответом, который раскрывается
+   Технически:
+   - aria-expanded="true/false" на кнопке
+   - [hidden] на панели
+   ========================= */
+
+   .toggle{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  /* Кнопка переключения */
+  .toggle__btn{
+    appearance: none;
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 86%, transparent);
+    color: var(--text);
+  
+    border-radius: 14px;
+    padding: 10px 12px;
+  
+    cursor: pointer;
+    box-shadow: var(--shadow-1);
+  
+    transition:
+      transform var(--dur-1) var(--ease),
+      border-color var(--dur-2) var(--ease),
+      background var(--dur-2) var(--ease);
+  }
+  
+  .toggle__btn:hover{
+    transform: translateY(-1px);
+    border-color: var(--stroke2);
+  }
+  
+  /* Активное состояние кнопки (панель раскрыта) */
+  .toggle__btn[aria-expanded="true"]{
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--a) 16%, transparent),
+      color-mix(in oklab, var(--b) 14%, transparent)
+    );
+    border-color: color-mix(in oklab, var(--a) 30%, var(--stroke2));
+  }
+  
+  /* Панель с переводом/ответом */
+  .toggle__panel{
+    margin-top: 10px;
+    padding: 12px;
+  
+    border-radius: var(--r-lg);
+    border: 1px dashed color-mix(in oklab, var(--stroke2) 80%, transparent);
+  
+    background: color-mix(in oklab, var(--surface2) 82%, transparent);
+    color: var(--muted);
+  }
+  
+  /* Скрытие панели через атрибут hidden */
+  .toggle__panel[hidden]{
+    display: none !important;
+  }
+  
+  
+  /* =========================
+     AUDIO BUTTONS (проигрывание mp3: 1–10.mp3)
+     Использование:
+     - ряд кнопок “▶ 1”, “▶ 2” ... или с подписью
+     Технически:
+     - aria-pressed="true/false" для подсветки активной кнопки
+     ========================= */
+  
+  .audioRow{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  /* Кнопка аудио */
+  .audioBtn{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  
+    padding: 10px 12px;
+    border-radius: 14px;
+  
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 86%, transparent);
+    color: var(--text);
+  
+    cursor: pointer;
+    box-shadow: var(--shadow-1);
+    user-select: none;
+  
+    transition:
+      transform var(--dur-1) var(--ease),
+      border-color var(--dur-2) var(--ease),
+      background var(--dur-2) var(--ease);
+  }
+  
+  .audioBtn:hover{
+    transform: translateY(-1px);
+    border-color: var(--stroke2);
+  }
+  .audioBtn:active{ transform: translateY(0); }
+  
+  /* Активное состояние (сейчас играет) */
+  .audioBtn[aria-pressed="true"]{
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--b) 18%, transparent),
+      color-mix(in oklab, var(--a) 14%, transparent)
+    );
+    border-color: color-mix(in oklab, var(--b) 30%, var(--stroke2));
+  }
+  
+  /* Иконка внутри кнопки */
+  .audioBtn__icon{
+    width: 28px;
+    height: 28px;
+  
+    border-radius: 12px;
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 92%, transparent);
+  
+    display: grid;
+    place-items: center;
+  
+    font-family: var(--mono);
+    font-weight: 900;
+  }
+  
+  /* Текст кнопки */
+  .audioBtn__label{ font-weight: 780; }
+  
+  
+  /* =========================
+     HARD RULE: NO TILT / NO 3D
+     Даже если в HTML случайно остались data-tilt или класс .tilt
+     ========================= */
+  .tilt{ transform: none !important; }
+  [data-tilt], [data-tilt] *{ transform: none !important; }
+  
+  
+  /* =========================
+     WEEK 1 VISUAL UPGRADE (только для week1!)
+     Важно:
+     - Никаких глобальных body::before повторно
+     - Всё привязано к body[data-page="week1"]
+     ========================= */
+  
+  /* Локальные “glow” переменные — только на week1 */
+  body[data-page="week1"]{
+    --glow-a: rgba(77,163,255,.14);
+    --glow-b: rgba(39,174,96,.11);
+    --glow-c: rgba(155,123,255,.10);
+  }
+  
+  /* Фоновая подсветка — только на week1 (без укачивания) */
+  body[data-page="week1"]::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+  
+    background:
+      radial-gradient(820px 520px at 12% 22%, var(--glow-a), transparent 62%),
+      radial-gradient(760px 520px at 86% 14%, var(--glow-b), transparent 64%),
+      radial-gradient(740px 560px at 68% 84%, var(--glow-c), transparent 66%);
+  
+    filter: blur(2px);
+    opacity: .95;
+  }
+  
+  /* Заголовок week1 — можно чуть “дороже”, но не перебор */
+  body[data-page="week1"] .h1{
+    text-shadow: 0 18px 60px rgba(10,15,26,.16);
+  }
+  body[data-page="week1"] .h1__accent{
+    filter: drop-shadow(0 12px 26px rgba(77,163,255,.14));
+  }
+  
+  
+  /* =========================
+     SUBNAV (мини-навигация внутри недели)
+     Пример: “Жоспар / 1.1 / 1.2 / 1.3”
+     ========================= */
+  
+  .subnav{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  
+    padding: 10px;
+    border-radius: 999px;
+  
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface) 82%, transparent);
+    box-shadow: var(--shadow-1);
+  
+    width: fit-content;
+  }
+  
+  /* Ссылки и кнопки внутри subnav */
+  .subnav a,
+  .subnav button{
+    appearance: none;
+  
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+  
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 999px;
+  
+    cursor: pointer;
+    user-select: none;
+  
+    transition:
+      transform var(--dur-1) var(--ease),
+      background var(--dur-2) var(--ease),
+      border-color var(--dur-2) var(--ease),
+      color var(--dur-2) var(--ease);
+  }
+  
+  .subnav a:hover,
+  .subnav button:hover{
+    color: var(--text);
+    background: color-mix(in oklab, var(--surface2) 88%, transparent);
+    border-color: var(--stroke2);
+    transform: translateY(-1px);
+  }
+  
+  /* Активная “вкладка” subnav */
+  .subnav a.is-active,
+  .subnav button.is-active{
+    color: var(--text);
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--a) 18%, transparent),
+      color-mix(in oklab, var(--b) 16%, transparent)
+    );
+    border-color: color-mix(in oklab, var(--a) 30%, var(--stroke2));
+  }
+  
+  
+  /* =========================
+     WEEK SECTION (универсальная карточка секции недели)
+     .weekSection — карточка секции (1.1 / 1.2 / 1.3)
+     .weekSection__head — шапка секции
+     .badge — маленький бейдж в шапке
+     .weekSection__body — контент секции
+     ========================= */
+  
+  .weekSection{
+    margin: 14px 0;
+  
+    border-radius: calc(var(--r-xl) + 6px);
+    border: 1px solid var(--stroke);
+  
+    background:
+      radial-gradient(520px 220px at 14% 12%, color-mix(in oklab, var(--a) 10%, transparent), transparent 70%),
+      radial-gradient(520px 240px at 86% 10%, color-mix(in oklab, var(--b) 9%, transparent), transparent 72%),
+      color-mix(in oklab, var(--surface2) 84%, transparent);
+  
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Лёгкая “сеточка” сверху */
+  .weekSection::before{
+    content:"";
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+  
+    opacity: .16;
+    background:
+      radial-gradient(circle at 14px 14px, rgba(255,255,255,.30) 0 1px, transparent 1px 100%),
+      radial-gradient(circle at 0 0, rgba(255,255,255,.12) 0 1px, transparent 1px 100%);
+  
+    background-size: 26px 26px, 52px 52px;
+    mix-blend-mode: overlay;
+  }
+  
+  /* Шапка секции */
+  .weekSection__head{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid color-mix(in oklab, var(--stroke) 80%, transparent);
+  
+    background: color-mix(in oklab, var(--surface) 70%, transparent);
+  }
+  
+  .weekSection__title{
+    margin: 0;
+    font-weight: 930;
+    letter-spacing: -.25px;
+  }
+  
+  /* Правые бейджи/метки в шапке */
+  .weekSection__meta{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  
+  /* Бейдж (универсальный) */
+  .badge{
+    padding: 7px 10px;
+    border-radius: 999px;
+  
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 88%, transparent);
+  
+    color: var(--muted);
+    font-size: .92em;
+  }
+  
+  /* Тело секции */
+  .weekSection__body{
+    padding: 14px 16px 16px;
+  }
+  /* =========================
+   WEEK CONTENT “BLOCKS” (универсальные мини-блоки внутри секций)
+   .block — мини-карточка для “лексика / правило / пример”
+   .block--accent — акцентная версия блока
+   ========================= */
+
+.block{
+  border-radius: var(--r-lg);
+  border: 1px solid color-mix(in oklab, var(--stroke) 85%, transparent);
+  background: color-mix(in oklab, var(--surface2) 88%, transparent);
+  box-shadow: var(--shadow-1);
+
+  padding: 12px;
+  margin: 10px 0;
+}
+
+.block__title{
+  margin: 0 0 8px;
+  font-weight: 900;
+  letter-spacing: -.2px;
+}
+
+/* Акцент: мягкий градиент (без “кислоты”) */
+.block--accent{
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--a) 10%, transparent),
+    color-mix(in oklab, var(--b) 8%, transparent)
+  );
+  border-color: color-mix(in oklab, var(--a) 22%, var(--stroke2));
+}
+
+/* =========================
+   WEEK SECTION LIST TWEAKS (только внутри .weekSection)
+   Аккуратные отступы и маркеры у списков
+   ========================= */
+
+.weekSection .prose :where(ul){
+  padding-left: 18px;
+}
+.weekSection .prose :where(li){
+  padding-left: 6px;
+}
+.weekSection .prose :where(li)::marker{
+  color: color-mix(in oklab, var(--a) 70%, var(--muted));
+}
+
+
+/* =========================
+   WEEK 1 — SPECIFIC LAYOUT (для твоего HTML week1)
+   Важно:
+   - всё привязано к body[data-page="week1"], чтобы не влиять на другие недели
+   - без повторов :target / tilt / глобальных body::before
+   ========================= */
+
+/* ---------- Верх недели (weekTop) ---------- */
+
+body[data-page="week1"] .weekTop{
+  padding: 18px 0 8px;
+}
+
+/* Контейнер верха недели:
+   - слева: заголовок/описание
+   - справа: кнопки-якоря (пилюли) */
+body[data-page="week1"] .weekTop__box{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  padding: 14px;
+  border-radius: calc(var(--r-xl) + 6px);
+  border: 1px solid var(--stroke);
+
+  background:
+    radial-gradient(520px 240px at 14% 12%, color-mix(in oklab, var(--a) 12%, transparent), transparent 70%),
+    radial-gradient(520px 240px at 86% 10%, color-mix(in oklab, var(--b) 10%, transparent), transparent 72%),
+    color-mix(in oklab, var(--surface2) 84%, transparent);
+
+  box-shadow: var(--shadow-2);
+}
+
+body[data-page="week1"] .weekTop__left{
+  min-width: 220px; /* на десктопе удобно */
+}
+
+/* Группа кнопок справа */
+body[data-page="week1"] .weekTop__right{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  padding: 10px;
+  border-radius: 999px;
+  border: 1px solid var(--stroke);
+
+  background: color-mix(in oklab, var(--surface) 82%, transparent);
+  box-shadow: var(--shadow-1);
+}
+
+/* Кнопки в right делаем “pill” */
+body[data-page="week1"] .weekTop__right .btn{
+  border-radius: 999px;
+  padding: 10px 14px;
+  min-height: 44px;
+}
+
+/* Адаптив верха недели */
+@media (max-width: 980px){
+  body[data-page="week1"] .weekTop__box{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  body[data-page="week1"] .weekTop__left{ min-width: auto; }
+  body[data-page="week1"] .weekTop__right{ width: fit-content; }
+}
+
+
+/* ---------- Жоспар (planList) ---------- */
+
+body[data-page="week1"] .planList{
+  margin: 10px 0 0;
+  padding: 16px 18px 16px 34px;
+
+  border-radius: calc(var(--r-xl) + 4px);
+  border: 1px solid var(--stroke);
+
+  background: color-mix(in oklab, var(--surface2) 86%, transparent);
+  box-shadow: var(--shadow-1);
+}
+
+body[data-page="week1"] .planList li{
+  margin: 8px 0;
+  padding-left: 6px;
+}
+
+body[data-page="week1"] .planList li::marker{
+  color: color-mix(in oklab, var(--a) 70%, var(--muted));
+  font-weight: 800;
+}
+
+
+/* ---------- 1.1 Сетка контента (contentGrid + cardX) ---------- */
+
+body[data-page="week1"] .contentGrid{
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 12px;
+}
+
+@media (max-width: 980px){
+  body[data-page="week1"] .contentGrid{ grid-template-columns: 1fr; }
+}
+
+/* cardX — универсальная карточка внутри сетки 1.1 */
+body[data-page="week1"] .cardX{
+  border-radius: calc(var(--r-xl) + 6px);
+  border: 1px solid var(--stroke);
+
+  background:
+    radial-gradient(520px 220px at 14% 12%, color-mix(in oklab, var(--a) 8%, transparent), transparent 70%),
+    color-mix(in oklab, var(--surface2) 86%, transparent);
+
+  box-shadow: var(--shadow-2);
+  padding: 14px;
+
+  overflow: hidden;
+  position: relative;
+}
+
+/* декоративная “сеточка” */
+body[data-page="week1"] .cardX::before{
+  content:"";
+  position: absolute;
+  inset: -2px;
+  pointer-events: none;
+
+  opacity: .14;
+  background:
+    radial-gradient(circle at 12px 12px, rgba(255,255,255,.30) 0 1px, transparent 1px 100%),
+    radial-gradient(circle at 0 0, rgba(255,255,255,.12) 0 1px, transparent 1px 100%);
+
+  background-size: 26px 26px, 52px 52px;
+  mix-blend-mode: overlay;
+}
+
+body[data-page="week1"] .cardX__title{
+  margin: 0 0 10px;
+  font-weight: 950;
+  letter-spacing: -.25px;
+}
+
+/* Акцентная карточка */
+body[data-page="week1"] .cardX--accent{
+  background:
+    radial-gradient(520px 220px at 18% 18%, color-mix(in oklab, var(--b) 10%, transparent), transparent 70%),
+    radial-gradient(520px 220px at 86% 10%, color-mix(in oklab, var(--c) 9%, transparent), transparent 72%),
+    color-mix(in oklab, var(--surface2) 86%, transparent);
+
+  border-color: color-mix(in oklab, var(--b) 22%, var(--stroke2));
+}
+
+/* Списки внутри 1.1 (класс .list) */
+body[data-page="week1"] .list{
+  margin: 0;
+  padding-left: 18px;
+  color: color-mix(in oklab, var(--text) 92%, var(--muted));
+}
+body[data-page="week1"] .list li{ margin: 8px 0; }
+body[data-page="week1"] .list li::marker{
+  color: color-mix(in oklab, var(--a) 70%, var(--muted));
+}
+
+
+/* ---------- 1.2 Инструменты + фразы (toolsRow, phraseGrid, phraseCard) ---------- */
+
+body[data-page="week1"] .toolsRow{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+/* Сетка фраз */
+body[data-page="week1"] .phraseGrid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 980px){
+  body[data-page="week1"] .phraseGrid{ grid-template-columns: 1fr; }
+}
+
+/* Карточка фразы */
+body[data-page="week1"] .phraseCard{
+  border-radius: calc(var(--r-xl) + 6px);
+  border: 1px solid var(--stroke);
+
+  background:
+    radial-gradient(520px 220px at 14% 12%, color-mix(in oklab, var(--a) 8%, transparent), transparent 70%),
+    color-mix(in oklab, var(--surface2) 86%, transparent);
+
+  box-shadow: var(--shadow-2);
+  padding: 12px;
+}
+
+/* Верх строки фразы: текст + кнопка */
+body[data-page="week1"] .phraseCard__row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+body[data-page="week1"] .phraseCard__kk{
+  font-weight: 900;
+  letter-spacing: -.15px;
+}
+
+/* Перевод (ru), который можно скрывать */
+body[data-page="week1"] .phraseCard__ru{
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in oklab, var(--stroke) 80%, transparent);
+  color: var(--muted);
+}
+
+/* Универсальная утилита скрытия (используем в JS) */
+.is-hidden{ display: none !important; }
+
+/* Кнопка-иконка (play / show / hide) */
+body[data-page="week1"] .iconBtn{
+  width: 42px;
+  height: 42px;
+
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface) 86%, transparent);
+  color: var(--text);
+
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+
+  transition:
+    transform var(--dur-1) var(--ease),
+    border-color var(--dur-2) var(--ease),
+    background var(--dur-2) var(--ease);
+}
+
+body[data-page="week1"] .iconBtn:hover{
+  transform: translateY(-1px);
+  border-color: var(--stroke2);
+}
+body[data-page="week1"] .iconBtn:active{ transform: translateY(0); }
+
+/* Состояние “играет” (подсветка) */
+body[data-page="week1"] .iconBtn.is-playing{
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--b) 18%, transparent),
+    color-mix(in oklab, var(--a) 14%, transparent)
+  );
+  border-color: color-mix(in oklab, var(--b) 26%, var(--stroke2));
+}
+
+
+/* ---------- 1.3 Тест (testWrap / testGrid / testItem) ---------- */
+
+body[data-page="week1"] .testWrap{
+  border-radius: calc(var(--r-xl) + 6px);
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface2) 86%, transparent);
+  box-shadow: var(--shadow-2);
+  padding: 14px;
+}
+
+/* Панель кнопок над тестом (например reset) */
+body[data-page="week1"] .testToolbar{
+  margin-bottom: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Сетка вопросов/вариантов */
+body[data-page="week1"] .testGrid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 980px){
+  body[data-page="week1"] .testGrid{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px){
+  body[data-page="week1"] .testGrid{ grid-template-columns: 1fr; }
+}
+
+/* Элемент теста (кликабельный) */
+body[data-page="week1"] .testItem{
+  border-radius: 18px;
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface2) 86%, transparent);
+  box-shadow: var(--shadow-1);
+
+  padding: 12px;
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    transform var(--dur-1) var(--ease),
+    border-color var(--dur-2) var(--ease),
+    background var(--dur-2) var(--ease);
+}
+
+body[data-page="week1"] .testItem:hover{
+  transform: translateY(-1px);
+  border-color: var(--stroke2);
+}
+
+/* Состояние “выбрано” */
+body[data-page="week1"] .testItem[aria-pressed="true"]{
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--a) 16%, transparent),
+    color-mix(in oklab, var(--b) 14%, transparent)
+  );
+  border-color: color-mix(in oklab, var(--a) 28%, var(--stroke2));
+}
+/* =========================
+   WEEK 1 — BOTTOM NAV (төменгі навигация)
+   navBottom: “Алдыңғы апта / Келесі апта” сияқты сілтемелер қатары
+   ========================= */
+
+   body[data-page="week1"] .navBottom{
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  
+  /* =========================
+     WEEK 1 — INTRO RULES (1.1 ішіндегі “7 ереже” сияқты блок)
+     Мақсат:
+     - сіздің премиум токен жүйесіне сай болу
+     - тек week1-ге әсер ету
+     - global .chip-ті сындырмау (SCOPED: .introRules .chip)
+     ========================= */
+  
+  body[data-page="week1"] .introRules{
+    margin-top: 14px;
+    padding: 16px;
+  
+    border-radius: calc(var(--r-lg) + 2px);
+    border: 1px solid var(--stroke);
+  
+    background:
+      radial-gradient(520px 220px at 14% 12%, color-mix(in oklab, var(--a) 10%, transparent), transparent 72%),
+      radial-gradient(520px 220px at 86% 10%, color-mix(in oklab, var(--b) 9%, transparent), transparent 74%),
+      color-mix(in oklab, var(--surface2) 86%, transparent);
+  
+    box-shadow: var(--shadow-2);
+  }
+  
+  /* introRules ішіндегі секцияның қосымша мәтіні (мысалы “түсіндірме”) */
+  body[data-page="week1"] .section__sub.muted{
+    margin-top: 6px;
+    font-size: 14px;
+    opacity: .85; /* light-only: тым “күңгірт” етпейміз */
+  }
+  
+  /* introRules үсті: тақырып + оң жақтағы чиптер */
+  body[data-page="week1"] .introRules__top{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  
+  body[data-page="week1"] .introRules__chips{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  
+  /* ВАЖНО:
+     Мұндағы chip тек introRules ішінде ғана “кішкентай” болады.
+     Global .chip (шапкада) өзгермейді. */
+  body[data-page="week1"] .introRules .chip{
+    font-size: 12px;
+    padding: 7px 10px;
+    border-radius: 999px;
+  
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 88%, transparent);
+  
+    color: var(--muted);
+    box-shadow: none;
+    letter-spacing: .2px;
+  }
+  
+  /* Қауіпті/ескерту чипі */
+  body[data-page="week1"] .introRules .chip--danger{
+    border-color: color-mix(in oklab, rgba(255,82,82,1) 28%, var(--stroke2));
+    background: color-mix(in oklab, rgba(255,82,82,1) 12%, transparent);
+    color: var(--text);
+  }
+  
+  /* =========================
+     RULE LIST as CARDS (ережелер тізімі карточка түрінде)
+     ruleList--cards: вертикаль сетка
+     ruleCard: бір ереже карточкасы
+     ========================= */
+  
+  body[data-page="week1"] .ruleList--cards{
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  /* Бір ереженің карточкасы */
+  body[data-page="week1"] .ruleCard{
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 12px;
+    align-items: flex-start;
+  
+    padding: 14px 14px 14px 12px;
+    border-radius: 18px;
+  
+    border: 1px solid color-mix(in oklab, var(--stroke) 90%, transparent);
+    background:
+      radial-gradient(520px 220px at 10% 10%, color-mix(in oklab, var(--a) 9%, transparent), transparent 70%),
+      color-mix(in oklab, var(--surface) 90%, transparent);
+  
+    box-shadow: var(--shadow-1);
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Лёгкая “сеточка” */
+  body[data-page="week1"] .ruleCard::after{
+    content:"";
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    opacity: .16;
+  
+    background:
+      radial-gradient(circle at 14px 14px, rgba(255,255,255,.26) 0 1px, transparent 1px 100%),
+      radial-gradient(circle at 0 0, rgba(255,255,255,.10) 0 1px, transparent 1px 100%);
+  
+    background-size: 26px 26px, 52px 52px;
+    mix-blend-mode: overlay;
+  }
+  
+  /* Нөмір (сол жақтағы квадрат) */
+  body[data-page="week1"] .ruleCard__num{
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+  
+    display: grid;
+    place-items: center;
+  
+    font-weight: 900;
+    font-family: var(--mono);
+  
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 90%, transparent);
+    color: color-mix(in oklab, var(--text) 92%, var(--muted));
+  }
+  
+  /* Ереже атауы */
+  body[data-page="week1"] .ruleTitle{
+    margin: 0 0 6px;
+    font-weight: 900;
+    letter-spacing: -.2px;
+    color: var(--text);
+  }
+  
+  /* Ереже мәтіні */
+  body[data-page="week1"] .ruleText{
+    margin: 0 0 8px;
+    line-height: 1.5;
+    color: color-mix(in oklab, var(--text) 92%, var(--muted));
+  }
+  
+  /* Кішкентай hint/түсіндірме */
+  body[data-page="week1"] .ruleHint{
+    margin-left: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    opacity: .9;
+  }
+  
+  /* жұмсақ мәтін */
+  body[data-page="week1"] .soft{ opacity: .85; }
+  
+  /* Мысалдар қатарымен (pill-like) */
+  body[data-page="week1"] .examples{
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  /* Бір мысал */
+  body[data-page="week1"] .ex{
+    padding: 7px 10px;
+    border-radius: 999px;
+  
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 92%, transparent);
+  
+    font-size: 13px;
+    color: color-mix(in oklab, var(--text) 92%, var(--muted));
+  }
+  
+  /* Қазақша белгі (мысалы “KZ”) */
+  body[data-page="week1"] .kzMark{
+    padding: 0 6px;
+    border-radius: 8px;
+  
+    background: color-mix(in oklab, var(--a) 10%, transparent);
+    border: 1px solid color-mix(in oklab, var(--a) 24%, var(--stroke2));
+  }
+  
+  /* Ескертпе жолы */
+  body[data-page="week1"] .ruleNote{
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  
+  /* Фокус-ереже (ерекше маңызды) */
+  body[data-page="week1"] .ruleCard--focus{
+    border-color: color-mix(in oklab, rgba(255,82,82,1) 24%, var(--stroke2));
+    background:
+      radial-gradient(520px 220px at 10% 10%, color-mix(in oklab, rgba(255,82,82,1) 14%, transparent), transparent 72%),
+      radial-gradient(520px 220px at 90% 0%, color-mix(in oklab, var(--b) 9%, transparent), transparent 74%),
+      color-mix(in oklab, var(--surface) 92%, transparent);
+  
+    box-shadow: var(--shadow-2);
+  }
+  
+  /* Маңызды етістіктер/сөздер қатары */
+  body[data-page="week1"] .focusLine{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  
+    margin: 10px 0 8px;
+    padding: 12px;
+  
+    border-radius: 14px;
+    border: 1px dashed color-mix(in oklab, rgba(255,82,82,1) 22%, var(--stroke));
+  
+    background: color-mix(in oklab, var(--surface2) 92%, transparent);
+  }
+  /* =========================
+   WEEK 1 — ФОКУС-СЛОВА (внутри блока ruleCard--focus)
+   .focusWord — “пилюля” со словом/формой
+   .focusVerb — подсветка именно глагольной формы (красный акцент)
+   ========================= */
+
+body[data-page="week1"] .focusWord{
+  padding: 8px 12px;
+  border-radius: 999px;
+
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface2) 92%, transparent);
+
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Акцент для “опасного/важного” слова (например, глагол) */
+body[data-page="week1"] .focusVerb{
+  border-color: color-mix(in oklab, rgba(255,82,82,1) 26%, var(--stroke2));
+  background: color-mix(in oklab, rgba(255,82,82,1) 12%, transparent);
+  color: color-mix(in oklab, rgba(255,82,82,1) 70%, var(--text));
+}
+
+
+/* =========================
+   WEEK 1 — HINT (строка подсказки)
+   .hintLine  — ряд “бейдж + текст”
+   .hintBadge — маленький ярлык
+   .hintText  — поясняющий текст
+   .danger    — красный текст для предупреждений
+   ========================= */
+
+body[data-page="week1"] .hintLine{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+/* Бейдж подсказки */
+body[data-page="week1"] .hintBadge{
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  border: 1px solid color-mix(in oklab, var(--a) 26%, var(--stroke2));
+  background: color-mix(in oklab, var(--a) 10%, transparent);
+  color: color-mix(in oklab, var(--a) 70%, var(--text));
+
+  opacity: .95;
+}
+
+/* Текст подсказки */
+body[data-page="week1"] .hintText{
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Красный акцент (только текст) */
+body[data-page="week1"] .danger{
+  color: color-mix(in oklab, rgba(255,82,82,1) 75%, var(--text));
+}
+
+
+/* =========================
+   WEEK 1 — PRACTICE (мини-практика внутри introRules)
+   .introPractice  — контейнер практики (отделяем линией)
+   .practiceGrid   — сетка карточек практики
+   .practiceCard   — карточка практики
+   .token          — “пилюли” с примерами/словами
+   .practiceInput  — поле ввода (если есть)
+   ========================= */
+
+body[data-page="week1"] .introPractice{
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in oklab, var(--stroke) 80%, transparent);
+}
+
+/* 12-колоночная сетка: удобно делать 3 карточки по 4 колонки */
+body[data-page="week1"] .practiceGrid{
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Карточка практики (по умолчанию 3 в ряд) */
+body[data-page="week1"] .practiceCard{
+  grid-column: span 4;
+
+  padding: 14px;
+  border-radius: 16px;
+
+  border: 1px solid color-mix(in oklab, var(--stroke) 90%, transparent);
+  background: color-mix(in oklab, var(--surface) 92%, transparent);
+
+  box-shadow: var(--shadow-1);
+}
+
+/* Заголовок карточки практики */
+body[data-page="week1"] .practiceTitle{
+  margin: 0 0 8px;
+  font-weight: 900;
+  letter-spacing: -.2px;
+}
+
+/* Ряд токенов */
+body[data-page="week1"] .practiceRow{
+  margin: 0 0 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Токен (слово/форма/пример) */
+body[data-page="week1"] .token{
+  padding: 7px 10px;
+  border-radius: 999px;
+
+  border: 1px solid var(--stroke);
+  background: color-mix(in oklab, var(--surface2) 92%, transparent);
+
+  font-size: 13px;
+  color: color-mix(in oklab, var(--text) 92%, var(--muted));
+}
+
+/* Токен-глагол (красный акцент) */
+body[data-page="week1"] .token--verb{
+  border-color: color-mix(in oklab, rgba(255,82,82,1) 24%, var(--stroke2));
+  background: color-mix(in oklab, rgba(255,82,82,1) 10%, transparent);
+}
+
+/* Блок с ответом/подсказкой внутри практики */
+body[data-page="week1"] .practiceAnswer{
+  margin-top: 10px;
+  padding: 10px 12px;
+
+  border-radius: 14px;
+  border: 1px solid color-mix(in oklab, var(--stroke) 90%, transparent);
+
+  background: color-mix(in oklab, var(--surface2) 92%, transparent);
+  color: var(--muted);
+}
+
+/* Поле ввода (если есть задания “жазып көріңіз”) */
+body[data-page="week1"] .practiceInput{
+  width: 100%;
+  padding: 12px 12px;
+
+  border-radius: 14px;
+  border: 1px solid color-mix(in oklab, var(--stroke2) 85%, transparent);
+
+  background: color-mix(in oklab, var(--surface2) 92%, transparent);
+  color: var(--text);
+
+  outline: none;
+}
+
+body[data-page="week1"] .practiceInput:focus-visible{
+  outline: 3px solid color-mix(in oklab, var(--a) 55%, transparent);
+  outline-offset: 2px;
+}
+
+body[data-page="week1"] .practiceInput::placeholder{
+  color: color-mix(in oklab, var(--muted) 92%, transparent);
+}
+
+/* Мелкие утилиты по размеру текста */
+body[data-page="week1"] .small{ font-size: 13px; }
+body[data-page="week1"] .tiny{ font-size: 12px; opacity: .82; }
+
+/* Адаптив:
+   - на мобиле карточки практики становятся в один столбец
+   - верх introRules перестраивается вертикально */
+@media (max-width: 980px){
+  body[data-page="week1"] .practiceCard{ grid-column: span 12; }
+
+  body[data-page="week1"] .introRules__top{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  body[data-page="week1"] .introRules__chips{
+    justify-content: flex-start;
+  }
+}
+/* =====================================================
+   WEEK 1 — АНТИ-СЕРЫЙ ФИНИШ (ТОЛЬКО ДЛЯ week1.html)
+   Цель:
+   • убрать «серый туман»
+   • сохранить единую light-тему
+   • не трогать глобальные токены и body
+   ===================================================== */
+
+
+/* -----------------------------------------------------
+   Intro-секция (верх недели)
+   Лёгкий “премиальный” фон, без утяжеления
+   ----------------------------------------------------- */
+
+   body[data-page="week1"] #intro{
+    border-radius: calc(var(--r-xl) + 10px);
+    padding: 14px;
+  
+    background:
+      radial-gradient(1200px 540px at 10% -10%, color-mix(in oklab, var(--a) 16%, transparent), transparent 60%),
+      radial-gradient(900px 520px at 90% 0%, color-mix(in oklab, var(--b) 14%, transparent), transparent 62%),
+      radial-gradient(860px 560px at 55% 105%, color-mix(in oklab, var(--c) 12%, transparent), transparent 64%),
+      color-mix(in oklab, var(--surface2) 40%, transparent);
+  
+    border: 1px solid var(--stroke);
+    box-shadow: var(--shadow-2);
+  }
+  
+  
+  /* -----------------------------------------------------
+     Контейнер правил (introRules)
+     Основа всех карточек правил недели
+     ----------------------------------------------------- */
+  
+  body[data-page="week1"] .introRules{
+    margin-top: 14px;
+    padding: 14px;
+  
+    border-radius: calc(var(--r-xl) + 6px);
+    border: 1px solid var(--stroke);
+  
+    background:
+      radial-gradient(520px 220px at 14% 12%, color-mix(in oklab, var(--a) 10%, transparent), transparent 72%),
+      radial-gradient(520px 220px at 86% 10%, color-mix(in oklab, var(--b) 9%, transparent), transparent 74%),
+      color-mix(in oklab, var(--surface2) 86%, transparent);
+  
+    box-shadow: var(--shadow-2);
+  }
+  
+  
+  /* -----------------------------------------------------
+     ЧИПЫ ВНУТРИ introRules
+     ВАЖНО: не конфликтуют с глобальными .chip
+     ----------------------------------------------------- */
+  
+  body[data-page="week1"] .introRules .chip{
+    font-size: 12px;
+    padding: 7px 10px;
+    border-radius: 999px;
+  
+    border: 1px solid var(--stroke);
+    background: color-mix(in oklab, var(--surface2) 88%, transparent);
+  
+    color: var(--muted);
+    box-shadow: none;
+  }
+  
+  /* Опасный / акцентный чип (например «ЕСКЕРТУ») */
+  body[data-page="week1"] .introRules .chip--danger{
+    border-color: color-mix(in oklab, rgba(255,82,82,1) 30%, var(--stroke2));
+    background: color-mix(in oklab, rgba(255,82,82,1) 14%, transparent);
+    color: var(--text);
+  }
+  
+  
+  /* -----------------------------------------------------
+     КАРТОЧКИ ПРАВИЛ (ruleCard)
+     Чистый светлый стиль, без серости
+     ----------------------------------------------------- */
+  
+  body[data-page="week1"] .ruleList--cards{
+    gap: 12px;
+  }
+  
+  body[data-page="week1"] .ruleCard{
+    border-radius: 18px;
+    border: 1px solid var(--stroke);
+  
+    background:
+      radial-gradient(520px 220px at 10% 10%, color-mix(in oklab, var(--a) 10%, transparent), transparent 70%),
+      color-mix(in oklab, var(--surface) 90%, transparent);
+  
+    box-shadow: var(--shadow-1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* декоративная сетка */
+  body[data-page="week1"] .ruleCard::after{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    pointer-events:none;
+    opacity:.18;
+  
+    background:
+      radial-gradient(circle at 14px 14px, rgba(255,255,255,.30) 0 1px, transparent 1px 100%),
+      radial-gradient(circle at 0 0, rgba(255,255,255,.12) 0 1px, transparent 1px 100%);
+  
+    background-size: 26px 26px, 52px 52px;
+    mix-blend-mode: overlay;
+  }
+  
+  /* Номер правила */
+  body[data-page="week1"] .ruleCard__num{
+    background: color-mix(in oklab, var(--surface2) 90%, transparent);
+    border: 1px solid var(--stroke);
+    color: var(--text);
+  }
+  
+  
+  /* -----------------------------------------------------
+     ТЕКСТЫ В ПРАВИЛАХ
+     ----------------------------------------------------- */
+  
+  body[data-page="week1"] .ruleTitle{
+    color: var(--text);
+  }
+  
+  body[data-page="week1"] .ruleText{
+    color: color-mix(in oklab, var(--text) 92%, var(--muted));
+  }
+  
+  
+  /* -----------------------------------------------------
+     ПРИМЕРЫ (examples / ex)
+     Не серые, а аккуратные “пилюли”
+     ----------------------------------------------------- */
+  
+  body[data-page="week1"] .examples{
+    gap: 10px;
+  }
+  
+  body[data-page="week1"] .ex{
+    background: color-mix(in oklab, var(--surface2) 92%, transparent);
+    border: 1px solid var(--stroke);
+    color: var(--text);
+  }
+  
+  /* Маркер «KZ» */
+  body[data-page="week1"] .kzMark{
+    background: color-mix(in oklab, var(--a) 12%, transparent);
+    border-color: color-mix(in oklab, var(--a) 26%, var(--stroke2));
+    color: color-mix(in oklab, var(--a) 70%, var(--text));
+  }
+  
+  /* NAV BOTTOM (Төменгі навигация) */
+.navBottom {
+  display: flex;
+  justify-content: space-between; /* Ең маңызды жол: екі шетке итереді */
+  align-items: center;
+  width: 100%;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--stroke); /* Жіңішке сызық (опционалды) */
+}
+
+/* Мобильді нұсқада түймелер тым қысылып қалмауы үшін */
+@media (max-width: 480px) {
+  .navBottom {
+    flex-direction: column; /* Телефонда асты-үсті болып тұрады */
+    gap: 10px;
+  }
+  .navBottom .btn {
+    width: 100%; /* Телефонда толық енімен тұрады */
+  }
+}
+  /* -----------------------------------------------------
+     ФОКУС-ПРАВИЛО (самое важное)
+     ----------------------------------------------------- */
+  
+  body[data-page="week1"] .ruleCard--focus{
+    border-color: color-mix(in oklab, rgba(255,82,82,1) 28%, var(--stroke2));
+  
+    background:
+      radial-gradient(520px 220px at 10% 10%, color-mix(in oklab, rgba(255,82,82,1) 16%, transparent), transparent 72%),
+      radial-gradient(520px 220px at 90% 0%, color-mix(in oklab, var(--b) 10%, transparent), transparent 74%),
+      color-mix(in oklab, var(--surface) 92%, transparent);
+  
+    box-shadow: var(--shadow-2);
+  }
+  
+  /* Линия с ключевыми словами */
+  body[data-page="week1"] .focusLine{
+    background: color-mix(in oklab, var(--surface2) 92%, transparent);
+    border: 1px dashed color-mix(in oklab, rgba(255,82,82,1) 26%, var(--stroke));
+  }
+  
+  /* Выделение глаголов */
+  body[data-page="week1"] .focusVerb{
+    background: color-mix(in oklab, rgba(255,82,82,1) 16%, transparent);
+    border-color: color-mix(in oklab, rgba(255,82,82,1) 28%, var(--stroke2));
+    color: color-mix(in oklab, rgba(255,82,82,1) 70%, var(--text));
+  }
+  
+  
+  /* -----------------------------------------------------
+     ПОДСКАЗКИ (hint)
+     ----------------------------------------------------- */
+  
+  body[data-page="week1"] .hintBadge{
+    background: color-mix(in oklab, var(--a) 12%, transparent);
+    border-color: color-mix(in oklab, var(--a) 26%, var(--stroke2));
+    color: color-mix(in oklab, var(--a) 70%, var(--text));
+  }
+  
+  
+  /* -----------------------------------------------------
+     ПРАКТИКА
+     ----------------------------------------------------- */
+  
+  body[data-page="week1"] .practiceCard{
+    background: color-mix(in oklab, var(--surface) 92%, transparent);
+    border: 1px solid var(--stroke);
+    box-shadow: var(--shadow-1);
+  }
+  
+  body[data-page="week1"] .practiceInput{
+    background: color-mix(in oklab, var(--surface2) 92%, transparent);
+    border: 1px solid var(--stroke2);
+    color: var(--text);
+  }
+  
+  body[data-page="week1"] .practiceInput::placeholder{
+    color: color-mix(in oklab, var(--muted) 92%, transparent);
+  }
+  
+
+  /* =========================================
+   Weeks navigation (GLOBAL, stable)
+   ========================================= */
+
+.nav.nav--weeks {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.92),
+    rgba(255,255,255,0.85)
+  );
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+}
+
+.nav__brand {
+  font-weight: 800;
+  text-decoration: none;
+  color: var(--text);
+  margin-right: 8px;
+}
+
+.nav__weeks {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* reset browser links */
+.nav__week {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+  line-height: 1;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.04);
+  border: 1px solid var(--line);
+  transition: background var(--dur-2), box-shadow var(--dur-2);
+}
+
+/* hover */
+.nav__week:hover {
+  background: rgba(0,0,0,0.07);
+  box-shadow: var(--shadow-1);
+}
+
+/* active page */
+.nav__week.is-active,
+.nav__week[aria-current="page"] {
+  background: linear-gradient(
+    180deg,
+    rgba(39,174,96,0.18),
+    rgba(39,174,96,0.10)
+  );
+  border-color: rgba(39,174,96,0.45);
+  color: #1e6f43;
+}
+
+/* dictionary chip */
+.nav__week--dict {
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+/* mobile */
+@media (max-width: 640px) {
+  .nav__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+/* =========================
+   PLAY BUTTON (Simple MP3 Player)
+   Для кнопок в "Сөйлеу үлгілері"
+   ========================= */
+   .playBtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%; /* Круглая кнопка */
+    border: 1px solid var(--stroke);
+    background: var(--surface);
+    color: var(--a); /* Цвет Play */
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-1);
+  }
+  
+  .playBtn:hover {
+    transform: scale(1.1);
+    border-color: var(--a);
+  }
+  
+  .playBtn.is-playing {
+    background: var(--a);
+    color: #fff;
+    border-color: var(--a);
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(77, 163, 255, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(77, 163, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(77, 163, 255, 0); }
+  }
+  /* VOCAB GRID (25 cards) */
+.vocabGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+/* Карточка стиля */
+.vocabCard {
+  background-color: transparent;
+  height: 100px; /* Биіктігі фикстелген */
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.vocabCard__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  border-radius: 16px;
+  box-shadow: var(--shadow-1);
+}
+
+/* Айналу эффектісі */
+.vocabCard.is-flipped .vocabCard__inner {
+  transform: rotateY(180deg);
+}
+
+.vocabCard__front, .vocabCard__back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Беткі жағы (Қазақша) */
+.vocabCard__front {
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* Артқы жағы (Орысша) */
+.vocabCard__back {
+  background: color-mix(in oklab, var(--a) 15%, var(--surface));
+  color: var(--text);
+  transform: rotateY(180deg);
+  font-size: 0.9em;
+  color: var(--muted);
+}
+/* =======================================================
+   МОБИЛЬНАЯ ВЕРСИЯ (SUPER COMPACT V2)
+   Вставьте это в самый конец style.css (замените старый код)
+   ======================================================= */
+
+   @media (max-width: 900px) {
+
+    /* --- 1. Глобальная компактность --- */
+    :root {
+      --r-lg: 12px; /* Радиус скругления меньше */
+    }
+  
+    .container {
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: hidden; /* Убирает горизонтальную прокрутку */
+    }
+  
+    /* --- 2. Шрифты (делаем еще меньше) --- */
+    .h1 { font-size: 1.6rem !important; line-height: 1.1 !important; margin-bottom: 10px !important; }
+    .h2 { font-size: 1.3rem !important; margin-bottom: 8px !important; }
+    .h3 { font-size: 1.1rem !important; }
+    .lead { font-size: 0.95rem !important; line-height: 1.4 !important; }
+    p, li, .section__sub { font-size: 0.9rem !important; }
+  
+    /* Уменьшаем отступы между секциями */
+    .section, .hero, .weekSection {
+      margin-top: 25px !important;
+      padding-top: 0 !important;
+    }
+  
+    /* --- 3. ИСПРАВЛЕНИЕ МЕНЮ (ГАМБУРГЕР) --- */
+    .nav--weeks { display: none !important; } /* Скрываем десктоп меню */
+    
+    .mnav { 
+      display: block !important; 
+      margin-left: auto;
+      position: relative;
+    }
+    
+    /* Убираем стандартный треугольник детали */
+    .mnav > summary { list-style: none; outline: none; }
+    .mnav > summary::-webkit-details-marker { display: none; }
+  
+    /* Сама выпадающая панель */
+    .mnav__panel {
+      position: absolute;
+      top: 100%;
+      right: -10px; /* Прижимаем к правому краю */
+      width: 260px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2); /* Тень чтобы выделялось */
+      border-radius: 12px;
+      padding: 10px;
+      z-index: 9999; /* Чтобы меню было ПОВЕРХ всего */
+    }
+  
+    /* --- 4. Сетки в одну колонку (FIX для 7 недели и других) --- */
+    .hero__grid,
+    .weekGrid,
+    .footer__grid,
+    .steps,
+    .lexGrid,
+    .navGrid,
+    .compactGrid,
+    .clockGrid,
+    .grammarDash,
+    .compareGrid,
+    .brightGrid,   /* Класс из 7 недели */
+    .socialGrid,   /* Класс из 7 недели */
+    .ticketGrid,   /* Класс из 7 недели */
+    .sitGrid {
+      grid-template-columns: 1fr !important;
+      gap: 12px !important; /* Отступы между карточками минимальные */
+    }
+  
+    /* VocabGrid (Слова) - оставляем 2 колонки, но компактнее */
+    .vocabGrid {
+      grid-template-columns: 1fr 1fr !important; 
+      gap: 8px !important;
+    }
+  
+    /* --- 5. Компактность карточек --- */
+    .gCard, .weekCard, .sitCard, .clockCard, .vocabCard, .brightCard, .socialCard {
+      padding: 12px !important; /* Внутри карточек тесно */
+      min-height: auto !important;
+    }
+  
+    /* Карточки 7 недели (яркие) */
+    .brightCard, .socialCard {
+      box-shadow: none !important; /* Убираем лишние тени для скорости */
+      border: 1px solid #e2e8f0;
+    }
+    
+    /* Кнопки выбора (смайлики/варианты) делаем крупнее для пальца, но компактнее в ряд */
+    .bActions, .sActions, .testGrid {
+      gap: 6px !important;
+    }
+    .tileBtn, .actBtn {
+      height: 40px !important;
+      width: 40px !important;
+      font-size: 1.2rem !important;
+    }
+  
+    /* --- 6. Боковые панели и Кнопки --- */
+    .glassPanel {
+      margin-top: 15px;
+      padding: 12px !important;
+    }
+    
+    .hero__cta {
+      flex-direction: column;
+      width: 100%;
+      gap: 8px !important;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 10px !important; /* Кнопки тоньше */
+      font-size: 0.95rem !important;
+    }
+  
+    /* --- 7. Футер --- */
+    .footer { 
+      text-align: center; 
+      padding-top: 30px !important;
+    }
+    .footer__text, .footer__links {
+      font-size: 0.85rem !important;
+    }
+  }
+  
+  /* Для самых маленьких экранов (iPhone SE и старые) */
+  @media (max-width: 380px) {
+    .vocabGrid { grid-template-columns: 1fr !important; } /* Слова в 1 колонку */
+    .h1 { font-size: 1.4rem !important; }
+  }

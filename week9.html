@@ -1,0 +1,1627 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>9-апта: Бос уақыт • Ситуативтік қазақ тілі</title>
+  <meta name="description" content="9-апта: Хобби, кешкі уақыт, теледидар және кітап оқу." />
+  <meta name="color-scheme" content="light" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    .emojiBtn {
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease, opacity .15s;
+    }
+    
+    .emojiBtn.is-selected {
+      transform: scale(1.15);
+      box-shadow: 0 0 0 2px #3b82f6;
+    }
+    
+    .emojiBtn.is-disabled {
+      opacity: .4;
+      pointer-events: none;
+    }
+    
+    .sCard.is-correct {
+      box-shadow: 0 0 0 2px #22c55e inset;
+    }
+    
+    .sCard.is-wrong {
+      box-shadow: 0 0 0 2px #ef4444 inset;
+    }
+    
+    /* =========================================
+       WEEK 9 (Reusing Design System)
+       ========================================= */
+
+    /* Hero adjustments */
+    body[data-page="week9"] .hero {
+      padding-bottom: 20px;
+    }
+
+    /* LEXICON GRID */
+    .lexGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .lexCard {
+      padding: 16px;
+      border-radius: var(--r-lg);
+      border: 1px solid var(--stroke);
+      background: color-mix(in oklab, var(--surface) 80%, transparent);
+      box-shadow: var(--shadow-1);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform var(--dur-1) var(--ease), border-color var(--dur-1);
+    }
+    
+    .lexCard:hover {
+      border-color: var(--stroke2);
+      transform: translateY(-2px);
+    }
+
+    .lexCard__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .lexCard__icon {
+      font-size: 20px;
+      opacity: 0.8;
+    }
+
+    .lexCard__badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 99px;
+      background: color-mix(in oklab, var(--surface2) 90%, transparent);
+      border: 1px solid var(--stroke);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    .lexCard__word {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .lexCard__trans {
+      font-size: 0.95rem;
+      color: var(--muted);
+      border-top: 1px dashed var(--stroke);
+      padding-top: 8px;
+      margin-top: auto;
+    }
+
+    /* CHAT UI */
+    .chatBox {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: color-mix(in oklab, var(--surface2) 60%, transparent);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      border: 1px solid var(--stroke);
+    }
+
+    .chatMsg {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      font-size: 1rem;
+      line-height: 1.5;
+      position: relative;
+      animation: fadeUp 0.4s var(--ease) forwards;
+    }
+
+    .chatMsg--left {
+      align-self: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-bottom-left-radius: 4px;
+      color: var(--text);
+    }
+
+    .chatMsg--right {
+      align-self: flex-end;
+      background: linear-gradient(135deg, color-mix(in oklab, var(--a) 12%, transparent), color-mix(in oklab, var(--b) 8%, transparent));
+      border: 1px solid color-mix(in oklab, var(--a) 20%, var(--stroke));
+      border-bottom-right-radius: 4px;
+      color: var(--text);
+    }
+
+    .chatMsg__auth {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+      display: block;
+      font-weight: 700;
+    }
+
+    /* RESULT BOX */
+    .resultBox {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: var(--r-lg);
+      text-align: center;
+      display: none;
+    }
+    .resultBox.is-good {
+      background: color-mix(in oklab, var(--b) 15%, transparent);
+      border: 1px solid color-mix(in oklab, var(--b) 30%, transparent);
+      color: #1e6f43;
+    }
+    .resultBox.is-bad {
+      background: color-mix(in oklab, rgba(255,82,82,1) 12%, transparent);
+      border: 1px solid color-mix(in oklab, rgba(255,82,82,1) 30%, transparent);
+      color: #991b1b;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body data-page="week9">
+  <a class="skip-link" href="#main">Негізгі мазмұнға өту</a>
+
+  <header class="topbar" role="banner">
+    <div class="topbar__inner container">
+      <div class="brand" aria-label="Kazakh Course">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <div class="brand__text">
+          <div class="brand__title">Ситуативтік қазақ тілі</div>
+          <div class="brand__sub">Онлайн курс • 10 апта</div>
+        </div>
+      </div>
+
+      <nav class="nav nav--weeks" aria-label="Апталар (десктоп)">
+        <a class="nav__link" data-page="index" href="index.html">Басты</a>
+        <a class="nav__link" data-page="week1" href="week1.html">1</a>
+        <a class="nav__link" data-page="week2" href="week2.html">2</a>
+        <a class="nav__link" data-page="week3" href="week3.html">3</a>
+        <a class="nav__link" data-page="week4" href="week4.html">4</a>
+        <a class="nav__link" data-page="week5" href="week5.html">5</a>
+        <a class="nav__link" data-page="week6" href="week6.html">6</a>
+        <a class="nav__link" data-page="week7" href="week7.html">7</a>
+        <a class="nav__link" data-page="week8" href="week8.html">8</a>
+        <a class="nav__link is-active" data-page="week9" href="week9.html" aria-current="page">9</a>
+        <a class="nav__link" data-page="week10" href="week10.html">10</a>
+        <a class="nav__link" data-page="dictionary" href="dictionary.html">Сөздік</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    
+    <section class="hero reveal">
+      <div class="hero__grid">
+        <div>
+          <div class="pill">
+            <span class="pill__dot" aria-hidden="true"></span>
+            <span>9-апта</span>
+          </div>
+
+          <h1 class="h1">Бос уақыт және <span class="h1__accent">Хобби</span></h1>
+
+          <p class="lead">
+            Бұл сабақта біз кешкі уақытты қалай өткізетінімізді, хобби туралы айтуды және "не істейсіз?" сұрағына жауап беруді үйренеміз.
+          </p>
+
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#lexika">
+              Бастау <span class="btn__arrow" aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </div>
+
+        <aside class="glassPanel reveal">
+          <div class="glassPanel__top">
+            <div class="glassPanel__badge">Прогресс</div>
+            <div class="glassPanel__hint">9 / 10</div>
+          </div>
+
+          <div class="glassPanel__body">
+            <div class="progress__bar">
+              <span class="progress__fill" style="width: 90%"></span>
+            </div>
+            <div class="progress__note">Курстың 90% оқылды</div>
+            
+            <div class="miniGrid" style="margin-top:20px">
+              <a class="miniCard" href="week1.html">1</a>
+              <a class="miniCard" href="week2.html">2</a>
+              <a class="miniCard" href="week3.html">3</a>
+              <a class="miniCard" href="week4.html">4</a>
+              <a class="miniCard" href="week5.html">5</a>
+              <a class="miniCard" href="week6.html">6</a>
+              <a class="miniCard" href="week7.html">7</a>
+               <a class="miniCard" href="week8.html">8</a>
+               <a class="miniCard" style="border-color:var(--a); background:rgba(77,163,255,0.1); color:var(--text);" href="#">9</a>
+               <a class="miniCard" href="week10.html">10</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="lexika" class="weekSection reveal">
+      <div class="weekSection__head">
+        <div>
+          <h2 class="h2 weekSection__title">1. Жаңа сөздер</h2>
+          <p class="section__sub">Кешкі іс-әрекеттер және қызығушылық.</p>
+        </div>
+        <div class="weekSection__meta">
+          <button class="chip" id="toggleLexBtn" onclick="toggleHobbyLex()">
+            <span class="chip__icon">👁</span>
+            <span class="chip__text">Аударма</span>
+          </button>
+        </div>
+      </div>
+    
+      <style>
+        /* 1. MAIN ACTIVITY GRID */
+        .hobbyGrid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+          gap: 12px;
+          margin-bottom: 24px;
+        }
+    
+        .hobbyCard {
+          background: #ffffff;
+          border: 1px solid var(--stroke);
+          border-radius: 16px;
+          padding: 16px;
+          text-align: center;
+          transition: transform 0.2s, box-shadow 0.2s;
+          position: relative;
+          overflow: hidden;
+          cursor: pointer;
+        }
+        .hobbyCard:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+          border-color: var(--a);
+        }
+        
+        /* Top Border Colors based on type */
+        .hobbyCard--relax { border-top: 4px solid #10b981; } /* Green */
+        .hobbyCard--active { border-top: 4px solid #f59e0b; } /* Orange */
+        .hobbyCard--watch { border-top: 4px solid #3b82f6; } /* Blue */
+    
+        .hIcon { font-size: 2rem; margin-bottom: 8px; display: block; }
+        .hWord { font-weight: 800; font-size: 1rem; color: var(--text); line-height: 1.2; display: block; }
+        .hTrans { 
+          font-size: 0.85rem; color: var(--muted); margin-top: 4px; 
+          border-top: 1px dashed var(--stroke); padding-top: 4px;
+          display: none; 
+        }
+        .hobbyCard.show .hTrans { display: block; animation: fadeIn 0.3s; }
+    
+    
+        /* 2. BOOK SHELF (Books & Genres) */
+        .shelfContainer {
+          background: #fdfbf7;
+          border: 2px solid #e5e7eb;
+          border-radius: 12px;
+          padding: 20px;
+          margin-bottom: 24px;
+          position: relative;
+        }
+        .shelfTitle {
+          position: absolute; top: -12px; left: 20px;
+          background: #fdfbf7; padding: 0 10px;
+          font-size: 0.85rem; text-transform: uppercase; font-weight: 800; color: #854d0e;
+        }
+        
+        .bookGrid {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        
+        .bookSpine {
+          flex: 1;
+          min-width: 120px;
+          background: #fff;
+          border: 1px solid #d1d5db;
+          border-left: 6px solid #8b5cf6; /* Purple spine */
+          border-radius: 4px;
+          padding: 10px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .bookSpine:hover { transform: translateX(5px); background: #fefce8; }
+        
+        .bookWord { font-weight: 700; color: #4b5563; display: block; }
+        .bookTrans { font-size: 0.85rem; color: #9ca3af; display: none; margin-top: 2px; }
+        .bookSpine.show .bookTrans { display: block; color: #8b5cf6; font-weight: 600; }
+    
+    
+        /* 3. TAGS & PHRASES */
+        .mixedZone {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+        
+        /* Frequency Tags */
+        .freqBox {
+          background: #f1f5f9;
+          padding: 15px;
+          border-radius: 12px;
+        }
+        .tagList { display: flex; flex-wrap: wrap; gap: 8px; }
+        .lexTag {
+          background: white; border: 1px solid #cbd5e1;
+          padding: 6px 12px; border-radius: 20px;
+          font-size: 0.9rem; font-weight: 600; color: #334155;
+          cursor: pointer;
+        }
+        .lexTag:hover { border-color: #3b82f6; color: #3b82f6; }
+        .lexTag span { display: none; font-weight: 400; margin-left: 4px; color: #64748b; }
+        .lexTag.show span { display: inline; }
+    
+        /* Sticky Note Phrases */
+        .phraseBox {
+          background: #fffbeb;
+          border: 1px solid #fcd34d;
+          border-radius: 12px;
+          padding: 15px;
+          position: relative;
+          box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+        }
+        .phraseList { list-style: none; padding: 0; margin: 0; }
+        .phraseItem { margin-bottom: 8px; font-size: 0.95rem; border-bottom: 1px dashed #fcd34d; padding-bottom: 4px; cursor: pointer; }
+        .phraseItem:last-child { border: none; }
+        .phKz { font-weight: 700; color: #78350f; }
+        .phRu { display: none; color: #b45309; font-size: 0.85rem; }
+        .phraseBox.show .phRu, .phraseItem:hover .phRu { display: block; }
+    
+        @media (max-width: 600px) { .mixedZone { grid-template-columns: 1fr; } }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+      </style>
+    
+      <div class="weekSection__body">
+        
+        <div class="hobbyGrid">
+          <div class="hobbyCard hobbyCard--relax" onclick="flipHobby(this)">
+            <span class="hIcon">🛋️</span>
+            <span class="hWord">Демалу</span>
+            <span class="hTrans">Отдыхать</span>
+          </div>
+          <div class="hobbyCard hobbyCard--relax" onclick="flipHobby(this)">
+            <span class="hIcon">📖</span>
+            <span class="hWord">Кітап оқу</span>
+            <span class="hTrans">Читать книгу</span>
+          </div>
+          <div class="hobbyCard hobbyCard--watch" onclick="flipHobby(this)">
+            <span class="hIcon">📺</span>
+            <span class="hWord">ТВ қарау</span>
+            <span class="hTrans">Смотреть ТВ</span>
+          </div>
+          <div class="hobbyCard hobbyCard--watch" onclick="flipHobby(this)">
+            <span class="hIcon">🎬</span>
+            <span class="hWord">Фильм көру</span>
+            <span class="hTrans">Смотреть фильм</span>
+          </div>
+          <div class="hobbyCard hobbyCard--active" onclick="flipHobby(this)">
+            <span class="hIcon">🏋️</span>
+            <span class="hWord">Спортзал</span>
+            <span class="hTrans">Спортзал</span>
+          </div>
+          <div class="hobbyCard hobbyCard--relax" onclick="flipHobby(this)">
+            <span class="hIcon">🧶</span>
+            <span class="hWord">Тоқу</span>
+            <span class="hTrans">Вязание</span>
+          </div>
+        </div>
+    
+        <div class="shelfContainer">
+          <div class="shelfTitle">📚 Кітаптар мен Жанрлар</div>
+          <div class="bookGrid">
+            <div class="bookSpine" onclick="flipHobby(this)">
+              <span class="bookWord">Детектив 🕵️</span>
+              <span class="bookTrans">Детектив</span>
+            </div>
+            <div class="bookSpine" style="border-left-color:#ec4899;" onclick="flipHobby(this)">
+              <span class="bookWord">Өлеңдер ✍️</span>
+              <span class="bookTrans">Стихи</span>
+            </div>
+            <div class="bookSpine" style="border-left-color:#f59e0b;" onclick="flipHobby(this)">
+              <span class="bookWord">Тарихи кітаптар 🏛️</span>
+              <span class="bookTrans">Исторические книги</span>
+            </div>
+            <div class="bookSpine" style="border-left-color:#10b981;" onclick="flipHobby(this)">
+              <span class="bookWord">Қызығушылық ❤️</span>
+              <span class="bookTrans">Интерес</span>
+            </div>
+          </div>
+        </div>
+    
+        <div class="mixedZone">
+          
+          <div class="freqBox">
+            <div style="font-size:0.8rem; font-weight:800; color:#64748b; margin-bottom:8px;">УАҚЫТ (ВРЕМЯ):</div>
+            <div class="tagList">
+              <div class="lexTag" onclick="flipHobby(this)">Бос уақыт <span>Свободное время</span></div>
+              <div class="lexTag" onclick="flipHobby(this)">Әдетте <span>Обычно</span></div>
+              <div class="lexTag" onclick="flipHobby(this)">Кейде <span>Иногда</span></div>
+            </div>
+          </div>
+    
+          <div class="phraseBox" id="phraseSticky">
+            <div style="font-size:0.8rem; font-weight:800; color:#92400e; margin-bottom:8px;">📌 ТІРКЕСТЕР:</div>
+            <ul class="phraseList">
+              <li class="phraseItem">
+                <span class="phKz">Кешке … істеймін</span>
+                <span class="phRu">Вечером я … (делаю)</span>
+              </li>
+              <li class="phraseItem">
+                <span class="phKz">Маған … ұнайды</span>
+                <span class="phRu">Мне нравится …</span>
+              </li>
+              <li class="phraseItem">
+                <span class="phKz">Менің хоббиім</span>
+                <span class="phRu">Моё хобби</span>
+              </li>
+            </ul>
+          </div>
+    
+        </div>
+    
+      </div>
+    </section>
+    
+    <script>
+      // Individual Toggle
+      function flipHobby(el) {
+        el.classList.toggle('show');
+      }
+    
+      // Global Toggle Button
+      function toggleHobbyLex() {
+        const cards = document.querySelectorAll('.hobbyCard, .bookSpine, .lexTag');
+        const note = document.getElementById('phraseSticky');
+        const btn = document.querySelector('#toggleLexBtn .chip__text');
+        
+        // Check state based on first card
+        const isActive = cards[0].classList.contains('show');
+    
+        if (!isActive) {
+          cards.forEach(c => c.classList.add('show'));
+          note.classList.add('show');
+          btn.innerText = "Жасыру";
+        } else {
+          cards.forEach(c => c.classList.remove('show'));
+          note.classList.remove('show');
+          btn.innerText = "Аударма";
+        }
+      }
+    </script>
+    <section class="weekSection reveal">
+      <div class="weekSection__head">
+        <h2 class="h2 weekSection__title">2. Диалог: Кешкі оқиға</h2>
+        <p class="section__sub">Сөздерді басып, мағынасын түсініңіз.</p>
+      </div>
+    
+      <style>
+        /* CHAT CONTAINER - Soft Dark Theme */
+        .dmInterface {
+          background: #1e293b; /* Soft Slate Blue (Not Black) */
+          border-radius: 24px;
+          border: 1px solid #334155;
+          max-width: 600px;
+          margin: 0 auto;
+          overflow: hidden;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+        }
+    
+        /* HEADER */
+        .dmHeader {
+          background: #0f172a; /* Darker header */
+          padding: 16px 20px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          border-bottom: 1px solid #334155;
+        }
+        .userAvatar {
+          width: 42px; height: 42px; border-radius: 50%;
+          background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%); /* Soft Pink */
+          display: grid; place-items: center; font-weight: 700; color: #831843;
+          font-size: 1.1rem;
+        }
+        .userInfo h3 { color: #f1f5f9; margin: 0; font-size: 1rem; font-weight: 600; }
+        .userInfo p { color: #94a3b8; margin: 0; font-size: 0.8rem; }
+    
+        /* CHAT BODY */
+        .dmBody {
+          background: #1e293b;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 18px;
+          height: 500px;
+          overflow-y: auto;
+        }
+    
+        /* MESSAGES */
+        .dmMsg {
+          display: flex; flex-direction: column; gap: 6px; max-width: 80%;
+          position: relative; animation: slideUp 0.3s ease-out forwards; opacity: 0;
+        }
+        .dmMsg--left { align-self: flex-start; }
+        .dmMsg--right { align-self: flex-end; align-items: flex-end; }
+    
+        /* BUBBLES - Soft Colors */
+        .dmBubble {
+          padding: 12px 16px;
+          border-radius: 18px;
+          font-size: 0.95rem;
+          line-height: 1.5;
+          position: relative;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .dmMsg--left .dmBubble {
+          background: #334155; /* Muted Slate */
+          color: #f8fafc;
+          border-bottom-left-radius: 4px;
+        }
+        .dmMsg--right .dmBubble {
+          background: #6366f1; /* Soft Indigo */
+          color: #ffffff;
+          border-bottom-right-radius: 4px;
+        }
+    
+        /* INTERACTIVE WORD - Gentle Highlight */
+        .iWord {
+          border-bottom: 1px dashed rgba(255,255,255,0.5);
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.2s;
+          padding-bottom: 1px;
+        }
+        .iWord:hover { color: #fcd34d; border-bottom-color: #fcd34d; }
+        
+        /* TOOLTIP */
+        .popTrans {
+          position: absolute;
+          bottom: 100%; left: 50%; transform: translateX(-50%) translateY(5px);
+          background: #f8fafc; color: #334155;
+          padding: 6px 12px; border-radius: 8px;
+          font-size: 0.8rem; white-space: nowrap; font-weight: 700;
+          opacity: 0; pointer-events: none;
+          transition: all 0.2s; z-index: 10;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .iWord.active .popTrans { opacity: 1; transform: translateX(-50%) translateY(-8px); }
+    
+        /* MEDIA ATTACHMENTS - Rounded & Soft */
+        .dmMedia {
+          width: 100%; max-width: 200px;
+          border-radius: 16px;
+          overflow: hidden;
+          margin-top: 4px;
+          border: 1px solid #475569;
+          position: relative;
+        }
+        .fakeImg {
+          height: 110px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 3.5rem; 
+        }
+        .mediaCaption {
+          background: rgba(30, 41, 59, 0.8); color: #cbd5e1;
+          font-size: 0.75rem; padding: 6px 10px; backdrop-filter: blur(4px);
+          position: absolute; bottom: 0; width: 100%;
+        }
+    
+        /* TIMESTAMP */
+        .dmTime { font-size: 0.7rem; color: #64748b; margin-top: 2px; padding: 0 4px; }
+    
+        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .dmMsg:nth-child(1) { animation-delay: 0.1s; }
+        .dmMsg:nth-child(2) { animation-delay: 0.3s; }
+        .dmMsg:nth-child(3) { animation-delay: 0.5s; }
+        .dmMsg:nth-child(4) { animation-delay: 0.7s; }
+        .dmMsg:nth-child(5) { animation-delay: 0.9s; }
+        .dmMsg:nth-child(6) { animation-delay: 1.1s; }
+        .dmMsg:nth-child(7) { animation-delay: 1.3s; }
+        .dmMsg:nth-child(8) { animation-delay: 1.5s; }
+    
+      </style>
+    
+      <div class="dmInterface">
+        <div class="dmHeader">
+          <div class="userAvatar">A</div>
+          <div class="userInfo">
+            <h3>Алуа</h3>
+            <p>Active now</p>
+          </div>
+          <div style="margin-left:auto; font-size:1.2rem; opacity:0.7;">📞 📹</div>
+        </div>
+    
+        <div class="dmBody">
+          
+          <div class="dmMsg dmMsg--right">
+            <div class="dmBubble">
+              Сәлем! Кешке <span class="iWord" onclick="tip(this)">жоспарың<span class="popTrans">твой план</span></span> қандай?
+            </div>
+            <div class="dmTime">18:30</div>
+          </div>
+    
+          <div class="dmMsg dmMsg--left">
+            <div class="dmBubble">
+              Сәлем! Мен қатты <span class="iWord" onclick="tip(this)">шаршадым<span class="popTrans">устала</span></span>. Үйде боламын. 
+              Жаңа <span class="iWord" onclick="tip(this)">кітап<span class="popTrans">книга</span></span> бастадым.
+            </div>
+            <div class="dmMedia">
+              <div class="fakeImg" style="background: linear-gradient(135deg, #1e293b, #334155);">📖</div>
+              <div class="mediaCaption">Детектив "Қара түн"</div>
+            </div>
+            <div class="dmTime">18:31</div>
+          </div>
+    
+          <div class="dmMsg dmMsg--right">
+            <div class="dmBubble">
+              О, детектив пе? <span class="iWord" onclick="tip(this)">Қорқынышты<span class="popTrans">страшно</span></span> ма? 😱
+            </div>
+            <div class="dmTime">18:32</div>
+          </div>
+    
+          <div class="dmMsg dmMsg--left">
+            <div class="dmBubble">
+              Иә, өте қорқынышты! Бірақ <span class="iWord" onclick="tip(this)">қызықты<span class="popTrans">интересно</span></span>. Сен не істейсің?
+            </div>
+            <div class="dmTime">18:33</div>
+          </div>
+    
+          <div class="dmMsg dmMsg--right">
+            <div class="dmBubble">
+              Мен киноға барғым келген. Жаңа <span class="iWord" onclick="tip(this)">триллер<span class="popTrans">триллер</span></span> шықты.
+            </div>
+            <div class="dmMedia">
+              <div class="fakeImg" style="background: linear-gradient(135deg, #475569, #1e293b);">🎬</div>
+              <div class="mediaCaption">Кинотеатр: 19:00</div>
+            </div>
+            <div class="dmTime">18:34</div>
+          </div>
+    
+          <div class="dmMsg dmMsg--left">
+            <div class="dmBubble">
+              Жоқ, рахмет! Маған қорқынышты фильмдер <span class="iWord" onclick="tip(this)">ұнамайды<span class="popTrans">не нравятся</span></span>. 🙅‍♀️
+            </div>
+            <div class="dmTime">18:35</div>
+          </div>
+    
+          <div class="dmMsg dmMsg--right">
+            <div class="dmBubble">
+              Жарайды. Онда мен саған пицца алып барайын ба? <span class="iWord" onclick="tip(this)">Комедия<span class="popTrans">комедия</span></span> көреміз.
+            </div>
+            <div class="dmTime">18:36</div>
+          </div>
+    
+          <div class="dmMsg dmMsg--left">
+            <div class="dmBubble">
+              Керемет идея! 😍 Мен шай қоямын. <span class="iWord" onclick="tip(this)">Күтемін<span class="popTrans">жду</span></span>!
+            </div>
+            <div class="dmMedia">
+              <div class="fakeImg" style="background: #fffbeb; color: #000;">🍕</div>
+            </div>
+            <div class="dmTime">18:37</div>
+          </div>
+    
+        </div>
+      </div>
+    </section>
+    
+    <script>
+      function tip(el) {
+        document.querySelectorAll('.iWord').forEach(w => {
+          if(w !== el) w.classList.remove('active');
+        });
+        el.classList.toggle('active');
+      }
+    </script>
+    
+    
+    <section class="weekSection reveal">
+      <div class="weekSection__head">
+        <h2 class="h2 weekSection__title">3. Грамматика: Уақыт және Іс-әрекет</h2>
+        <p class="section__sub">Уақытты айту және кешкі рутина.</p>
+      </div>
+    
+      <style>
+        /* MAIN CONTAINER - Clean Light Theme */
+        .managerBoard {
+          background: #ffffff;
+          border-radius: 24px;
+          overflow: hidden;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+          border: 1px solid #e2e8f0;
+          color: #334155;
+        }
+    
+        /* 1. TABS (Soft Switcher) */
+        .tabHeader {
+          display: flex;
+          background: #f1f5f9;
+          padding: 6px;
+          margin: 20px;
+          border-radius: 16px;
+        }
+        .tabBtn {
+          flex: 1;
+          padding: 12px;
+          text-align: center;
+          cursor: pointer;
+          border-radius: 12px;
+          font-weight: 700;
+          font-size: 0.9rem;
+          color: #64748b;
+          transition: all 0.3s ease;
+        }
+        .tabBtn:hover { color: #334155; }
+        
+        /* Active State - Soft Blue */
+        .tabBtn.active {
+          background: #ffffff;
+          color: #3b82f6;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+    
+        /* CONTENT AREA */
+        .tabContent {
+          padding: 0 24px 30px 24px;
+          display: none;
+          animation: softFade 0.4s ease;
+        }
+        .tabContent.active { display: block; }
+    
+        /* --- GRAMMAR STYLES (Cards) --- */
+        .clockGrid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 20px;
+        }
+        .clockCard {
+          background: #f8fafc;
+          padding: 20px;
+          border-radius: 16px;
+          border: 1px solid #e2e8f0;
+          border-left-width: 5px;
+          transition: transform 0.2s;
+        }
+        .clockCard:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.03); }
+    
+        .ccTitle { font-size: 0.85rem; text-transform: uppercase; font-weight: 800; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .ccRule { font-size: 0.95rem; margin-bottom: 12px; color: #475569; }
+        .ccEx { 
+          background: #ffffff; padding: 10px; border-radius: 8px; 
+          font-family: monospace; font-size: 0.95rem; color: #334155;
+          border: 1px dashed #cbd5e1;
+        }
+        
+        /* Soft Highlights */
+        .highlight { font-weight: 800; }
+        
+        /* Card Variants (Pastel Borders) */
+        .c-blue { border-left-color: #60a5fa; } .c-blue .ccTitle { color: #3b82f6; } .c-blue .highlight { color: #2563eb; }
+        .c-green { border-left-color: #34d399; } .c-green .ccTitle { color: #10b981; } .c-green .highlight { color: #059669; }
+        .c-orange { border-left-color: #fbbf24; } .c-orange .ccTitle { color: #d97706; } .c-orange .highlight { color: #b45309; }
+        .c-pink { border-left-color: #f472b6; } .c-pink .ccTitle { color: #db2777; } .c-pink .highlight { color: #be185d; }
+    
+        /* --- VOCAB STYLES (Chips) --- */
+        .vocabSection { margin-bottom: 25px; }
+        .vocabTitle { 
+          font-size: 0.9rem; color: #94a3b8; font-weight: 800; 
+          margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; 
+          text-transform: uppercase;
+        }
+        
+        .chipGrid { display: flex; flex-wrap: wrap; gap: 10px; }
+        .vChip {
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          padding: 8px 14px;
+          border-radius: 50px;
+          font-size: 0.9rem;
+          cursor: help;
+          transition: 0.2s;
+          display: flex; align-items: center; gap: 8px;
+          color: #334155;
+          font-weight: 600;
+        }
+        .vChip:hover { 
+          background: #f0f9ff; border-color: #bae6fd; color: #0284c7; 
+          transform: translateY(-2px); 
+        }
+        .vChip span { 
+          font-size: 0.8rem; color: #64748b; font-weight: 400; 
+          border-left: 1px solid #cbd5e1; padding-left: 8px;
+        }
+    
+        /* --- PHRASES (Clean List) --- */
+        .phraseList { list-style: none; padding: 0; }
+        .pItem {
+          display: flex; justify-content: space-between; align-items: center;
+          padding: 14px 0;
+          border-bottom: 1px dashed #e2e8f0;
+        }
+        .pItem:last-child { border: none; }
+        .pKz { font-weight: 700; color: #1e293b; font-size: 1rem; }
+        .pRu { font-size: 0.9rem; color: #64748b; }
+    
+        @keyframes softFade { from{opacity:0; transform:translateY(5px);} to{opacity:1; transform:translateY(0);} }
+      </style>
+    
+      <div class="managerBoard">
+        
+        <div class="tabHeader">
+          <div class="tabBtn active" onclick="openTab(event, 'tabGrammar')">📘 Грамматика</div>
+          <div class="tabBtn" onclick="openTab(event, 'tabVocab')">🧠 Сөздік</div>
+          <div class="tabBtn" onclick="openTab(event, 'tabPhrases')">💬 Тіркестер</div>
+        </div>
+    
+        <div id="tabGrammar" class="tabContent active">
+          <div class="clockGrid">
+            <div class="clockCard c-blue">
+              <div class="ccTitle">1. Қашан? (Когда?)</div>
+              <div class="ccRule">Жалпы уақытты айту:</div>
+              <div class="ccEx">
+                Кеш<span class="highlight">ке</span> (Вечером)<br>
+                Түн<span class="highlight">де</span> (Ночью)<br>
+                Күндіз (Днем)
+              </div>
+            </div>
+    
+            <div class="clockCard c-green">
+              <div class="ccTitle">2. Сағат қаншада? (Во сколько?)</div>
+              <div class="ccRule">Нақты сағат + <strong>–де / –те</strong></div>
+              <div class="ccEx">
+                Сағат 5-<span class="highlight">те</span> (В 5:00)<br>
+                Сағат 6-<span class="highlight">да</span> (В 6:00)<br>
+                Сағат 10-<span class="highlight">да</span> (В 10:00)
+              </div>
+            </div>
+    
+            <div class="clockCard c-orange">
+              <div class="ccTitle">3. Жарты (Половина)</div>
+              <div class="ccRule">30 минутты <strong>«жарты»</strong> дейміз.</div>
+              <div class="ccEx">
+                Сағат <strong>алты жарымда</strong> (В 6:30)<br>
+                Сағат <strong>жеті жарымда</strong> (В 7:30)<br>
+                <em>Жарым = Жарты (Половина)</em>
+              </div>
+            </div>
+    
+            <div class="clockCard c-pink">
+              <div class="ccTitle">4. Не істеймін?</div>
+              <div class="ccRule">Мен (I am doing): <strong>–мын / –мін</strong></div>
+              <div class="ccEx">
+                Мен демала<span class="highlight">мын</span>.<br>
+                Мен ұйықтай<span class="highlight">мын</span>.<br>
+                Мен жуына<span class="highlight">мын</span> (Умываюсь).
+              </div>
+            </div>
+          </div>
+        </div>
+    
+        <div id="tabVocab" class="tabContent">
+          
+          <div class="vocabSection">
+            <div class="vocabTitle">🏠 Үй шаруасы & Рутина</div>
+            <div class="chipGrid">
+              <div class="vChip">🚿 Жуыну <span>Умываться</span></div>
+              <div class="vChip">👗 Киіну <span>Одеваться</span></div>
+              <div class="vChip">🧹 Тазалау <span>Убираться</span></div>
+              <div class="vChip">🍳 Тамақ пісіру <span>Готовить</span></div>
+              <div class="vChip">🍽️ Тамақ ішу <span>Кушать</span></div>
+              <div class="vChip">🛌 Ұйықтау <span>Спать</span></div>
+            </div>
+          </div>
+    
+          <div class="vocabSection">
+            <div class="vocabTitle">🎉 Демалыс & Хобби</div>
+            <div class="chipGrid">
+              <div class="vChip">🚶 Серуендеу <span>Гулять</span></div>
+              <div class="vChip">🎧 Музыка тыңдау <span>Слушать музыку</span></div>
+              <div class="vChip">💃 Билеу <span>Танцевать</span></div>
+              <div class="vChip">🎨 Сурет салу <span>Рисовать</span></div>
+              <div class="vChip">📱 Телефон қарау <span>Смотреть телефон</span></div>
+              <div class="vChip">🏊 Жүзу <span>Плавать</span></div>
+            </div>
+          </div>
+    
+          <div class="vocabSection">
+            <div class="vocabTitle">⏳ Уақыт сөздері</div>
+            <div class="chipGrid">
+              <div class="vChip">Ерте <span>Рано</span></div>
+              <div class="vChip">Кеш <span>Поздно</span></div>
+              <div class="vChip">Қазір <span>Сейчас</span></div>
+              <div class="vChip">Әрқашан <span>Всегда</span></div>
+              <div class="vChip">Күнде <span>Каждый день</span></div>
+            </div>
+          </div>
+    
+        </div>
+    
+        <div id="tabPhrases" class="tabContent">
+          <ul class="phraseList">
+            <li class="pItem">
+              <span class="pKz">Мен ерте ұйықтаймын.</span>
+              <span class="pRu">Я рано ложусь спать.</span>
+            </li>
+            <li class="pItem">
+              <span class="pKz">Мен кеш тұрамын.</span>
+              <span class="pRu">Я поздно встаю.</span>
+            </li>
+            <li class="pItem">
+              <span class="pKz">Маған тамақ пісіру ұнайды.</span>
+              <span class="pRu">Мне нравится готовить.</span>
+            </li>
+            <li class="pItem">
+              <span class="pKz">Кешке достарыммен қыдырамын.</span>
+              <span class="pRu">Вечером гуляю с друзьями.</span>
+            </li>
+            <li class="pItem">
+              <span class="pKz">Бос уақытта кітап оқимын.</span>
+              <span class="pRu">В свободное время читаю книгу.</span>
+            </li>
+            <li class="pItem">
+              <span class="pKz">Сағат сегіз жарымда жаттығу жасаймын.</span>
+              <span class="pRu">В 8:30 делаю зарядку/тренировку.</span>
+            </li>
+          </ul>
+        </div>
+    
+      </div>
+    </section>
+    
+    <script>
+      function openTab(evt, tabName) {
+        var i, tabContent, tabBtn;
+        tabContent = document.getElementsByClassName("tabContent");
+        for (i = 0; i < tabContent.length; i++) {
+          tabContent[i].style.display = "none";
+          tabContent[i].classList.remove("active");
+        }
+        tabBtn = document.getElementsByClassName("tabBtn");
+        for (i = 0; i < tabBtn.length; i++) {
+          tabBtn[i].className = tabBtn[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        setTimeout(() => { document.getElementById(tabName).classList.add("active"); }, 10);
+        evt.currentTarget.className += " active";
+      }
+    </script>
+    <script>
+      function openTab(evt, tabName) {
+        // 1. Hide all content
+        var i, tabContent, tabBtn;
+        tabContent = document.getElementsByClassName("tabContent");
+        for (i = 0; i < tabContent.length; i++) {
+          tabContent[i].style.display = "none";
+          tabContent[i].classList.remove("active");
+        }
+    
+        // 2. Remove 'active' from all buttons
+        tabBtn = document.getElementsByClassName("tabBtn");
+        for (i = 0; i < tabBtn.length; i++) {
+          tabBtn[i].className = tabBtn[i].className.replace(" active", "");
+        }
+    
+        // 3. Show current tab and add 'active' to button
+        document.getElementById(tabName).style.display = "block";
+        // Small timeout to allow animation to play
+        setTimeout(() => {
+            document.getElementById(tabName).classList.add("active");
+        }, 10);
+        evt.currentTarget.className += " active";
+      }
+    </script>
+    <section class="weekSection reveal" style="margin-top: 40px;">
+      <div class="weekSection__head">
+        <h2 class="h2 weekSection__title">4. Бекіту тапсырмалары</h2>
+        <p class="section__sub">Кешкі уақыт: Мәтін және Логика.</p>
+      </div>
+
+      <style>
+        /* GLOBAL STYLES FOR TASKS */
+        .taskWrapper {
+          display: flex;
+          flex-direction: column;
+          gap: 50px;
+        }
+
+        /* --- TASK 1: TEXT FILL (BRIGHT PAPER STYLE) --- */
+        .paperBoard {
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 20px;
+          padding: 30px;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+          position: relative;
+        }
+        /* Top decoration */
+        .paperBoard::before {
+          content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+          background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+          border-radius: 20px 20px 0 0;
+        }
+
+        .paperTitle {
+          font-weight: 800; color: #475569; text-transform: uppercase; 
+          font-size: 0.95rem; margin-bottom: 20px; display: flex; justify-content: space-between;
+        }
+
+        .paperText {
+          font-size: 1.1rem; line-height: 2.4; color: #334155;
+        }
+
+        /* Slots */
+        .p-slot {
+          display: inline-block; min-width: 100px; height: 32px;
+          border-bottom: 2px dashed #cbd5e1; margin: 0 4px; padding: 0 8px;
+          color: #2563eb; font-weight: 700; text-align: center;
+          cursor: pointer; transition: 0.2s; vertical-align: bottom;
+          background: #f8fafc; border-radius: 4px 4px 0 0;
+        }
+        .p-slot.filled { border-bottom: 2px solid #2563eb; background: #eff6ff; }
+        .p-slot.correct { border-color: #22c55e; color: #15803d; background: #dcfce7; }
+        .p-slot.wrong { border-color: #ef4444; color: #b91c1c; background: #fee2e2; }
+
+        /* Chips */
+        .chipBox {
+          margin-top: 25px; padding: 20px; background: #f1f5f9;
+          border-radius: 12px; display: flex; flex-wrap: wrap; gap: 10px;
+        }
+        .bChip {
+          background: #fff; border: 1px solid #cbd5e1; padding: 8px 16px;
+          border-radius: 50px; font-weight: 600; color: #475569; cursor: pointer;
+          box-shadow: 0 2px 0 #cbd5e1; transition: 0.2s;
+        }
+        .bChip:hover { transform: translateY(-2px); border-color: #3b82f6; color: #3b82f6; }
+        .bChip.used { opacity: 0; transform: scale(0); pointer-events: none; width: 0; padding: 0; margin: 0; border: none; }
+
+        /* Check Button Generic */
+        .checkBtn {
+          display: block; width: 100%; max-width: 250px; margin: 20px auto 0;
+          padding: 12px; border: none; border-radius: 10px; cursor: pointer;
+          font-weight: 700; font-size: 0.9rem; text-transform: uppercase;
+          transition: 0.3s;
+        }
+        .btn-purple { background: #8b5cf6; color: white; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); }
+        .btn-purple:hover { background: #7c3aed; transform: translateY(-2px); }
+        .btn-blue { background: #3b82f6; color: white; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
+        .btn-blue:hover { background: #2563eb; transform: translateY(-2px); }
+
+
+        /* --- TASK 2: SOCIAL GRID --- */
+        .socialGrid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 20px;
+        }
+
+        .sCard {
+          background: #fff; border: 1px solid #e2e8f0; border-radius: 16px;
+          padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+          display: flex; flex-direction: column; gap: 12px;
+          transition: transform 0.2s;
+        }
+        .sCard:hover { transform: translateY(-4px); border-color: #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
+
+        .sHeader { display: flex; align-items: center; gap: 10px; }
+        .sAv {
+          width: 40px; height: 40px; border-radius: 50%;
+          display: grid; place-items: center; font-weight: 800; color: white;
+          font-size: 1rem;
+        }
+        .sInfo div:first-child { font-weight: 800; color: #1e293b; }
+        .sInfo div:last-child { font-size: 0.75rem; font-weight: 600; }
+        
+        .status-on { color: #10b981; }
+        .status-off { color: #94a3b8; }
+
+        .sBody {
+          font-size: 0.9rem; color: #475569; line-height: 1.4;
+          background: #f8fafc; padding: 10px; border-radius: 8px;
+        }
+        .sBody strong { color: #3b82f6; }
+
+        .sFooter {
+          display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: auto;
+        }
+        .emojiBtn {
+          aspect-ratio: 1; border: 1px solid #e2e8f0; background: #fff;
+          border-radius: 8px; cursor: pointer; font-size: 1.4rem;
+          display: grid; place-items: center; transition: 0.2s;
+        }
+        .emojiBtn:hover { background: #eff6ff; border-color: #bfdbfe; }
+        .emojiBtn.selected { background: #3b82f6; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+        .emojiBtn.correct { background: #dcfce7 !important; border-color: #16a34a !important; }
+        .emojiBtn.wrong { background: #fee2e2 !important; border-color: #dc2626 !important; opacity: 0.5; }
+
+      </style>
+
+      <div class="taskWrapper">
+
+        <div class="paperBoard">
+          <div class="paperTitle">
+            <span>📝 1-ТАПСЫРМА: МӘТІН</span>
+            <span style="font-size:1.2rem;">🌙</span>
+          </div>
+
+          <div class="paperText">
+            Кешкі уақытта адамдар көбінесе демалып, бос уақытын пайдалы өткізуге тырысады.
+            Мен әдетте <span class="p-slot" data-ans="сағат алтыда">...</span> үйде боламын.
+            Кешке мен <span class="p-slot" data-ans="демаламын">...</span> немесе <span class="p-slot" data-ans="фильм көремін">...</span>.
+            Мен кітап <span class="p-slot" data-ans="оқимын">...</span>, себебі маған <span class="p-slot" data-ans="детектив">...</span> жанрындағы кітаптар ұнайды.
+            Кейде мен ТВ <span class="p-slot" data-ans="қараймын">...</span>, ал демалыс күндері <span class="p-slot" data-ans="спортпен">...</span> айналысамын.
+            Менің хоббиім – <span class="p-slot" data-ans="тоқу">...</span>.
+          </div>
+
+          <div class="chipBox" id="task1Bank">
+            <button class="bChip" onclick="fillTask1(this)">тоқу</button>
+            <button class="bChip" onclick="fillTask1(this)">детектив</button>
+            <button class="bChip" onclick="fillTask1(this)">сағат алтыда</button>
+            <button class="bChip" onclick="fillTask1(this)">қараймын</button>
+            <button class="bChip" onclick="fillTask1(this)">спортпен</button>
+            <button class="bChip" onclick="fillTask1(this)">оқимын</button>
+            <button class="bChip" onclick="fillTask1(this)">демаламын</button>
+            <button class="bChip" onclick="fillTask1(this)">фильм көремін</button>
+          </div>
+
+          <button class="checkBtn btn-purple" onclick="checkTask1()">Тексеру</button>
+        </div>
+        <div>
+          <div style="margin-bottom:20px; border-left:4px solid #3b82f6; padding-left:15px;">
+            <h3 class="h3" style="color:#1e293b; margin:0;">🧠 2-Тапсырма: Хоббиді тап!</h3>
+            <p style="color:#64748b; margin:4px 0 0 0;">
+              Сипаттамаға сәйкес келетін эмодзиді таңдаңыз.
+            </p>
+          </div>
+        
+          <div class="socialGrid" id="socialGrid">
+        
+            <div class="sCard">
+              <div class="sHeader">
+                <div class="sAv" style="background:#f43f5e;">Ә</div>
+                <div class="sInfo"><div>Әлия</div><div class="status-on">• online</div></div>
+              </div>
+              <div class="sBody">
+                Мен дәмді тамақты жақсы көремін. Кешке асүйде
+                <strong>түрлі тағам дайындаймын</strong>.
+              </div>
+              <div class="sFooter" data-correct="2">
+                <div class="emojiBtn" onclick="selectHobby(this, 1)">🛌</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 2)">🍳</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 3)">🌳</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 4)">🎧</div>
+              </div>
+            </div>
+        
+            <div class="sCard">
+              <div class="sHeader">
+                <div class="sAv" style="background:#10b981;">Б</div>
+                <div class="sInfo"><div>Берік</div><div class="status-on">• далада</div></div>
+              </div>
+              <div class="sBody">
+                Маған таза ауа ұнайды. Кешке үйде отырмаймын,
+                <strong>саябақта қыдырамын</strong>.
+              </div>
+              <div class="sFooter" data-correct="3">
+                <div class="emojiBtn" onclick="selectHobby(this, 1)">🛌</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 2)">🍳</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 3)">🌳</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 4)">🎬</div>
+              </div>
+            </div>
+        
+            <div class="sCard">
+              <div class="sHeader">
+                <div class="sAv" style="background:#8b5cf6;">Ж</div>
+                <div class="sInfo"><div>Жанна</div><div class="status-on">• музыка</div></div>
+              </div>
+              <div class="sBody">
+                Менің хоббиім – өнер. Кешке наушникпен сүйікті
+                <strong>әндерімді тыңдаймын</strong>.
+              </div>
+              <div class="sFooter" data-correct="4">
+                <div class="emojiBtn" onclick="selectHobby(this, 1)">🛌</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 2)">🍳</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 3)">🌳</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 4)">🎧</div>
+              </div>
+            </div>
+        
+            <div class="sCard">
+              <div class="sHeader">
+                <div class="sAv" style="background:#ec4899;">С</div>
+                <div class="sInfo"><div>Сәуле</div><div class="status-on">• кафеде</div></div>
+              </div>
+              <div class="sBody">
+                Мен жалғыз қалғанды ұнатпаймын. Кешке
+                <strong>құрбыларыммен кездесемін</strong>.
+              </div>
+              <div class="sFooter" data-correct="1">
+                <div class="emojiBtn" onclick="selectHobby(this, 1)">🤝</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 2)">🍳</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 3)">🛌</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 4)">🎧</div>
+              </div>
+            </div>
+        
+            <div class="sCard">
+              <div class="sHeader">
+                <div class="sAv" style="background:#f59e0b;">Қ</div>
+                <div class="sInfo"><div>Қайрат</div><div class="status-off">• үйде</div></div>
+              </div>
+              <div class="sBody">
+                Маған попкорн мен қызықты оқиғалар ұнайды. Кешке
+                <strong>жаңа комедия көремін</strong>.
+              </div>
+              <div class="sFooter" data-correct="4">
+                <div class="emojiBtn" onclick="selectHobby(this, 1)">🤝</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 2)">🍳</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 3)">🌳</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 4)">🎬</div>
+              </div>
+            </div>
+        
+            <div class="sCard">
+              <div class="sHeader">
+                <div class="sAv" style="background:#64748b;">М</div>
+                <div class="sInfo"><div>Мұрат</div><div class="status-off">• жұмыста</div></div>
+              </div>
+              <div class="sBody">
+                Жұмыс өте ауыр. Мен қатты шаршадым. Кешке
+                <strong>ерте жатып, ұйықтаймын</strong>.
+              </div>
+              <div class="sFooter" data-correct="1">
+                <div class="emojiBtn" onclick="selectHobby(this, 1)">🛌</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 2)">🍳</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 3)">🌳</div>
+                <div class="emojiBtn" onclick="selectHobby(this, 4)">🎧</div>
+              </div>
+            </div>
+        
+          </div>
+        
+          <button class="checkBtn btn-blue" onclick="checkTask2()">
+            Нәтижені тексеру
+          </button>
+        
+          <div id="task2Result" class="resultBox" style="margin-top:20px;"></div>
+        </div>
+    </section>
+
+    <section class="section reveal" id="test" style="margin-top: 60px;">
+      <div class="section__head">
+        <h2 class="h2" style="font-size: 1.8rem; color: #1e293b;">🎯 Бліміңізді тексеріңіз</h2>
+        <p class="section__sub">8 сұраққа жауап беріп, біліміңізді бекітіңіз.</p>
+      </div>
+
+      <style>
+        .quizGrid {
+          display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 20px; max-width: 900px; margin: 0 auto;
+        }
+
+        .qCard {
+          background: #fff; border-radius: 12px; padding: 15px;
+          border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .qHeader { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom:8px; border-bottom:1px dashed #e2e8f0; }
+        .qBadge {
+          background: #eff6ff; color: #3b82f6; width: 24px; height: 24px;
+          border-radius: 50%; display: grid; place-items: center; font-size: 0.8rem; font-weight: 700;
+        }
+        .qText { font-weight: 700; font-size: 0.95rem; color: #334155; }
+
+        .qOptions { display: flex; flex-direction: column; gap: 8px; }
+        .qOptions input { display: none; }
+        .qLabel {
+          display: block; padding: 10px; background: #f8fafc; border: 1px solid #e2e8f0;
+          border-radius: 8px; font-size: 0.9rem; color: #475569; cursor: pointer; transition: 0.1s;
+        }
+        .qLabel:hover { background: #f1f5f9; color: #0f172a; }
+        .qOptions input:checked + .qLabel { background: #3b82f6; color: white; border-color: #2563eb; }
+
+        .qLabel.correct { background: #dcfce7 !important; border-color: #16a34a !important; color: #14532d !important; }
+        .qLabel.wrong { background: #fee2e2 !important; border-color: #dc2626 !important; color: #7f1d1d !important; opacity: 0.6; }
+
+        .resultBox {
+          margin-top: 30px; padding: 20px; border-radius: 12px; text-align: center; font-weight: 600; display: none;
+        }
+      </style>
+
+      <form id="quizForm" class="quizGrid">
+        
+        <div class="qCard">
+          <div class="qHeader"><div class="qBadge">1</div><div class="qText">«Я буду дома в пять»:</div></div>
+          <div class="qOptions">
+            <label><input type="radio" name="q1" value="0"><span class="qLabel">Мен ерте боламын</span></label>
+            <label><input type="radio" name="q1" value="1"><span class="qLabel">Мен бесте үйде боламын</span></label>
+            <label><input type="radio" name="q1" value="0"><span class="qLabel">Мен кеш боламын</span></label>
+          </div>
+        </div>
+
+        <div class="qCard">
+          <div class="qHeader"><div class="qBadge">2</div><div class="qText">«Вязание» қазақша:</div></div>
+          <div class="qOptions">
+            <label><input type="radio" name="q2" value="1"><span class="qLabel">Тоқу</span></label>
+            <label><input type="radio" name="q2" value="0"><span class="qLabel">Оқу</span></label>
+            <label><input type="radio" name="q2" value="0"><span class="qLabel">Жазу</span></label>
+          </div>
+        </div>
+
+        <div class="qCard">
+          <div class="qHeader"><div class="qBadge">3</div><div class="qText">«Смотреть фильм»:</div></div>
+          <div class="qOptions">
+            <label><input type="radio" name="q3" value="0"><span class="qLabel">Фильм оқу</span></label>
+            <label><input type="radio" name="q3" value="1"><span class="qLabel">Фильм көру</span></label>
+            <label><input type="radio" name="q3" value="0"><span class="qLabel">Фильм жазу</span></label>
+          </div>
+        </div>
+
+        <div class="qCard">
+          <div class="qHeader"><div class="qBadge">4</div><div class="qText">«Стихи» - аудармасы:</div></div>
+          <div class="qOptions">
+            <label><input type="radio" name="q4" value="1"><span class="qLabel">Өлеңдер</span></label>
+            <label><input type="radio" name="q4" value="0"><span class="qLabel">Әндер</span></label>
+            <label><input type="radio" name="q4" value="0"><span class="qLabel">Ертегілер</span></label>
+          </div>
+        </div>
+
+        <div class="qCard">
+          <div class="qHeader"><div class="qBadge">5</div><div class="qText">«У меня нет хобби»:</div></div>
+          <div class="qOptions">
+            <label><input type="radio" name="q5" value="1"><span class="qLabel">Менде хобби жоқ</span></label>
+            <label><input type="radio" name="q5" value="0"><span class="qLabel">Менде хобби бар</span></label>
+            <label><input type="radio" name="q5" value="0"><span class="qLabel">Маған хобби ұнайды</span></label>
+          </div>
+        </div>
+
+        <div class="qCard">
+          <div class="qHeader"><div class="qBadge">6</div><div class="qText">«Вечером» қазақша:</div></div>
+          <div class="qOptions">
+            <label><input type="radio" name="q6" value="0"><span class="qLabel">Таңертең</span></label>
+            <label><input type="radio" name="q6" value="1"><span class="qLabel">Кешке</span></label>
+            <label><input type="radio" name="q6" value="0"><span class="qLabel">Түсте</span></label>
+          </div>
+        </div>
+
+        <div class="qCard">
+          <div class="qHeader"><div class="qBadge">7</div><div class="qText">«Я читаю книгу»:</div></div>
+          <div class="qOptions">
+            <label><input type="radio" name="q7" value="0"><span class="qLabel">Мен кітап жазамын</span></label>
+            <label><input type="radio" name="q7" value="1"><span class="qLabel">Мен кітап оқимын</span></label>
+            <label><input type="radio" name="q7" value="0"><span class="qLabel">Мен кітап көремін</span></label>
+          </div>
+        </div>
+
+        <div class="qCard">
+          <div class="qHeader"><div class="qBadge">8</div><div class="qText">«Отдыхать» сөзі:</div></div>
+          <div class="qOptions">
+            <label><input type="radio" name="q8" value="0"><span class="qLabel">Жұмыс істеу</span></label>
+            <label><input type="radio" name="q8" value="1"><span class="qLabel">Демалу</span></label>
+            <label><input type="radio" name="q8" value="0"><span class="qLabel">Оқу</span></label>
+          </div>
+        </div>
+
+      </form>
+
+      <button type="button" class="checkBtn btn-purple" onclick="checkQuiz()">Нәтижені тексеру</button>
+      <div id="quizResult" class="resultBox"></div>
+    </section>
+
+    <div class="navBottom">
+      <a class="btn" href="week8.html">← 8-апта</a>
+      <a class="btn btn--primary" href="week10.html">10-аптаға өту →</a>
+    </div>
+
+    <footer class="footer reveal" role="contentinfo">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__brand">
+            <span class="brand__mark brand__mark--sm" aria-hidden="true"></span>
+            <div>
+              <div class="footer__title">Ситуативтік қазақ тілі</div>
+              <div class="footer__sub">Онлайн курс</div>
+            </div>
+          </div>
+          <p class="footer__text">Авторы: Ахметова Татьяна Алимжановна</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span class="muted">© Kazakh Course 2026</span>
+      </div>
+    </footer>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    // Reveal animation
+    document.addEventListener('DOMContentLoaded', () => {
+      document.documentElement.classList.add('reveal-ready');
+      setTimeout(() => {
+        document.querySelectorAll('.reveal').forEach((el, i) => {
+          setTimeout(() => el.classList.add('is-in'), i * 100);
+        });
+      }, 100);
+
+      // Shuffle logic for Task 1 & 2
+      shuffleChildren('task1Bank');
+      shuffleChildren('socialGrid');
+    });
+
+    function shuffleChildren(id) {
+      const parent = document.getElementById(id);
+      for (let i = parent.children.length; i >= 0; i--) {
+        parent.appendChild(parent.children[Math.random() * i | 0]);
+      }
+    }
+
+    // --- TASK 1 LOGIC ---
+    function fillTask1(btn) {
+      const slots = document.querySelectorAll('.p-slot');
+      for(let s of slots) {
+        if(!s.classList.contains('filled')) {
+          s.innerText = btn.innerText; s.classList.add('filled'); btn.classList.add('used');
+          s.onclick = () => { s.innerText="..."; s.classList.remove('filled','correct','wrong'); s.onclick=null; btn.classList.remove('used'); };
+          break;
+        }
+      }
+    }
+
+    function checkTask1() {
+      const slots = document.querySelectorAll('.p-slot');
+      let correct = 0;
+      slots.forEach(s => {
+        if(s.classList.contains('filled')) {
+          if(s.innerText.trim().toLowerCase() === s.dataset.ans.trim().toLowerCase()) {
+            s.classList.add('correct'); s.classList.remove('wrong'); correct++;
+          } else { s.classList.add('wrong'); s.classList.remove('correct'); }
+        } else { s.classList.add('wrong'); }
+      });
+      if(correct === slots.length) alert("Тамаша! Барлық сөздер дұрыс қойылды! 🎉");
+    }
+
+    // --- TASK 2 LOGIC ---
+/* =========================
+       TASK 2 LOGIC (ЖАҢАРТЫЛҒАН)
+       ========================= */
+
+    // 1. Эмодзи таңдау функциясы
+    function selectHobby(btn, index) {
+      // Ата-ана элементті табу (footer)
+      const footer = btn.parentElement;
+      // Сол қатардағы басқа түймелерден "active" класын алып тастау
+      const siblings = footer.querySelectorAll('.emojiBtn');
+      siblings.forEach(b => b.classList.remove('is-selected'));
+      
+      // Басылған түймеге "active" қосу
+      btn.classList.add('is-selected');
+      
+      // Таңдауды сақтау
+      footer.dataset.userChoice = index;
+    }
+
+    // 2. Тексеру функциясы
+    function checkTask2() {
+      const cards = document.querySelectorAll('.sCard');
+      const resultBox = document.getElementById('task2Result');
+      let score = 0;
+      let total = cards.length;
+
+      // Әр картаны тексеру
+      cards.forEach(card => {
+        const footer = card.querySelector('.sFooter');
+        const userChoice = footer.dataset.userChoice; // Пайдаланушы таңдауы
+        const correctChoice = footer.dataset.correct; // Дұрыс жауап
+        const buttons = footer.querySelectorAll('.emojiBtn');
+
+        // Алдыңғы стильдерді тазалау
+        card.classList.remove('is-correct', 'is-wrong');
+        buttons.forEach(b => b.classList.remove('correct', 'wrong', 'is-disabled'));
+
+        if (userChoice) {
+          // Егер жауап дұрыс болса
+          if (userChoice === correctChoice) {
+            score++;
+            card.classList.add('is-correct');
+            buttons[userChoice - 1].classList.add('correct'); // Жасыл
+          } else {
+            // Егер қате болса
+            card.classList.add('is-wrong');
+            buttons[userChoice - 1].classList.add('wrong'); // Қызыл (қате)
+            buttons[correctChoice - 1].classList.add('correct'); // Дұрысын көрсету
+          }
+        } else {
+          // Егер ештеңе таңдалмаса
+          card.classList.add('is-wrong');
+        }
+      });
+
+      // Нәтижені көрсету (Анимациямен)
+      resultBox.style.display = 'block';
+      
+      if (score === total) {
+        resultBox.className = 'resultBox is-good';
+        resultBox.innerHTML = `
+          <div style="font-size:2rem; margin-bottom:10px;">🏆</div>
+          <strong>Керемет! ${score} / ${total}</strong><br>
+          Барлық хобби дұрыс табылды!
+        `;
+      } else if (score >= 4) {
+        resultBox.className = 'resultBox is-good';
+        resultBox.innerHTML = `
+          <div style="font-size:2rem; margin-bottom:10px;">👍</div>
+          <strong>Жақсы! ${score} / ${total}</strong><br>
+          Кейбір қателер бар, қайталап көріңіз.
+        `;
+      } else {
+        resultBox.className = 'resultBox is-bad';
+        resultBox.innerHTML = `
+          <div style="font-size:2rem; margin-bottom:10px;">📚</div>
+          <strong>Қайталау керек: ${score} / ${total}</strong><br>
+          Сөздерді жаттап, қайта оралыңыз.
+        `;
+      }
+
+      // Нәтижеге қарай сырғу (Smooth Scroll)
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // --- QUIZ LOGIC ---
+    function checkQuiz() {
+      const form = document.getElementById('quizForm');
+      const box = document.getElementById('quizResult');
+      let score = 0; const total = 8;
+
+      form.querySelectorAll('.qLabel').forEach(l => l.classList.remove('correct','wrong'));
+
+      for(let i=1; i<=total; i++) {
+        const inp = form.querySelector(`input[name="q${i}"]:checked`);
+        if(inp) {
+          const lbl = inp.nextElementSibling;
+          if(inp.value === "1") { score++; lbl.classList.add('correct'); }
+          else { lbl.classList.add('wrong'); }
+        }
+      }
+
+      box.style.display = "block";
+      if(score === total) {
+        box.style.background="#dcfce7"; box.style.color="#15803d";
+        box.innerHTML = `🎉 <strong>Курс аяқталды!</strong><br>Сіз курс бойынша тамаша нәтиже көрсеттіңіз! (${score}/${total})`;
+      } else if (score >= 5) {
+        box.style.background="#fff7ed"; box.style.color="#c2410c";
+        box.innerHTML = `👍 <strong>Жақсы!</strong><br>Нәтиже: ${score}/${total}. Бірақ кейбір тақырыптарды қайталаған дұрыс.`;
+      } else {
+        box.style.background="#fee2e2"; box.style.color="#b91c1c";
+        box.innerHTML = `📚 <strong>Қайталау керек</strong><br>Нәтиже: ${score}/${total}. Курсты қайта шолып шығуды ұсынамыз.`;
+      }
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+</body>
+</html>

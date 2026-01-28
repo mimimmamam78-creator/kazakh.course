@@ -1,0 +1,1228 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>1-апта: Кіріспе • Ситуативтік қазақ тілі</title>
+  <meta name="description" content="1-апта: Мен, Жұмыс, Орын, Уақыт." />
+  <meta name="color-scheme" content="light" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* =========================================
+       WEEK 1 SPECIFIC STYLES
+       ========================================= */
+
+    /* HIGHLIGHTS FOR ENDINGS */
+    .ending {
+      color: var(--a);
+      font-weight: 800;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      text-decoration-color: color-mix(in oklab, var(--a) 30%, transparent);
+    }
+
+    /* FLIP CARDS (Interactive) */
+    .flipGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+      perspective: 1000px;
+    }
+
+    .flipCard {
+      background-color: transparent;
+      height: 120px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .flipCard__inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-1);
+    }
+
+    .flipCard:hover .flipCard__inner,
+    .flipCard.is-flipped .flipCard__inner {
+      transform: rotateY(180deg);
+    }
+
+    .flipCard__front, .flipCard__back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      border-radius: var(--r-lg);
+      border: 1px solid var(--stroke);
+      padding: 10px;
+    }
+
+    .flipCard__front {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .flipCard__back {
+      background: color-mix(in oklab, var(--a) 10%, var(--surface));
+      color: var(--text);
+      transform: rotateY(180deg);
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .flipCard__icon {
+      font-size: 12px;
+      opacity: 0.5;
+      margin-top: 8px;
+    }
+
+    /* VISUAL LISTS (Blocks 2, 3) */
+    .visualList {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .visualItem {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--r-lg);
+    }
+    
+    .visualItem__arrow {
+      color: var(--a);
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    /* POSSESSION ANIMATION CONCEPT (Block 4) */
+    .connectBox {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      background: color-mix(in oklab, var(--surface2) 40%, transparent);
+      border-radius: var(--r-lg);
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .connectBox__plus { color: var(--muted); }
+    .connectBox__result { color: var(--a); }
+
+    /* COMPARISON COLUMNS (Block 5) */
+    .compareGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .compareCol {
+      background: var(--surface);
+      padding: 16px;
+      border-radius: var(--r-lg);
+      border: 1px solid var(--stroke);
+    }
+    .compareCol__head {
+      font-weight: 800;
+      margin-bottom: 12px;
+      text-align: center;
+      color: var(--a);
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    /* TIMELINE (Block 6) */
+    .timeline {
+      display: flex;
+      overflow-x: auto;
+      gap: 12px;
+      padding-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .timeCard {
+      flex: 0 0 auto;
+      min-width: 100px;
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--r-lg);
+      padding: 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .timeCard__kz { font-weight: 700; }
+    .timeCard__ru { font-size: 0.8rem; color: var(--muted); }
+
+    /* AUDIO PATTERNS */
+    .audioRow {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px;
+      border-bottom: 1px solid var(--stroke);
+    }
+    .audioRow:last-child { border-bottom: none; }
+    
+    .playBtn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--a);
+      color: #fff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .playBtn:hover { transform: scale(1.1); }
+    .playBtn.is-playing { background: var(--b); animation: pulse 1s infinite; }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(var(--b), 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(var(--b), 0); }
+      100% { box-shadow: 0 0 0 0 rgba(var(--b), 0); }
+    }
+
+    /* TEST STYLES */
+    .testGrid {
+      display: grid;
+      gap: 12px;
+    }
+    .testItem {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: var(--r-lg);
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .testItem:hover { border-color: var(--stroke2); }
+    .testItem input { accent-color: var(--a); transform: scale(1.2); }
+/* Интерактивный текст */
+.audioText {
+  cursor: pointer;
+  flex: 1; /* Занимает все свободное место */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.audioText .main {
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+/* При наведении цвет меняется, показывая интерактивность */
+.audioText:hover .main {
+  color: var(--a); 
+}
+
+/* Скрытый перевод */
+.audioText .trans {
+  display: none; /* Скрыто по умолчанию */
+  font-size: 0.9em;
+  color: var(--muted);
+  margin-top: 4px;
+  border-top: 1px dashed var(--stroke);
+  padding-top: 4px;
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Класс для показа перевода */
+.audioText.is-open .trans {
+  display: block;
+}
+
+/* Анимация появления */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* COMPACT TEST GRID */
+.compactGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Екі баған */
+  gap: 16px;
+}
+
+/* Мобильді нұсқада бір баған */
+@media (max-width: 768px) {
+  .compactGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Аздап кішірейтілген блок */
+.compactBlock {
+  margin: 0 !important;
+  padding: 12px 14px !important;
+}
+
+/* Сұрақ мәтіні кішірек */
+.compactTitle {
+  font-size: 1rem !important;
+  margin-bottom: 10px !important;
+  font-weight: 700;
+}
+/* =========================================
+       7. VOCAB CARD STYLES (ЖАҢА СӨЗДЕР ҮШІН)
+       ========================================= */
+    
+    /* Тор (Сетка) */
+    .vocabGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    /* Картаның негізі */
+    .vocabCard {
+      background-color: transparent;
+      height: 100px; /* Биіктік міндетті түрде болуы керек */
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .vocabCard__inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      border-radius: 16px;
+      box-shadow: var(--shadow-1);
+    }
+
+    /* АЙНАЛУ ЭФФЕКТІСІ (ОСЫ ЖОЛ МАҢЫЗДЫ) */
+    .vocabCard.is-flipped .vocabCard__inner {
+      transform: rotateY(180deg);
+    }
+
+    /* Алдыңғы және артқы жағы */
+    .vocabCard__front, .vocabCard__back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    /* Қазақша жағы */
+    .vocabCard__front {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    /* Орысша жағы (айналып тұрады) */
+    .vocabCard__back {
+      background: color-mix(in oklab, var(--a) 15%, var(--surface));
+      color: var(--text);
+      transform: rotateY(180deg);
+      font-size: 0.9em;
+      color: var(--muted);
+    }
+    /* Sidebar ішіндегі тор 5 бағаннан тұрады */
+.miniGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 колонка */
+  gap: 8px;
+  margin-top: 20px;
+}
+
+/* Ұялы телефонда (тар экранда) 5 баған тым кішкентай болуы мүмкін */
+@media (max-width: 360px) {
+  .miniGrid {
+    grid-template-columns: repeat(4, 1fr); /* Өте тар экранда 4 баған */
+  }
+}
+  </style>
+</head>
+
+<body data-page="week1">
+  <a class="skip-link" href="#main">Негізгі мазмұнға өту</a>
+
+  <header class="topbar" role="banner">
+    <div class="topbar__inner container">
+      <div class="brand" aria-label="Kazakh Course">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <div class="brand__text">
+          <div class="brand__title">Ситуативтік қазақ тілі</div>
+          <div class="brand__sub">Онлайн курс • 10 апта</div>
+        </div>
+      </div>
+
+      <nav class="nav nav--weeks" aria-label="Апталар (десктоп)">
+        <a class="nav__link" href="index.html">Басты</a>
+        <a class="nav__link is-active" href="week1.html" aria-current="page">1</a>
+        <a class="nav__link" href="week2.html">2</a>
+        <a class="nav__link" href="week3.html">3</a>
+        <a class="nav__link" href="week4.html">4</a>
+        <a class="nav__link" href="week5.html">5</a>
+        <a class="nav__link" href="week6.html">6</a>
+        <a class="nav__link" href="week7.html">7</a>
+        <a class="nav__link" href="week8.html">8</a>
+        <a class="nav__link" href="week9.html">9</a>
+        <a class="nav__link" href="week10.html">10</a>
+        <a class="nav__link" href="dictionary.html">Сөздік</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    
+    <section class="hero reveal">
+      <div class="hero__grid">
+        <div>
+          <div class="pill">
+            <span class="pill__dot" aria-hidden="true"></span>
+            <span>1-апта</span>
+          </div>
+          <h1 class="h1">Мен. Жұмыс. <span class="h1__accent">Уақыт.</span></h1>
+          <p class="lead">
+            Бұл аптада сіз өзіңіз туралы айтуды, қайда баратыныңызды және уақытты белгілеуді үйренесіз.
+            <br><span style="color:var(--muted); font-size:0.9em;">(Цель: Сказать кто я, где я, куда иду).</span>
+          </p>
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#block1">
+              Бастау <span class="btn__arrow" aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </div>
+        
+        <aside class="glassPanel reveal">
+          <div class="glassPanel__top">
+            <div class="glassPanel__badge">Прогресс</div>
+            <div class="glassPanel__hint">1 / 10</div>
+          </div>
+          <div class="glassPanel__body">
+            <div class="progress__bar">
+              <span class="progress__fill" style="width: 10%"></span>
+            </div>
+            <div class="progress__note">Курстың 10% оқылды</div>
+            
+            <div class="miniGrid" style="margin-top:20px">
+               <a class="miniCard" style="border-color:var(--a); background:rgba(77,163,255,0.1); color:var(--text); font-weight:800;" href="week1.html">1</a>
+               
+               <a class="miniCard" href="week2.html">2</a>
+               <a class="miniCard" href="week3.html">3</a>
+               <a class="miniCard" href="week4.html">4</a>
+               <a class="miniCard" href="week5.html">5</a>
+               <a class="miniCard" href="week6.html">6</a>
+               <a class="miniCard" href="week7.html">7</a>
+               <a class="miniCard" href="week8.html">8</a>
+               <a class="miniCard" href="week9.html">9</a>
+               <a class="miniCard" href="week10.html">10</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+    <section class="weekSection reveal" style="margin-top: 50px;">
+      <div class="weekSection__head">
+        <h2 class="h2 weekSection__title">1. Грамматикалық анықтамалық</h2>
+        <p class="section__sub">Ережелер, мысалдар және түсіндірмелер.</p>
+      </div>
+    
+      <style>
+        /* DASHBOARD GRID */
+        .grammarDash {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 20px;
+        }
+    
+        /* COMMON CARD STYLE */
+        .gCard {
+          background: #ffffff;
+          border-radius: 20px;
+          padding: 24px;
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .gCard:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+          border-color: var(--accent);
+        }
+    
+        /* Card Header */
+        .gHeader {
+          display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+        }
+        .gTitle { font-weight: 800; font-size: 1.1rem; color: #1e293b; }
+        .gIcon { 
+          width: 40px; height: 40px; border-radius: 12px; 
+          display: grid; place-items: center; font-size: 1.5rem;
+          background: var(--bg-light); color: var(--accent);
+        }
+    
+        /* Content List */
+        .gList { display: flex; flex-direction: column; gap: 10px; }
+        .gItem {
+          display: flex; justify-content: space-between; align-items: center;
+          padding: 10px 14px; background: #f8fafc; border-radius: 10px;
+          font-size: 0.95rem; border-left: 3px solid transparent;
+          transition: 0.2s;
+        }
+        .gItem:hover { background: var(--bg-light); border-left-color: var(--accent); padding-left: 18px; }
+        
+        /* Suffix Highlight */
+        .suf { color: var(--accent); font-weight: 800; }
+        .ru { font-size: 0.8rem; color: #94a3b8; font-weight: 400; }
+    
+        /* RULE BOX (Explanation) */
+        .ruleBox {
+          margin-top: 20px;
+          padding: 12px;
+          background: #f1f5f9;
+          border-radius: 10px;
+          font-size: 0.85rem;
+          color: #475569;
+          line-height: 1.5;
+          display: flex; gap: 10px; align-items: flex-start;
+        }
+        .ruleIcon { font-size: 1rem; margin-top: 2px; }
+    
+        /* SPECIFIC THEMES */
+        .theme-verb { --accent: #3b82f6; --bg-light: #eff6ff; }
+        .theme-place { --accent: #10b981; --bg-light: #ecfdf5; }
+        .theme-dir { --accent: #f59e0b; --bg-light: #fffbeb; }
+        .theme-my { --accent: #8b5cf6; --bg-light: #f5f3ff; }
+        .theme-love { --accent: #ec4899; --bg-light: #fdf2f8; }
+    
+        /* Background Images (Subtle) */
+        .bg-deco {
+          position: absolute; bottom: -20px; right: -20px; font-size: 8rem; opacity: 0.05;
+          pointer-events: none; transition: 0.5s;
+        }
+        .gCard:hover .bg-deco { transform: rotate(-10deg) scale(1.2); opacity: 0.1; }
+    
+      </style>
+    
+      <div class="weekSection__body grammarDash">
+    
+        <div class="gCard theme-verb">
+          <div class="bg-deco">👤</div>
+          <div class="gHeader">
+            <div class="gTitle">1. Мен + Етістік (Действие)</div>
+            <div class="gIcon">🆔</div>
+          </div>
+          <div class="gList">
+            <div class="gItem">
+              <span>Бара<span class="suf">мын</span></span>
+              <span class="ru">Я иду</span>
+            </div>
+            <div class="gItem">
+              <span>Бола<span class="suf">мын</span></span>
+              <span class="ru">Я буду</span>
+            </div>
+            <div class="gItem">
+              <span>Жаза<span class="suf">мын</span></span>
+              <span class="ru">Я пишу</span>
+            </div>
+            <div class="gItem">
+              <span>Келе<span class="suf">мін</span></span>
+              <span class="ru">Я прихожу</span>
+            </div>
+          </div>
+          <div class="ruleBox">
+            <span class="ruleIcon">💡</span>
+            <div>
+              <strong>Ереже:</strong> "Мен" сөзі болса, сөз соңына әрқашан <b>-мын / -мін</b> жалғанады.
+              <br><em>(Жуан сөз + мын, Жіңішке сөз + мін)</em>
+            </div>
+          </div>
+        </div>
+    
+        <div class="gCard theme-place">
+          <div class="bg-deco">📍</div>
+          <div class="gHeader">
+            <div class="gTitle">2. Қайда? (Где?)</div>
+            <div class="gIcon">🗺️</div>
+          </div>
+          <div class="gList">
+            <div class="gItem">
+              <span>Петропавл<span class="suf">да</span></span>
+              <span class="ru">В Петропавловске</span>
+            </div>
+            <div class="gItem">
+              <span>Жұмыс<span class="suf">та</span></span>
+              <span class="ru">На работе</span>
+            </div>
+            <div class="gItem">
+              <span>Үй<span class="suf">де</span></span>
+              <span class="ru">Дома</span>
+            </div>
+            <div class="gItem">
+              <span>Сағат бес<span class="suf">те</span></span>
+              <span class="ru">В 5 часов</span>
+            </div>
+          </div>
+          <div class="ruleBox">
+            <span class="ruleIcon">💡</span>
+            <div>
+              <strong>Ереже:</strong> Мекенді білдіру үшін <b>-да/-де</b> немесе <b>-та/-те</b> (қатаң дыбыстардан кейін: с, т, ш, п, қ, к) жалғанады.
+            </div>
+          </div>
+        </div>
+    
+        <div class="gCard theme-dir">
+          <div class="bg-deco">🚀</div>
+          <div class="gHeader">
+            <div class="gTitle">3. Қайда барамын? (Куда?)</div>
+            <div class="gIcon">🔜</div>
+          </div>
+          <div class="gList">
+            <div class="gItem">
+              <span>Жұмыс <span class="suf">→</span> Жұмыс<span class="suf">қа</span></span>
+              <span class="ru">На работу</span>
+            </div>
+            <div class="gItem">
+              <span>Үй <span class="suf">→</span> Үй<span class="suf">ге</span></span>
+              <span class="ru">Домой</span>
+            </div>
+            <div class="gItem">
+              <span>Сабақ <span class="suf">→</span> Сабақ<span class="suf">қа</span></span>
+              <span class="ru">На урок</span>
+            </div>
+          </div>
+          <div class="ruleBox">
+            <span class="ruleIcon">💡</span>
+            <div>
+              <strong>Ереже:</strong> Бағытты көрсету үшін <b>-ға/-ге</b> (жұмсақ/үнді) немесе <b>-қа/-ке</b> (қатаң: к, қ, п, с...) қолданылады.
+            </div>
+          </div>
+        </div>
+    
+        <div class="gCard theme-my">
+          <div class="bg-deco">🎒</div>
+          <div class="gHeader">
+            <div class="gTitle">4. Менің... (Мой)</div>
+            <div class="gIcon">🔐</div>
+          </div>
+          <div class="gList">
+            <div class="gItem">
+              <span>Бала + <span class="suf">М</span> = Бала<span class="suf">м</span></span>
+              <span class="ru">Мой ребенок</span>
+            </div>
+            <div class="gItem">
+              <span>Дос + <span class="suf">ЫМ</span> = Дос<span class="suf">ым</span></span>
+              <span class="ru">Мой друг</span>
+            </div>
+            <div class="gItem">
+              <span>Жұмыс + <span class="suf">ЫМ</span> = Жұмыс<span class="suf">ым</span></span>
+              <span class="ru">Моя работа</span>
+            </div>
+          </div>
+          <div class="ruleBox">
+            <span class="ruleIcon">💡</span>
+            <div>
+              <strong>Ереже:</strong>
+              <ul>
+                <li>Дауысты дыбыстан кейін (а, е...): <b>+ м</b></li>
+                <li>Дауыссыз дыбыстан кейін (с, т...): <b>+ ым / ім</b></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    
+        <div class="gCard theme-love" style="grid-column: 1 / -1;">
+          <div class="bg-deco">❤️</div>
+          <div class="gHeader">
+            <div class="gTitle">5. Ұнайды vs Жақсы көремін</div>
+            <div class="gIcon">⚖️</div>
+          </div>
+          
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+            <div style="background:#f0f9ff; padding:15px; border-radius:12px; border:1px dashed #3b82f6;">
+              <div style="text-align:center; font-weight:800; color:#0369a1; margin-bottom:10px;">👍 НРАВИТСЯ</div>
+              <div class="gList">
+                <div class="gItem" style="background:white;">
+                  <span><b>Маған</b> спорт ұнайды.</span>
+                </div>
+                <div class="gItem" style="background:white;">
+                  <span><b>Маған</b> жұмыс ұнайды.</span>
+                </div>
+              </div>
+              <div style="text-align:center; font-size:0.8rem; margin-top:5px; color:#64748b;">(Кімге? - Мне)</div>
+            </div>
+    
+            <div style="background:#fdf2f8; padding:15px; border-radius:12px; border:1px dashed #ec4899;">
+              <div style="text-align:center; font-weight:800; color:#be185d; margin-bottom:10px;">❤️ ЛЮБЛЮ</div>
+              <div class="gList">
+                <div class="gItem" style="background:white;">
+                  <span><b>Мен</b> спортты жақсы көремін.</span>
+                </div>
+                <div class="gItem" style="background:white;">
+                  <span><b>Мен</b> жұмысты жақсы көремін.</span>
+                </div>
+              </div>
+              <div style="text-align:center; font-size:0.8rem; margin-top:5px; color:#64748b;">(Кім? - Я)</div>
+            </div>
+          </div>
+        </div>
+    
+        <div class="gCard" style="grid-column: 1 / -1; background:#1e293b; color:white; border:none;">
+          <div class="bg-deco" style="opacity:0.1; filter:grayscale(1);">⏳</div>
+          <div class="gHeader" style="margin-bottom:15px;">
+            <div class="gTitle" style="color:white;">6. Уақыт сөздері (Таймлайн)</div>
+          </div>
+          
+          <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px;">
+            <div style="flex:1; background:#334155; padding:10px; border-radius:8px; text-align:center; min-width:80px;">
+              <div style="font-weight:700;">Таңертең</div><div style="font-size:0.75rem; color:#94a3b8;">Утром</div>
+            </div>
+            <div style="flex:1; background:#334155; padding:10px; border-radius:8px; text-align:center; min-width:80px;">
+              <div style="font-weight:700;">Күндіз</div><div style="font-size:0.75rem; color:#94a3b8;">Днём</div>
+            </div>
+            <div style="flex:1; background:#334155; padding:10px; border-radius:8px; text-align:center; min-width:80px;">
+              <div style="font-weight:700;">Кешке</div><div style="font-size:0.75rem; color:#94a3b8;">Вечером</div>
+            </div>
+            <div style="flex:1; background:#f59e0b; color:#fff; padding:10px; border-radius:8px; text-align:center; min-width:80px; transform:scale(1.05); box-shadow:0 0 15px rgba(245, 158, 11, 0.4);">
+              <div style="font-weight:700;">Бүгін</div><div style="font-size:0.75rem; color:#fff;">Сегодня</div>
+            </div>
+            <div style="flex:1; background:#334155; padding:10px; border-radius:8px; text-align:center; min-width:80px;">
+              <div style="font-weight:700;">Ертең</div><div style="font-size:0.75rem; color:#94a3b8;">Завтра</div>
+            </div>
+            <div style="flex:1; background:#334155; padding:10px; border-radius:8px; text-align:center; min-width:80px;">
+              <div style="font-weight:700;">Қазір</div><div style="font-size:0.75rem; color:#94a3b8;">Сейчас</div>
+            </div>
+          </div>
+        </div>
+    
+      </div>
+    </section>
+
+    <section class="weekSection reveal">
+      <div class="weekSection__head">
+        <h2 class="h2 weekSection__title">Сөйлеу үлгілері</h2>
+        <p class="section__sub">Тыңдаңыз және қайталаңыз. <br><span style="font-size: 0.9em; opacity: 0.8; font-weight: normal;">(Аудару үшін мәтінді басыңыз)</span></p>
+      </div>
+      <div class="weekSection__body chatBox">
+        
+        <div class="audioRow">
+          <button class="playBtn" onclick="playAudio(this, '1.mp3')">▶</button>
+          <div class="audioText" onclick="toggleText(this)">
+            <div class="main">Мен жұмыста боламын / болмаймын</div>
+            <div class="trans">Я буду на работе / не буду</div>
+          </div>
+        </div>
+    
+        <div class="audioRow">
+          <button class="playBtn" onclick="playAudio(this, '2.mp3')">▶</button>
+          <div class="audioText" onclick="toggleText(this)">
+            <div class="main">Мен жұмысқа барамын / бармаймын</div>
+            <div class="trans">Я пойду на работу / не пойду</div>
+          </div>
+        </div>
+    
+        <div class="audioRow">
+          <button class="playBtn" onclick="playAudio(this, '3.mp3')">▶</button>
+          <div class="audioText" onclick="toggleText(this)">
+            <div class="main">Менің жұмысым жақсы</div>
+            <div class="trans">Моя работа хорошая</div>
+          </div>
+        </div>
+    
+        <div class="audioRow">
+          <button class="playBtn" onclick="playAudio(this, '4.mp3')">▶</button>
+          <div class="audioText" onclick="toggleText(this)">
+            <div class="main">Мен жұмыстан шықтым</div>
+            <div class="trans">Я вышел с работы</div>
+          </div>
+        </div>
+    
+        <div class="audioRow">
+          <button class="playBtn" onclick="playAudio(this, '5.mp3')">▶</button>
+          <div class="audioText" onclick="toggleText(this)">
+            <div class="main">Маған жұмысым ұнайды</div>
+            <div class="trans">Мне нравится моя работа</div>
+          </div>
+        </div>
+    
+        <div class="audioRow">
+          <button class="playBtn" onclick="playAudio(this, '6.mp3')">▶</button>
+          <div class="audioText" onclick="toggleText(this)">
+            <div class="main">Мен жұмысымды жақсы көремін</div>
+            <div class="trans">Я люблю свою работу</div>
+          </div>
+        </div>
+    
+        <div class="audioRow">
+          <button class="playBtn" onclick="playAudio(this, '7.mp3')">▶</button>
+          <div class="audioText" onclick="toggleText(this)">
+            <div class="main">Қазір жұмыстамын</div>
+            <div class="trans">Сейчас я на работе</div>
+          </div>
+        </div>
+    
+        <div class="audioRow">
+          <button class="playBtn" onclick="playAudio(this, '8.mp3')">▶</button>
+          <div class="audioText" onclick="toggleText(this)">
+            <div class="main">Бұл үлкен ғимарат</div>
+            <div class="trans">Это большое здание</div>
+          </div>
+        </div>
+    
+        <div class="audioRow">
+          <button class="playBtn" onclick="playAudio(this, '9.mp3')">▶</button>
+          <div class="audioText" onclick="toggleText(this)">
+            <div class="main">Бұл жерде көп жаңа ғимараттар бар</div>
+            <div class="trans">Здесь много новых зданий</div>
+          </div>
+        </div>
+    
+        <div class="audioRow">
+          <button class="playBtn" onclick="playAudio(this, '10.mp3')">▶</button>
+          <div class="audioText" onclick="toggleText(this)">
+            <div class="main">Мен осында / осы жерде жұмыс істеймін</div>
+            <div class="trans">Я здесь работаю</div>
+          </div>
+        </div>
+    
+      </div>
+    </section>
+    <section class="weekSection reveal" id="vocabSection">
+      <div class="weekSection__head">
+        <div>
+          <h2 class="h2 weekSection__title">7. Пайдалы сөз тіркестері</h2>
+          <p class="section__sub">Бұл сөздерді жаттап алыңыз.</p>
+        </div>
+        <button class="btn btn--primary" id="flipAllBtn" onclick="toggleAllCards()">
+          Аудармасын көрсету ↻
+        </button>
+      </div>
+
+      <div class="weekSection__body">
+        <div class="vocabGrid">
+          
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Менің атым</div>
+              <div class="vocabCard__back">Меня зовут / Моё имя</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Үлкен сәлем</div>
+              <div class="vocabCard__back">Большой привет</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Қайырлы таң</div>
+              <div class="vocabCard__back">Доброе утро</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Қайырлы күн</div>
+              <div class="vocabCard__back">Добрый день</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Кеш жарық</div>
+              <div class="vocabCard__back">Добрый вечер</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Жақсы денсаулық</div>
+              <div class="vocabCard__back">Хорошее здоровье</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Тамаша көңіл-күй</div>
+              <div class="vocabCard__back">Отличное настроение</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Көп жаңалық</div>
+              <div class="vocabCard__back">Много новостей</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Қара шаңырақ</div>
+              <div class="vocabCard__back">Отчий дом / Родной дом</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Әдемі қала</div>
+              <div class="vocabCard__back">Красивый город</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Алтын күз</div>
+              <div class="vocabCard__back">Золотая осень</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Жылы көктем</div>
+              <div class="vocabCard__back">Тёплая весна</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Суық қыс</div>
+              <div class="vocabCard__back">Холодная зима</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Ыстық жаз</div>
+              <div class="vocabCard__back">Жаркое лето</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Туған ауыл</div>
+              <div class="vocabCard__back">Родное село (аул)</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front" style="font-size:0.95em;">Университетте жұмыс істеймін</div>
+              <div class="vocabCard__back">Работаю в университете</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Петропавлда тудым</div>
+              <div class="vocabCard__back">Родился(лась) в Петропавловске</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Күзде тудым</div>
+              <div class="vocabCard__back">Родился(лась) осенью</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Туған күнім көктемде</div>
+              <div class="vocabCard__back">Мой день рождения весной</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Жиырма бесінші мектеп</div>
+              <div class="vocabCard__back">Двадцать пятая школа</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front" style="font-size:0.95em;">Ауыл мектебінде оқыдым</div>
+              <div class="vocabCard__back">Учился(лась) в сельской школе</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front" style="font-size:0.95em;">Кафедра меңгерушісімін</div>
+              <div class="vocabCard__back">Я заведующий кафедрой</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front" style="font-size:0.95em;">Деканатта жұмыс істеймін</div>
+              <div class="vocabCard__back">Работаю в деканате</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Үлкен рахмет</div>
+              <div class="vocabCard__back">Большое спасибо</div>
+            </div>
+          </div>
+
+          <div class="vocabCard" onclick="this.classList.toggle('is-flipped')">
+            <div class="vocabCard__inner">
+              <div class="vocabCard__front">Аман болыңыз</div>
+              <div class="vocabCard__back">Будьте здоровы / До свидания</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+    <section class="section reveal" id="test">
+      <div class="section__head">
+        <h2 class="h2">Өзіңізді тексеріңіз</h2>
+        <p class="section__sub">Дұрыс жауапты таңдаңыз (8 сұрақ).</p>
+      </div>
+
+      <div class="weekSection"> 
+        <div class="weekSection__body">
+          <form id="quizForm">
+            
+            <div class="compactGrid">
+
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">1. Мен Петропавл... тудым.</p>
+                <div class="testGrid">
+                  <label class="testItem"><input type="radio" name="q1" value="1"> –да</label>
+                  <label class="testItem"><input type="radio" name="q1" value="0"> –ға</label>
+                  <label class="testItem"><input type="radio" name="q1" value="0"> –пен</label>
+                </div>
+              </div>
+
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">2. Мен университет... жұмыс істеймін.</p>
+                <div class="testGrid">
+                  <label class="testItem"><input type="radio" name="q2" value="0"> –ке</label>
+                  <label class="testItem"><input type="radio" name="q2" value="1"> –те</label>
+                  <label class="testItem"><input type="radio" name="q2" value="0"> –тен</label>
+                </div>
+              </div>
+
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">3. Мен жұмыс... барамын (Куда?).</p>
+                <div class="testGrid">
+                  <label class="testItem"><input type="radio" name="q3" value="1"> –қа</label>
+                  <label class="testItem"><input type="radio" name="q3" value="0"> –та</label>
+                  <label class="testItem"><input type="radio" name="q3" value="0"> –пен</label>
+                </div>
+              </div>
+
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">4. Менің аты... (Моё имя).</p>
+                <div class="testGrid">
+                  <label class="testItem"><input type="radio" name="q4" value="0"> –ң</label>
+                  <label class="testItem"><input type="radio" name="q4" value="1"> –м</label>
+                  <label class="testItem"><input type="radio" name="q4" value="0"> –ңыз</label>
+                </div>
+              </div>
+
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">5. ... жұмыс ұнайды (Мне).</p>
+                <div class="testGrid">
+                  <label class="testItem"><input type="radio" name="q5" value="0"> Мен</label>
+                  <label class="testItem"><input type="radio" name="q5" value="1"> Маған</label>
+                  <label class="testItem"><input type="radio" name="q5" value="0"> Менің</label>
+                </div>
+              </div>
+
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">6. Мен жақсы ... (Я люблю).</p>
+                <div class="testGrid">
+                  <label class="testItem"><input type="radio" name="q6" value="1"> көремін</label>
+                  <label class="testItem"><input type="radio" name="q6" value="0"> көресің</label>
+                  <label class="testItem"><input type="radio" name="q6" value="0"> көреді</label>
+                </div>
+              </div>
+
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">7. «Сегодня» қазақша қалай?</p>
+                <div class="testGrid">
+                  <label class="testItem"><input type="radio" name="q7" value="0"> Ертең</label>
+                  <label class="testItem"><input type="radio" name="q7" value="0"> Кеше</label>
+                  <label class="testItem"><input type="radio" name="q7" value="1"> Бүгін</label>
+                </div>
+              </div>
+
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">8. Мен қазір бара... (Я иду).</p>
+                <div class="testGrid">
+                  <label class="testItem"><input type="radio" name="q8" value="0"> –сың</label>
+                  <label class="testItem"><input type="radio" name="q8" value="1"> –мын</label>
+                  <label class="testItem"><input type="radio" name="q8" value="0"> –ды</label>
+                </div>
+              </div>
+
+            </div>
+            <button type="button" class="btn btn--primary" style="margin-top: 24px; width: 100%;" onclick="checkQuiz()">
+              Нәтижені тексеру
+            </button>
+          </form>
+
+          <div id="quizResult" class="resultBox"></div>
+        </div>
+      </div>
+    </section>
+    <div class="navBottom">
+      <a class="btn" href="index.html">← Басты бет</a>
+      <a class="btn btn--primary" href="week2.html">2-аптаға өту →</a>
+    </div>
+
+    <footer class="footer reveal" role="contentinfo">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__brand">
+            <span class="brand__mark brand__mark--sm" aria-hidden="true"></span>
+            <div>
+              <div class="footer__title">Ситуативтік қазақ тілі</div>
+              <div class="footer__sub">Онлайн курс</div>
+            </div>
+          </div>
+          <p class="footer__text">Авторы: Ахметова Татьяна Алимжановна</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span class="muted">© Kazakh Course 2026</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    // 1. Анимация
+    document.addEventListener('DOMContentLoaded', () => {
+      document.documentElement.classList.add('reveal-ready');
+      setTimeout(() => {
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach((el, i) => {
+          setTimeout(() => el.classList.add('is-in'), i * 100);
+        });
+      }, 100);
+    });
+
+    // 2. Аударманы ашу (Мәтінді басқанда)
+    function toggleText(element) {
+      element.classList.toggle('is-open');
+    }
+
+    // 3. БАРЛЫҚ КАРТОЧКАНЫ АЙНАЛДЫРУ (ТҮЙМЕ ҮШІН)
+    let allFlipped = false;
+
+    function toggleAllCards() {
+      const cards = document.querySelectorAll('.vocabCard');
+      const btn = document.getElementById('flipAllBtn');
+      
+      allFlipped = !allFlipped; 
+
+      cards.forEach(card => {
+        if (allFlipped) {
+          card.classList.add('is-flipped');
+        } else {
+          card.classList.remove('is-flipped');
+        }
+      });
+
+      // Түйме мәтінін өзгерту
+      if (btn) {
+        if (allFlipped) {
+          btn.innerText = 'Бастапқы күйге қайтару ↺';
+          btn.style.opacity = "0.8";
+        } else {
+          btn.innerText = 'Аудармасын көрсету ↻';
+          btn.style.opacity = "1";
+        }
+      }
+    }
+
+    // 4. Тест тексеру
+    function checkQuiz() {
+      const form = document.getElementById('quizForm');
+      const resultBox = document.getElementById('quizResult');
+      let score = 0;
+      const total = 8;
+
+      for (let i = 1; i <= total; i++) {
+        const selected = form.querySelector(`input[name="q${i}"]:checked`);
+        const allLabels = form.querySelectorAll(`input[name="q${i}"]`);
+        
+        allLabels.forEach(input => {
+            input.parentElement.style.borderColor = "var(--stroke)";
+            input.parentElement.style.backgroundColor = "var(--surface2)";
+        });
+
+        if (selected) {
+            if (selected.value === "1") {
+                score++;
+                selected.parentElement.style.borderColor = "var(--b)";
+                selected.parentElement.style.backgroundColor = "color-mix(in oklab, var(--b) 10%, transparent)";
+            } else {
+                selected.parentElement.style.borderColor = "red";
+                selected.parentElement.style.backgroundColor = "color-mix(in oklab, red 5%, transparent)";
+            }
+        }
+      }
+
+      resultBox.style.display = 'block';
+      
+      if (score === total) {
+          resultBox.className = 'resultBox is-good';
+          resultBox.innerHTML = `<strong>Тамаша! 8/8 🏆</strong><br>Сіз тақырыпты толық меңгердіңіз.`;
+      } else if (score >= 5) {
+          resultBox.className = 'resultBox is-good';
+          resultBox.innerHTML = `<strong>Жақсы! ${score}/8 👍</strong><br>Кейбір қателер бар.`;
+      } else {
+          resultBox.className = 'resultBox is-bad';
+          resultBox.innerHTML = `<strong>Қайталау керек: ${score}/8</strong><br>Ережелерді қайта оқып шығыңыз.`;
+      }
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+
+</body>
+</html>

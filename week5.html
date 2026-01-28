@@ -1,0 +1,978 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>5-апта: Жұмыс және Ғылым • Ситуативтік қазақ тілі</title>
+  <meta name="description" content="5-апта: Жұмыс орны, қызметтік міндеттер, ұжым және ғылыми жұмыс." />
+  <meta name="color-scheme" content="light" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* =========================================
+       WEEK 5 (Reusing Design System)
+       ========================================= */
+
+    /* Hero adjustments */
+    body[data-page="week5"] .hero {
+      padding-bottom: 20px;
+    }
+
+    /* LEXICON GRID */
+    .lexGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .lexCard {
+      padding: 16px;
+      border-radius: var(--r-lg);
+      border: 1px solid var(--stroke);
+      background: color-mix(in oklab, var(--surface) 80%, transparent);
+      box-shadow: var(--shadow-1);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform var(--dur-1) var(--ease), border-color var(--dur-1);
+    }
+    
+    .lexCard:hover {
+      border-color: var(--stroke2);
+      transform: translateY(-2px);
+    }
+
+    .lexCard__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .lexCard__icon {
+      font-size: 20px;
+      opacity: 0.8;
+    }
+
+    .lexCard__badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 99px;
+      background: color-mix(in oklab, var(--surface2) 90%, transparent);
+      border: 1px solid var(--stroke);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    .lexCard__word {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .lexCard__trans {
+      font-size: 0.95rem;
+      color: var(--muted);
+      border-top: 1px dashed var(--stroke);
+      padding-top: 8px;
+      margin-top: auto;
+    }
+
+    /* CHAT UI */
+    .chatBox {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: color-mix(in oklab, var(--surface2) 60%, transparent);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      border: 1px solid var(--stroke);
+    }
+
+    .chatMsg {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      font-size: 1rem;
+      line-height: 1.5;
+      position: relative;
+      animation: fadeUp 0.4s var(--ease) forwards;
+    }
+
+    .chatMsg--left {
+      align-self: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-bottom-left-radius: 4px;
+      color: var(--text);
+    }
+
+    .chatMsg--right {
+      align-self: flex-end;
+      background: linear-gradient(135deg, color-mix(in oklab, var(--a) 12%, transparent), color-mix(in oklab, var(--b) 8%, transparent));
+      border: 1px solid color-mix(in oklab, var(--a) 20%, var(--stroke));
+      border-bottom-right-radius: 4px;
+      color: var(--text);
+    }
+
+    .chatMsg__auth {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+      display: block;
+      font-weight: 700;
+    }
+
+    /* RESULT BOX */
+    .resultBox {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: var(--r-lg);
+      text-align: center;
+      display: none;
+    }
+    .resultBox.is-good {
+      background: color-mix(in oklab, var(--b) 15%, transparent);
+      border: 1px solid color-mix(in oklab, var(--b) 30%, transparent);
+      color: #1e6f43;
+    }
+    .resultBox.is-bad {
+      background: color-mix(in oklab, rgba(255,82,82,1) 12%, transparent);
+      border: 1px solid color-mix(in oklab, rgba(255,82,82,1) 30%, transparent);
+      color: #991b1b;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* =========================================
+   GRAMMAR BLOCK (COMPACT STYLE)
+   ========================================= */
+.grammarSection { margin: 30px 0; padding: 0 10px; }
+
+.grammarCard {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.grammarCard::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+  background: linear-gradient(90deg, #4f46e5, #10b981);
+}
+
+.grammarHeader {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px; border-bottom: 2px dashed #e5e7eb; padding-bottom: 12px;
+}
+.grammarTitle { font-size: 1.2rem; font-weight: 800; color: #1f2937; text-transform: uppercase; }
+.grammarBadge { background: #4f46e5; color: white; font-size: 0.75rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; }
+
+/* ФОРМУЛА */
+.formulaBox {
+  background: #f9fafb; padding: 15px; border-radius: 12px; text-align: center;
+  margin-bottom: 20px; border: 1px solid #e5e7eb;
+}
+.formulaText { font-family: monospace, serif; font-size: 1.1rem; font-weight: 700; color: #374151; }
+.u-blue { border-bottom: 3px solid #3b82f6; padding-bottom: 2px; }
+.u-red { border-bottom: 3px solid #ef4444; padding-bottom: 2px; }
+
+/* КОМПАКТ ГРИД */
+.compactGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+/* ЕТІСТІК КНОПКАЛАРЫ */
+.verbBtn {
+  display: inline-block; background: #f0fdf4; color: #15803d;
+  font-weight: 700; font-size: 0.9rem; padding: 6px 12px; border-radius: 8px;
+  margin-bottom: 6px; border: 1px solid #dcfce7;
+}
+
+/* ЕРЕЖЕ БЛОГЫ */
+.noteZone {
+  background: #eff6ff; border: 2px solid #dbeafe; border-radius: 12px;
+  padding: 12px 16px; font-size: 0.9rem; color: #1e40af; display: flex; align-items: center; gap: 12px;
+}
+.noteZone strong { text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; display: block; margin-bottom: 2px; }
+
+@media (max-width: 600px) { .compactGrid { grid-template-columns: 1fr; } }
+/* =========================================
+   INTERVIEW STYLE (DIALOGUE)
+   ========================================= */
+
+   .interviewSection {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+  }
+  
+  /* Header: "Аудио плеер" имитациясы */
+  .interviewHeader {
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .playerUI {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .playBtn {
+    width: 40px; height: 40px;
+    background: white;
+    border-radius: 50%;
+    color: #4f46e5;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  
+  .trackInfo h3 { font-size: 1rem; font-weight: 700; margin: 0; }
+  .trackInfo p { font-size: 0.8rem; opacity: 0.8; margin: 0; }
+  
+  /* Диалог денесі */
+  .scriptBody {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  /* Сұрақ-Жауап блогы */
+  .scriptRow {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  
+  /* Аватарлар */
+  .avatar {
+    width: 50px; height: 50px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.2rem;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .avatar--q { background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; } /* Айдар */
+  .avatar--a { background: #4f46e5; color: white; } /* Жанар */
+  
+  /* Мәтін */
+  .scriptContent {
+    background: #f9fafb;
+    padding: 12px 16px;
+    border-radius: 0 12px 12px 12px;
+    border-left: 3px solid transparent;
+  }
+  
+  .scriptRow--q .scriptContent {
+    background: white;
+    border-left-color: #c7d2fe; /* Сұрақ сызығы */
+  }
+  .scriptRow--a .scriptContent {
+    background: #f0fdf4; /* Жасыл реңк (Жауап) */
+    border-left-color: #10b981;
+  }
+  
+  .nameTag {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: block;
+    letter-spacing: 0.5px;
+  }
+  .nameTag--q { color: #6b7280; }
+  .nameTag--a { color: #15803d; }
+  
+  .scriptText {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #1f2937;
+  }
+  
+  /* Етістіктерді ерекшелеу (Грамматиканы бекіту) */
+  .highlight-verb {
+    background: rgba(16, 185, 129, 0.2);
+    color: #065f46;
+    padding: 0 4px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  
+  /* Мобильді */
+  @media (max-width: 500px) {
+    .scriptRow { grid-template-columns: 40px 1fr; gap: 10px; }
+    .avatar { width: 40px; height: 40px; font-size: 1rem; }
+  }  
+  /* Анимация волн */
+.audioWave {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 20px;
+  opacity: 0.5;
+}
+
+.audioWave span {
+  width: 4px;
+  background: white;
+  border-radius: 2px;
+  animation: none; /* По умолчанию анимации нет */
+}
+
+/* Высота полосок */
+.audioWave span:nth-child(1) { height: 60%; }
+.audioWave span:nth-child(2) { height: 100%; }
+.audioWave span:nth-child(3) { height: 50%; }
+.audioWave span:nth-child(4) { height: 80%; }
+
+/* Класс, который добавляется при проигрывании */
+.is-playing .audioWave span {
+  animation: waveAnim 1s infinite ease-in-out;
+}
+.is-playing .playBtn {
+  color: #4338ca;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+}
+
+@keyframes waveAnim {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.5); }
+}
+
+/* Задержка для каждой полоски, чтобы было красиво */
+.audioWave span:nth-child(1) { animation-delay: 0s; }
+.audioWave span:nth-child(2) { animation-delay: 0.1s; }
+.audioWave span:nth-child(3) { animation-delay: 0.2s; }
+.audioWave span:nth-child(4) { animation-delay: 0.3s; }
+</style>
+</head>
+
+<body data-page="week5">
+  <a class="skip-link" href="#main">Негізгі мазмұнға өту</a>
+
+  <header class="topbar" role="banner">
+    <div class="topbar__inner container">
+      <div class="brand" aria-label="Kazakh Course">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <div class="brand__text">
+          <div class="brand__title">Ситуативтік қазақ тілі</div>
+          <div class="brand__sub">Онлайн курс • 10 апта</div>
+        </div>
+      </div>
+
+      <nav class="nav nav--weeks" aria-label="Апталар (десктоп)">
+        <a class="nav__link" data-page="index" href="index.html">Басты</a>
+        <a class="nav__link" data-page="week1" href="week1.html">1</a>
+        <a class="nav__link" data-page="week2" href="week2.html">2</a>
+        <a class="nav__link" data-page="week3" href="week3.html">3</a>
+        <a class="nav__link" data-page="week4" href="week4.html">4</a>
+        <a class="nav__link is-active" data-page="week5" href="week5.html" aria-current="page">5</a>
+        <a class="nav__link" data-page="week6" href="week6.html">6</a>
+        <a class="nav__link" data-page="week7" href="week7.html">7</a>
+        <a class="nav__link" data-page="week8" href="week8.html">8</a>
+        <a class="nav__link" data-page="week9" href="week9.html">9</a>
+        <a class="nav__link" data-page="week10" href="week10.html">10</a>
+        <a class="nav__link" data-page="dictionary" href="dictionary.html">Сөздік</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    
+    <section class="hero reveal">
+      <div class="hero__grid">
+        <div>
+          <div class="pill">
+            <span class="pill__dot" aria-hidden="true"></span>
+            <span>5-апта</span>
+          </div>
+
+          <h1 class="h1">Жұмыс және <span class="h1__accent">ғылым</span></h1>
+
+          <p class="lead">
+            Бұл сабақта біз жұмыс орны, қызметтік міндеттер, ұжым және ғылыми қызмет (зерттеу, мақала жазу) туралы сөйлесуді үйренеміз.
+          </p>
+
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#lexika">
+              Бастау <span class="btn__arrow" aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </div>
+
+        <aside class="glassPanel reveal">
+          <div class="glassPanel__top">
+            <div class="glassPanel__badge">Прогресс</div>
+            <div class="glassPanel__hint">5 / 10</div>
+          </div>
+
+          <div class="glassPanel__body">
+            <div class="progress__bar">
+              <span class="progress__fill" style="width: 50%"></span>
+            </div>
+            <div class="progress__note">Курстың 50% оқылды</div>
+            
+            <div class="miniGrid" style="margin-top:20px">
+               <a class="miniCard" href="week1.html">1</a>
+               <a class="miniCard" href="week2.html">2</a>
+               <a class="miniCard" href="week3.html">3</a>
+               <a class="miniCard" href="week4.html">4</a>
+               <a class="miniCard" style="border-color:var(--a); background:rgba(77,163,255,0.1); color:var(--text);" href="#">5</a>
+               <a class="miniCard" href="week6.html">6</a>
+               <a class="miniCard" href="week7.html">7</a>
+               <a class="miniCard" href="week8.html">8</a>
+               <a class="miniCard" href="week9.html">9</a>
+               <a class="miniCard" href="week10.html">10</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="lexika" class="weekSection reveal">
+      <div class="weekSection__head">
+        <div>
+          <h2 class="h2 weekSection__title">1. Жаңа сөздер</h2>
+          <p class="section__sub">Кәсіби лексика және ғылым.</p>
+        </div>
+        <div class="weekSection__meta">
+          <button class="chip" id="toggleLexBtn" aria-expanded="false" onclick="toggleLex()">
+            <span class="chip__icon">👁</span>
+            <span class="chip__text">Аударма</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="weekSection__body">
+        <div class="lexGrid">
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">💼</span>
+              <span class="lexCard__badge">Қызмет</span>
+            </div>
+            <div class="lexCard__word">Жұмыс</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Работа</div>
+          </article>
+    
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">👥</span>
+              <span class="lexCard__badge">Адамдар</span>
+            </div>
+            <div class="lexCard__word">Ұжым</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Коллектив</div>
+          </article>
+    
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">📋</span>
+              <span class="lexCard__badge">Функция</span>
+            </div>
+            <div class="lexCard__word">Міндет</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Обязанность</div>
+          </article>
+    
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">🔬</span>
+              <span class="lexCard__badge">Ғылым</span>
+            </div>
+            <div class="lexCard__word">Зерттеу</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Исследование / Исследовать</div>
+          </article>
+          
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">📑</span>
+              <span class="lexCard__badge">Ғылым</span>
+            </div>
+            <div class="lexCard__word">Мақала</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Статья</div>
+          </article>
+
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">🎓</span>
+              <span class="lexCard__badge">Процесс</span>
+            </div>
+            <div class="lexCard__word">Оқыту</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Обучать / Преподавать</div>
+          </article>
+        </div>
+
+        <div class="callout" style="margin-top: 24px;">
+          <div class="callout__title">Пайдалы фразалар</div>
+          <div class="callout__text">
+            <strong>Бақылау</strong> — Контролировать / Контроль.<br>
+            <strong>Ұйымшыл</strong> — Организованный (сплоченный коллектив).
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="weekSection reveal">
+      <div class="weekSection__head">
+        <div>
+          <h2 class="h2 weekSection__title">2. Диалог</h2>
+          <p class="section__sub">Тақырып: Кәсіби сұхбат.</p>
+        </div>
+      </div>
+    
+      <div class="interviewSection">
+        <div class="interviewHeader">
+          <div class="playerUI">
+            <div class="playBtn" id="playBtn" onclick="toggleAudio()">▶</div>
+            
+            <div class="trackInfo">
+              <h3>Жанар ханыммен сұхбат</h3>
+              <p id="audioStatus">Ұзақтығы: 01:30 • Басу үшін ойнатыңыз</p>
+            </div>
+          </div>
+          
+          <div class="audioWave" id="audioWave">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        
+          <audio id="realAudio" src="week5_dialog.mp3"></audio>
+        </div>
+    
+        <div class="scriptBody">
+    
+          <div class="scriptRow scriptRow--q">
+            <div class="avatar avatar--q">А</div>
+            <div class="scriptContent">
+              <span class="nameTag nameTag--q">Айдар (Журналист)</span>
+              <div class="scriptText">
+                Сәлеметсіз бе! Сіз <strong>қайда</strong> жұмыс істейсіз?
+              </div>
+            </div>
+          </div>
+    
+          <div class="scriptRow scriptRow--a">
+            <div class="avatar avatar--a">Ж</div>
+            <div class="scriptContent">
+              <span class="nameTag nameTag--a">Жанар (Оқытушы)</span>
+              <div class="scriptText">
+                Сәлеметсіз бе! Мен университетте, кафедрада жұмыс <span class="highlight-verb">істеймін</span>.
+              </div>
+            </div>
+          </div>
+    
+          <div class="scriptRow scriptRow--q">
+            <div class="avatar avatar--q">А</div>
+            <div class="scriptContent">
+              <span class="nameTag nameTag--q">Айдар</span>
+              <div class="scriptText">
+                Сізге жұмысыңыз ұнай ма?
+              </div>
+            </div>
+          </div>
+    
+          <div class="scriptRow scriptRow--a">
+            <div class="avatar avatar--a">Ж</div>
+            <div class="scriptContent">
+              <span class="nameTag nameTag--a">Жанар</span>
+              <div class="scriptText">
+                Иә, әрине. Мен өз жұмысымды жақсы <span class="highlight-verb">көремін</span>. 30 жылдан бері осындамын.
+              </div>
+            </div>
+          </div>
+    
+          <div class="scriptRow scriptRow--q">
+            <div class="avatar avatar--q">А</div>
+            <div class="scriptContent">
+              <span class="nameTag nameTag--q">Айдар</span>
+              <div class="scriptText">
+                Сіздің міндетіңізге не жатады?
+              </div>
+            </div>
+          </div>
+    
+          <div class="scriptRow scriptRow--a">
+            <div class="avatar avatar--a">Ж</div>
+            <div class="scriptContent">
+              <span class="nameTag nameTag--a">Жанар</span>
+              <div class="scriptText">
+                Мен студенттерді <span class="highlight-verb">оқытамын</span>, кафедра жұмысын <span class="highlight-verb">реттеймін</span> және <span class="highlight-verb">жоспарлаймын</span>.
+              </div>
+            </div>
+          </div>
+    
+          <div class="scriptRow scriptRow--q">
+            <div class="avatar avatar--q">А</div>
+            <div class="scriptContent">
+              <span class="nameTag nameTag--q">Айдар</span>
+              <div class="scriptText">
+                Сіз ғылыммен айналысасыз ба?
+              </div>
+            </div>
+          </div>
+    
+          <div class="scriptRow scriptRow--a">
+            <div class="avatar avatar--a">Ж</div>
+            <div class="scriptContent">
+              <span class="nameTag nameTag--a">Жанар</span>
+              <div class="scriptText">
+                Иә, мен оқу құралдары мен мақалалар <span class="highlight-verb">жазамын</span>.
+              </div>
+            </div>
+          </div>
+    
+        </div>
+      </div>
+    </section>
+    <section class="grammarSection reveal">
+      <div class="grammarCard">
+        
+        <div class="grammarHeader">
+          <div class="grammarTitle">Грамматика: Қазіргі шақ</div>
+          <div class="grammarBadge">Маңызды</div>
+        </div>
+    
+        <div class="formulaBox">
+          <div style="margin-bottom:8px; font-size:0.9rem; color:#6b7280;">Мен не істеймін? (Что я делаю?)</div>
+          <span class="formulaText">
+            <span class="u-blue">Түбір</span> (етістік) + 
+            <span class="u-red">Й</span> + 
+            <span class="u-blue">МЫН / МІН</span>
+          </span>
+        </div>
+    
+        <div class="compactGrid">
+          
+          <div>
+            <div style="font-size:0.85rem; text-transform:uppercase; color:#9ca3af; font-weight:700; margin-bottom:10px;">
+              ✅ Мен (Ғылым және Жұмыс):
+            </div>
+            <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:8px;">
+              <li style="background:#fff; padding:8px; border-radius:8px; border:1px solid #e5e7eb;">
+                Мен жұмыс <strong style="color:#4f46e5;">істеймін</strong>.
+              </li>
+              <li style="background:#fff; padding:8px; border-radius:8px; border:1px solid #e5e7eb;">
+                Мен ғылыммен <strong style="color:#4f46e5;">айналысамын</strong>.
+              </li>
+              <li style="background:#fff; padding:8px; border-radius:8px; border:1px solid #e5e7eb;">
+                Мен мақала <strong style="color:#4f46e5;">жазамын</strong>.
+              </li>
+            </ul>
+          </div>
+    
+          <div>
+            <div style="font-size:0.85rem; text-transform:uppercase; color:#9ca3af; font-weight:700; margin-bottom:10px;">
+              ❓ Сіз ше? (Сұрақтар):
+            </div>
+            <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:8px;">
+              <li style="background:#fff; padding:8px; border-radius:8px; border:1px solid #e5e7eb;">
+                Сіз не <strong style="color:#ef4444;">істейсіз?</strong>
+              </li>
+              <li style="background:#fff; padding:8px; border-radius:8px; border:1px solid #e5e7eb;">
+                Қайда жұмыс <strong style="color:#ef4444;">істейсіз?</strong>
+              </li>
+              <li style="background:#fff; padding:8px; border-radius:8px; border:1px solid #e5e7eb;">
+                Немен <strong style="color:#ef4444;">айналысасыз?</strong>
+              </li>
+            </ul>
+          </div>
+        </div>
+    
+        <div style="margin-bottom: 20px;">
+          <div style="font-size:0.85rem; text-transform:uppercase; color:#9ca3af; font-weight:700; margin-bottom:10px;">
+            🎓 Кәсіби лексика (Мен не істеймін?):
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span class="verbBtn">Бақылаймын</span>
+            <span class="verbBtn">Реттеймін</span>
+            <span class="verbBtn">Басқарамын</span>
+            <span class="verbBtn">Зерттеймін</span>
+            <span class="verbBtn">Оқытамын</span>
+          </div>
+        </div>
+    
+        <div class="noteZone">
+          <div style="font-size:1.5rem;">💡</div>
+          <div>
+            <strong>Есте сақтаңыз:</strong> 
+            Қазақ тілінде «істеу» (делать) сөзіне қарағанда, нақты етістіктерді қолданған дұрыс.<br>
+            <em>Мысалы:</em> «Жұмыс жасаймын» ❌ → «Жұмыс істеймін» ✅
+          </div>
+        </div>
+    
+      </div>
+    </section>
+    <section class="weekSection reveal">
+      <div class="weekSection__head">
+        <h2 class="h2 weekSection__title">3. Сөйлеу клишелері</h2>
+      </div>
+
+      <div class="weekSection__body">
+        <div class="steps" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+          
+          <div class="stepCard">
+            <div class="stepCard__icon">1</div>
+            <div class="stepCard__title">Жұмыс орны</div>
+            <div class="stepCard__text">
+              Мен <span style="color:var(--a); font-weight:700">университетте</span> жұмыс істеймін.<br>
+              Мен <span style="color:var(--a); font-weight:700">кафедрада</span> жұмыс істеймін.<br>
+              <span class="muted small">Я работаю в университете / на кафедре.</span>
+            </div>
+          </div>
+
+          <div class="stepCard">
+            <div class="stepCard__icon">2</div>
+            <div class="stepCard__title">Міндеттер</div>
+            <div class="stepCard__text">
+              Менің міндетім: <span style="color:var(--a); font-weight:700">оқу процесін бақылау</span>.<br>
+              Мен факультетті <span style="color:var(--a); font-weight:700">басқарамын</span>.<br>
+              <span class="muted small">Контроль процесса / Управление факультетом.</span>
+            </div>
+          </div>
+
+          <div class="stepCard">
+            <div class="stepCard__icon">3</div>
+            <div class="stepCard__title">Ғылым</div>
+            <div class="stepCard__text">
+              Мен <span style="color:var(--a); font-weight:700">ғылыммен</span> айналысамын.<br>
+              Мен <span style="color:var(--a); font-weight:700">мақалалар</span> жазамын.<br>
+              <span class="muted small">Занимаюсь наукой / Пишу статьи.</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="block" style="margin-top: 24px; border-left: 4px solid var(--a);">
+          <div class="block__title">Тапсырма: Мәтінді толықтырыңыз</div>
+          <p style="font-size: 1.05rem; line-height: 1.6;">
+            Мен – ... (атыңыз). Мен өз жұмысымды <strong>жақсы көремін</strong>. 
+            Мен университетте, ... кафедрасында жұмыс істеймін. 
+            Менің міндетім: студенттерді <strong>оқыту</strong> және мақала <strong>жазу</strong>. 
+            Біздің ұжым үлкен емес, бірақ өте <strong>ұйымшыл</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="test">
+      <div class="section__head">
+        <h2 class="h2">Өзіңізді тексеріңіз</h2>
+        <p class="section__sub">8 сұраққа жауап беріңіз.</p>
+      </div>
+
+      <div class="weekSection"> 
+        <div class="weekSection__body">
+          <form id="quizForm">
+            
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">1. «Я работаю» қазақша қалай болады?</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q1" value="1"> Мен жұмыс істеймін</label>
+                <label class="testItem"><input type="radio" name="q1" value="0"> Мен оқимын</label>
+                <label class="testItem"><input type="radio" name="q1" value="0"> Мен демаламын</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">2. «Міндет» сөзінің аудармасы:</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q2" value="0"> Право</label>
+                <label class="testItem"><input type="radio" name="q2" value="1"> Обязанность</label>
+                <label class="testItem"><input type="radio" name="q2" value="0"> Желание</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">3. «Коллектив» сөзі:</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q3" value="0"> Қоғам</label>
+                <label class="testItem"><input type="radio" name="q3" value="1"> Ұжым</label>
+                <label class="testItem"><input type="radio" name="q3" value="0"> Достар</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">4. Сөйлемді аяқтаңыз: «Мен оқу процесін ...» (контролирую):</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q4" value="1"> бақылаймын</label>
+                <label class="testItem"><input type="radio" name="q4" value="0"> жазамын</label>
+                <label class="testItem"><input type="radio" name="q4" value="0"> оқытамын</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">5. «Организованный коллектив»:</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q5" value="1"> Ұйымшыл ұжым</label>
+                <label class="testItem"><input type="radio" name="q5" value="0"> Үлкен ұжым</label>
+                <label class="testItem"><input type="radio" name="q5" value="0"> Шағын ұжым</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">6. «Исследовать» сөзі:</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q6" value="0"> Басқару</label>
+                <label class="testItem"><input type="radio" name="q6" value="1"> Зерттеу</label>
+                <label class="testItem"><input type="radio" name="q6" value="0"> Қатысу</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">7. «Маған жұмысым ...» (Мне нравится моя работа):</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q7" value="0"> ұнамайды</label>
+                <label class="testItem"><input type="radio" name="q7" value="1"> ұнайды</label>
+                <label class="testItem"><input type="radio" name="q7" value="0"> жек көремін</label>
+              </div>
+            </div>
+
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">8. «Мақала» деген не?</p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q8" value="0"> Книга</label>
+                <label class="testItem"><input type="radio" name="q8" value="1"> Статья</label>
+                <label class="testItem"><input type="radio" name="q8" value="0"> Учебник</label>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn--primary" style="margin-top: 16px; width: 100%;" onclick="checkQuiz()">
+              Нәтижені тексеру
+            </button>
+          </form>
+
+          <div id="quizResult" class="resultBox"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="navBottom">
+      <a class="btn" href="week4.html">← 4-апта</a>
+      <a class="btn btn--primary" href="week6.html">6-аптаға өту →</a>
+    </div>
+
+    <footer class="footer reveal" role="contentinfo">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__brand">
+            <span class="brand__mark brand__mark--sm" aria-hidden="true"></span>
+            <div>
+              <div class="footer__title">Ситуативтік қазақ тілі</div>
+              <div class="footer__sub">Онлайн курс</div>
+            </div>
+          </div>
+          <p class="footer__text">Авторы: Ахметова Татьяна Алимжановна</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span class="muted">© Kazakh Course 2026</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    // Reveal animation trigger
+    document.addEventListener('DOMContentLoaded', () => {
+      document.documentElement.classList.add('reveal-ready');
+      setTimeout(() => {
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach((el, i) => {
+          setTimeout(() => el.classList.add('is-in'), i * 100);
+        });
+      }, 100);
+    });
+
+    // Toggle Lexicon
+    function toggleLex() {
+      const btn = document.getElementById('toggleLexBtn');
+      const targets = document.querySelectorAll('[data-lex-target]');
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+
+      btn.setAttribute('aria-expanded', !isExpanded);
+      targets.forEach(t => t.classList.toggle('is-hidden'));
+    }
+
+    // Quiz Engine
+    function checkQuiz() {
+      const form = document.getElementById('quizForm');
+      const resultBox = document.getElementById('quizResult');
+      let score = 0;
+      const total = 8;
+
+      // Simple check logic
+      for (let i = 1; i <= total; i++) {
+        const selected = form.querySelector(`input[name="q${i}"]:checked`);
+        if (selected && selected.value === "1") {
+          score++;
+          selected.parentElement.style.borderColor = "var(--b)";
+          selected.parentElement.style.backgroundColor = "color-mix(in oklab, var(--b) 10%, transparent)";
+        } else if (selected) {
+          selected.parentElement.style.borderColor = "red";
+        }
+      }
+
+      resultBox.style.display = 'block';
+      resultBox.className = 'resultBox ' + (score >= 6 ? 'is-good' : 'is-bad');
+      
+      if (score === total) {
+        resultBox.innerHTML = `<strong>Тамаша! 🏆</strong><br>Сіз барлық сұраққа дұрыс жауап бердіңіз (${score}/${total}).`;
+      } else if (score >= 5) {
+        resultBox.innerHTML = `<strong>Жақсы! 👍</strong><br>Нәтиже: ${score}/${total}. Қателерді қарап шығыңыз.`;
+      } else {
+        resultBox.innerHTML = `<strong>Қайталау керек 📚</strong><br>Нәтиже: ${score}/${total}. Сабақты қайталап өтіңіз.`;
+      }
+      
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+  <script>
+    function toggleAudio() {
+      const audio = document.getElementById('realAudio');
+      const btn = document.getElementById('playBtn');
+      const header = document.querySelector('.interviewHeader');
+      const statusText = document.getElementById('audioStatus');
+  
+      // Если аудио на паузе — включаем
+      if (audio.paused) {
+        audio.play();
+        btn.innerHTML = '⏸'; // Меняем значок на Паузу
+        header.classList.add('is-playing'); // Включаем анимацию
+        statusText.innerText = "Ойнатылуда... (Воспроизведение)";
+      } 
+      // Если играет — ставим на паузу
+      else {
+        audio.pause();
+        btn.innerHTML = '▶'; // Меняем значок на Play
+        header.classList.remove('is-playing'); // Выключаем анимацию
+        statusText.innerText = "Пауза";
+      }
+  
+      // Когда аудио закончится само
+      audio.onended = function() {
+        btn.innerHTML = '▶';
+        header.classList.remove('is-playing');
+        statusText.innerText = "Аяқталды (Завершено)";
+      };
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1215 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>4-апта: Достық • Ситуативтік қазақ тілі</title>
+  <meta name="description" content="4-апта: Достық, адамның қасиеттері, мінез-құлық және бағалау." />
+  <meta name="color-scheme" content="light" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* =========================================
+       WEEK 4 (Reusing Design System)
+       ========================================= */
+
+    /* Hero adjustments */
+    body[data-page="week4"] .hero {
+      padding-bottom: 20px;
+    }
+
+    /* LEXICON GRID */
+    .lexGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .lexCard {
+      padding: 16px;
+      border-radius: var(--r-lg);
+      border: 1px solid var(--stroke);
+      background: color-mix(in oklab, var(--surface) 80%, transparent);
+      box-shadow: var(--shadow-1);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform var(--dur-1) var(--ease), border-color var(--dur-1);
+    }
+    
+    .lexCard:hover {
+      border-color: var(--stroke2);
+      transform: translateY(-2px);
+    }
+
+    .lexCard__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .lexCard__icon {
+      font-size: 20px;
+      opacity: 0.8;
+    }
+
+    .lexCard__badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 99px;
+      background: color-mix(in oklab, var(--surface2) 90%, transparent);
+      border: 1px solid var(--stroke);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    .lexCard__word {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .lexCard__trans {
+      font-size: 0.95rem;
+      color: var(--muted);
+      border-top: 1px dashed var(--stroke);
+      padding-top: 8px;
+      margin-top: auto;
+    }
+
+    /* CHAT UI */
+    .chatBox {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: color-mix(in oklab, var(--surface2) 60%, transparent);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      border: 1px solid var(--stroke);
+    }
+
+    .chatMsg {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      font-size: 1rem;
+      line-height: 1.5;
+      position: relative;
+      animation: fadeUp 0.4s var(--ease) forwards;
+    }
+
+    .chatMsg--left {
+      align-self: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-bottom-left-radius: 4px;
+      color: var(--text);
+    }
+
+    .chatMsg--right {
+      align-self: flex-end;
+      background: linear-gradient(135deg, color-mix(in oklab, var(--a) 12%, transparent), color-mix(in oklab, var(--b) 8%, transparent));
+      border: 1px solid color-mix(in oklab, var(--a) 20%, var(--stroke));
+      border-bottom-right-radius: 4px;
+      color: var(--text);
+    }
+
+    .chatMsg__auth {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+      display: block;
+      font-weight: 700;
+    }
+
+    /* RESULT BOX */
+    .resultBox {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: var(--r-lg);
+      text-align: center;
+      display: none;
+    }
+    .resultBox.is-good {
+      background: color-mix(in oklab, var(--b) 15%, transparent);
+      border: 1px solid color-mix(in oklab, var(--b) 30%, transparent);
+      color: #1e6f43;
+    }
+    .resultBox.is-bad {
+      background: color-mix(in oklab, rgba(255,82,82,1) 12%, transparent);
+      border: 1px solid color-mix(in oklab, rgba(255,82,82,1) 30%, transparent);
+      color: #991b1b;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* =========================================
+   3-БӨЛІМ: ДОСТЫҚ ФОРМУЛАСЫ (STYLE)
+   ========================================= */
+
+/* 1. Status Bar (Мәртебе жолағы) */
+.statusBar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: none; /* Firefox үшін скроллды жасыру */
+}
+.statusBar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari үшін */
+}
+.statusPill {
+  background: #ffffff;
+  border: 1px solid #e5e7eb; /* var(--stroke) */
+  padding: 8px 16px;
+  border-radius: 50px;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  color: #6b7280; /* var(--muted) */
+  cursor: default;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.statusPill:hover,
+.statusPill.active {
+  background: #1f2937; /* var(--text) */
+  color: white;
+  border-color: #1f2937;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* 2. Magnet Grid (Ұнайды/Ұнамайды) */
+.magnetGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 30px 0;
+}
+.magnetZone {
+  padding: 20px;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Позитивті аймақ (Жасыл) */
+.magnetZone--pos {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border: 1px solid #10b981;
+}
+.magnetZone--pos .zoneTitle {
+  color: #047857;
+}
+.traitCard {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  border-left: 4px solid #10b981;
+  font-weight: 600;
+  color: #1f2937;
+  transition: transform 0.2s;
+  cursor: default;
+}
+.traitCard:hover {
+  transform: translateX(5px);
+  background: white;
+}
+
+/* Негативті аймақ (Қызыл) */
+.magnetZone--neg {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border: 1px solid #ef4444;
+}
+.magnetZone--neg .zoneTitle {
+  color: #b91c1c;
+}
+.traitCard--bad {
+  border-left-color: #ef4444;
+  opacity: 0.8;
+}
+.traitCard--bad:hover {
+  transform: translateX(5px);
+  opacity: 1;
+}
+
+.zoneTitle {
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.traitTranslation {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* 3. Core Values (Құндылықтар) */
+.coreGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 30px 0;
+}
+.coreBlock {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  transition: all 0.3s;
+}
+.coreBlock:hover {
+  border-color: #3b82f6;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.coreIcon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  display: block;
+}
+.coreText {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1f2937;
+}
+.coreSub {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* 4. Gold Card (Алтын карта) */
+.goldCard {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 2px solid #fbbf24;
+  border-radius: 20px;
+  padding: 24px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 10px 25px -5px rgba(251, 191, 36, 0.4);
+  margin-top: 30px;
+}
+.goldCard::before {
+  content: "BEST FRIEND"; /* Бэйджик */
+  position: absolute;
+  top: -12px;
+  left: 24px;
+  background: #fbbf24;
+  color: #78350f;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.1em;
+}
+.goldItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.goldCheck {
+  color: #d97706;
+  font-size: 1.2rem;
+  margin-top: -2px;
+}
+.goldText {
+  font-weight: 600;
+  color: #451a03;
+  font-size: 1.05rem;
+}
+.goldSub {
+  display: block;
+  font-weight: 400;
+  color: #92400e;
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+
+/* Мобильді нұсқа үшін адаптация */
+@media (max-width: 600px) {
+  .magnetGrid {
+    grid-template-columns: 1fr; /* Телефонда бір баған */
+  }
+}
+/* =========================================
+   GRAMMAR BLOCK (UX/UI)
+   ========================================= */
+
+.grammarSection {
+  margin: 40px 0;
+  padding: 0 10px;
+}
+
+.grammarCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb; /* var(--stroke) */
+  border-left: 5px solid #4f46e5; /* var(--primary) - сол жақ акцент сызық */
+  border-radius: 12px;
+  padding: 24px 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); /* Өте жеңіл көлеңке */
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Бөлім атауы */
+.grammarTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1f2937; /* var(--text) */
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Түсіндірме мәтін */
+.grammarText {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4b5563; /* var(--muted) бірақ сәл қоюлау */
+  margin-bottom: 24px;
+  max-width: 90%;
+}
+
+/* Формула блогы */
+.grammarFormula {
+  background: #f3f4f6; /* var(--surface2) */
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  font-family: monospace, serif; /* Код/Формула стилі */
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 8px;
+  border: 1px dashed #d1d5db;
+}
+
+.grammarSub {
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 24px;
+  display: block;
+}
+
+/* Тізімдер (Мысалдар) */
+.grammarList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.grammarList li {
+  font-size: 1rem;
+  color: #1f2937;
+  padding-left: 12px;
+  border-left: 2px solid #e5e7eb; /* Жеңіл сызықша */
+}
+
+/* Сұрақтар блогы */
+.grammarQuestions {
+  margin: 20px 0;
+  font-style: italic;
+  color: #4f46e5; /* var(--primary) */
+  font-weight: 500;
+}
+
+/* Есте сақтаңыз (Footer) */
+.grammarNote {
+  background: #eff6ff; /* өте ашық көк */
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  color: #1e40af;
+  border: 1px solid #dbeafe;
+  margin-top: 10px;
+}
+
+.grammarNote strong {
+  font-weight: 800;
+  display: block;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+/* Мобильді адаптация */
+@media (max-width: 600px) {
+  .grammarCard {
+    padding: 20px;
+  }
+  .grammarFormula {
+    font-size: 0.9rem;
+  }
+}
+
+
+/* =========================================
+   GRAMMAR BLOCK (COMPACT & COLORFUL)
+   ========================================= */
+
+   .grammarSection {
+    margin: 30px 0;
+    padding: 0 10px;
+  }
+  
+  .grammarCard {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f3f4f6;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Сәндік жолақ (жоғарғы жағы) */
+  .grammarCard::top {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #4f46e5, #ef4444);
+  }
+  
+  .grammarHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 2px dashed #e5e7eb;
+    padding-bottom: 12px;
+  }
+  
+  .grammarTitle {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #1f2937;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .grammarBadge {
+    background: #4f46e5;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+  }
+  
+  /* ФОРМУЛА БЛОГЫ */
+  .formulaBox {
+    background: #f9fafb;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .formulaText {
+    font-family: monospace, serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #374151;
+  }
+  
+  /* Формула ішіндегі түрлі-түсті астын сызу */
+  .u-blue { border-bottom: 3px solid #3b82f6; padding-bottom: 2px; }
+  .u-red { border-bottom: 3px solid #ef4444; padding-bottom: 2px; }
+  .u-green { border-bottom: 3px solid #10b981; padding-bottom: 2px; }
+  
+  /* КОМПАКТ ГРИД (Екі баған) */
+  .compactGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Кнопка стиліндегі есімдіктер */
+  .pronounBtn {
+    display: inline-block;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 4px 10px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border: 1px solid #dbeafe;
+    box-shadow: 0 2px 0 #bfdbfe; /* 3D эффект */
+    transition: transform 0.1s;
+  }
+  .pronounBtn:active {
+    transform: translateY(2px);
+    box-shadow: none;
+  }
+  
+  /* Мысалдар тізімі */
+  .exList {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .exItem {
+    font-size: 0.95rem;
+    padding-left: 10px;
+    border-left: 3px solid #e5e7eb;
+  }
+  .exItem strong { color: #111827; }
+  
+  /* ЕРЕЖЕ БЛОГЫ (Қызыл ерекшелеу) */
+  .dangerZone {
+    background: #fef2f2;
+    border: 2px solid #fecaca;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .dangerIcon {
+    font-size: 1.5rem;
+  }
+  .dangerText {
+    font-size: 0.9rem;
+    color: #991b1b;
+    line-height: 1.4;
+  }
+  .dangerText strong {
+    text-decoration: underline;
+    text-decoration-color: #ef4444;
+    text-decoration-thickness: 2px;
+  }
+  
+  /* Мобильді адаптация */
+  @media (max-width: 600px) {
+    .compactGrid { grid-template-columns: 1fr; }
+  }
+  </style>
+</head>
+
+<body data-page="week4">
+  <a class="skip-link" href="#main">Негізгі мазмұнға өту</a>
+
+  <header class="topbar" role="banner">
+    <div class="topbar__inner container">
+      <div class="brand" aria-label="Kazakh Course">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <div class="brand__text">
+          <div class="brand__title">Ситуативтік қазақ тілі</div>
+          <div class="brand__sub">Онлайн курс • 10 апта</div>
+        </div>
+      </div>
+
+      <nav class="nav nav--weeks" aria-label="Апталар (десктоп)">
+        <a class="nav__link" data-page="index" href="index.html">Басты</a>
+        <a class="nav__link" data-page="week1" href="week1.html">1</a>
+        <a class="nav__link" data-page="week2" href="week2.html">2</a>
+        <a class="nav__link" data-page="week3" href="week3.html">3</a>
+        <a class="nav__link is-active" data-page="week4" href="week4.html" aria-current="page">4</a>
+        <a class="nav__link" data-page="week5" href="week5.html">5</a>
+        <a class="nav__link" data-page="week6" href="week6.html">6</a>
+        <a class="nav__link" data-page="week7" href="week7.html">7</a>
+        <a class="nav__link" data-page="week8" href="week8.html">8</a>
+        <a class="nav__link" data-page="week9" href="week9.html">9</a>
+        <a class="nav__link" data-page="week10" href="week10.html">10</a>
+        <a class="nav__link" data-page="dictionary" href="dictionary.html">Сөздік</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    
+    <section class="hero reveal">
+      <div class="hero__grid">
+        <div>
+          <div class="pill">
+            <span class="pill__dot" aria-hidden="true"></span>
+            <span>4-апта</span>
+          </div>
+
+          <h1 class="h1">Достық және <span class="h1__accent">адам қасиеттері</span></h1>
+
+          <p class="lead">
+            Бұл сабақта біз адамның мінез-құлқын сипаттауды, достық туралы пікір алмасуды және «ұнайды/ұнамайды» құрылымдарын үйренеміз.
+          </p>
+
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#lexika">
+              Бастау <span class="btn__arrow" aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </div>
+
+        <aside class="glassPanel reveal">
+          <div class="glassPanel__top">
+            <div class="glassPanel__badge">Прогресс</div>
+            <div class="glassPanel__hint">4 / 10</div>
+          </div>
+
+          <div class="glassPanel__body">
+            <div class="progress__bar">
+              <span class="progress__fill" style="width: 40%"></span>
+            </div>
+            <div class="progress__note">Курстың 40% оқылды</div>
+            
+            <div class="miniGrid" style="margin-top:20px">
+               <a class="miniCard" href="week1.html">1</a>
+               <a class="miniCard" href="week2.html">2</a>
+               <a class="miniCard" href="week3.html">3</a>
+               <a class="miniCard" style="border-color:var(--a); background:rgba(77,163,255,0.1); color:var(--text);" href="#">4</a>
+               <a class="miniCard" href="week5.html">5</a>
+               <a class="miniCard" href="week6.html">6</a>
+               <a class="miniCard" href="week7.html">7</a>
+               <a class="miniCard" href="week8.html">8</a>
+               <a class="miniCard" href="week9.html">9</a>
+               <a class="miniCard" href="week10.html">10</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="lexika" class="weekSection reveal">
+      <div class="weekSection__head">
+        <div>
+          <h2 class="h2 weekSection__title">1. Жаңа сөздер</h2>
+          <p class="section__sub">Адам қасиеттері мен достық.</p>
+        </div>
+        <div class="weekSection__meta">
+          <button class="chip" id="toggleLexBtn" aria-expanded="false" onclick="toggleLex()">
+            <span class="chip__icon">👁</span>
+            <span class="chip__text">Аударма</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="weekSection__body">
+        <div class="lexGrid">
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">🤝</span>
+              <span class="lexCard__badge">Қатынас</span>
+            </div>
+            <div class="lexCard__word">Достық</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Дружба</div>
+          </article>
+    
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">💎</span>
+              <span class="lexCard__badge">Қасиет</span>
+            </div>
+            <div class="lexCard__word">Адал</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Честный</div>
+          </article>
+    
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">🧱</span>
+              <span class="lexCard__badge">Құндылық</span>
+            </div>
+            <div class="lexCard__word">Қолдау</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Поддержка</div>
+          </article>
+    
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">⚖️</span>
+              <span class="lexCard__badge">Сапа</span>
+            </div>
+            <div class="lexCard__word">Жауапкершілік</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Ответственность</div>
+          </article>
+          
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">☀️</span>
+              <span class="lexCard__badge">Мінез</span>
+            </div>
+            <div class="lexCard__word">Мейірімді</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Добрый</div>
+          </article>
+
+          <article class="lexCard">
+            <div class="lexCard__top">
+              <span class="lexCard__icon">🏫</span>
+              <span class="lexCard__badge">Адамдар</span>
+            </div>
+            <div class="lexCard__word">Мектеп достары</div>
+            <div class="lexCard__trans is-hidden" data-lex-target>Школьные друзья</div>
+          </article>
+        </div>
+
+        <div class="callout" style="margin-top: 24px;">
+          <div class="callout__title">Пайдалы фразалар</div>
+          <div class="callout__text">
+            <strong>Өз сөзінде тұрады</strong> — Человек слова.<br>
+            <strong>Өзара түсіністік</strong> — Взаимопонимание.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="weekSection reveal">
+      <div class="weekSection__head">
+        <div>
+          <h2 class="h2 weekSection__title">2. Диалог</h2>
+          <p class="section__sub">Достық туралы сұхбат.</p>
+        </div>
+  
+      </div>
+
+      <div class="weekSection__body">
+        <div class="chatBox">
+          <div class="chatMsg chatMsg--left">
+            <span class="chatMsg__auth">Журналист</span>
+            Сәлеметсіз бе! Достық дегеніміз не?
+          </div>
+          <div class="chatMsg chatMsg--right">
+            <span class="chatMsg__auth">Әлібек</span>
+            Сәлеметсіз бе! Менің ойымша, достық – бұл өзара қолдау.
+          </div>
+
+          <div class="chatMsg chatMsg--left">
+            <span class="chatMsg__auth">Журналист</span>
+            Сіздің достарыңыз көп пе?
+          </div>
+          <div class="chatMsg chatMsg--right">
+            <span class="chatMsg__auth">Әлібек</span>
+            Иә, достарым көп. Мен кластастарыммен және студенттік достарыммен жиі араласамын.
+          </div>
+
+          <div class="chatMsg chatMsg--left">
+            <span class="chatMsg__auth">Журналист</span>
+            Сіздің ең жақсы досыңыз кім?
+          </div>
+          <div class="chatMsg chatMsg--right">
+            <span class="chatMsg__auth">Әлібек</span>
+            Ең жақын досым – Асхат. Ол адал адам, өз сөзінде тұрады.
+          </div>
+
+          <div class="chatMsg chatMsg--left">
+            <span class="chatMsg__auth">Журналист</span>
+            Сізге қандай адамдар ұнамайды?
+          </div>
+          <div class="chatMsg chatMsg--right">
+            <span class="chatMsg__auth">Әлібек</span>
+            Мен көп сөйлейтін және жауапсыз адамдарды ұнатпаймын.
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="grammarSection reveal">
+      <div class="grammarCard">
+        
+        <div class="grammarHeader">
+          <div class="grammarTitle">Грамматика</div>
+          <div class="grammarBadge">Маңызды</div>
+        </div>
+    
+        <div class="formulaBox">
+          <span class="formulaText">
+            <span class="u-blue">Маған</span> + 
+            <span class="u-green">Зат есім</span> + 
+            <span class="u-red">Ұнайды</span>
+          </span>
+          <div style="font-size: 0.8rem; color: #6b7280; margin-top: 8px;">
+            (Кімге? + Не? + Ұнайды / Ұнамайды)
+          </div>
+        </div>
+    
+        <div class="compactGrid">
+          
+          <div>
+            <div style="font-size:0.85rem; text-transform:uppercase; color:#9ca3af; font-weight:700; margin-bottom:10px;">
+              Жіктелуі (Кімге?):
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <span class="pronounBtn">Маған</span>
+              <span class="pronounBtn">Саған</span>
+              <span class="pronounBtn">Сізге</span>
+              <span class="pronounBtn">Оған</span>
+              <span class="pronounBtn">Бізге</span>
+              <span class="pronounBtn">Оларға</span>
+            </div>
+          </div>
+    
+          <div>
+            <div style="font-size:0.85rem; text-transform:uppercase; color:#9ca3af; font-weight:700; margin-bottom:10px;">
+              Мысалдар:
+            </div>
+            <ul class="exList">
+              <li class="exItem">
+                <strong>Маған</strong> достық <span style="color:#10b981; font-weight:700;">ұнайды</span>.
+              </li>
+              <li class="exItem">
+                <strong>Саған</strong> жалғандық <span style="color:#ef4444; font-weight:700;">ұнамайды</span>.
+              </li>
+              <li class="exItem">
+                <strong>Сізге</strong> қандай адам <span style="color:#3b82f6; font-weight:700;">ұнайды?</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+    
+        <div class="dangerZone">
+          <div class="dangerIcon">⚠️</div>
+          <div class="dangerText">
+            <strong>Есте сақтаңыз:</strong> <br>
+            «Мен ұнатамын» — дұрыс.<br>
+            Бірақ «ұнайды» сөзімен тек <span class="pronounBtn" style="background:#fee2e2; color:#991b1b; border-color:#fecaca; box-shadow:none;">МАҒАН</span> формасы қолданылады.
+          </div>
+        </div>
+    
+      </div>
+    </section>
+   <section class="section reveal">
+      <h2 class="h2">3. Сөйлеу клишелері: Достық формуласы</h2>
+      
+      <div class="statusBar">
+        <div class="statusPill active">👥 Менің достарым көп</div>
+        <div class="statusPill">👤 Достарым аз</div>
+        <div class="statusPill">🚫 Достарым жоқ</div>
+        <div class="statusPill active">🏫 Бұл – менің мектеп достарым</div>
+        <div class="statusPill active">🎓 Бүгін студенттік достарыммен кездесеміз</div>
+      </div>
+    
+      <div class="magnetGrid">
+        <div class="magnetZone magnetZone--pos">
+          <div class="zoneTitle">👍 Маған ұнайды <small style="opacity:0.7; margin-left:auto; font-size:0.7em;">(Нравится)</small></div>
+          
+          <div class="traitCard">
+            Маған адал адамдар ұнайды.
+            <span class="traitTranslation">Мне нравятся честные люди.</span>
+          </div>
+          <div class="traitCard">
+            Мен көңілді адамдарды бағалаймын.
+            <span class="traitTranslation">Я ценю веселых людей.</span>
+          </div>
+          <div class="traitCard">
+            Мен позитивті адамдарды жақсы көремін.
+            <span class="traitTranslation">Я люблю позитивных людей.</span>
+          </div>
+          <div class="traitCard">
+            Меніңше, адалдық – өте маңызды қасиет.
+            <span class="traitTranslation">По-моему, честность – важное качество.</span>
+          </div>
+        </div>
+    
+        <div class="magnetZone magnetZone--neg">
+          <div class="zoneTitle">👎 Маған ұнамайды <small style="opacity:0.7; margin-left:auto; font-size:0.7em;">(Не нравится)</small></div>
+          
+          <div class="traitCard traitCard--bad">
+            Маған жауапсыздық ұнамайды.
+            <span class="traitTranslation">Мне не нравится безответственность.</span>
+          </div>
+          <div class="traitCard traitCard--bad">
+            Мен өз сөзінде тұрмайтын адамдарды ұнатпаймын.
+            <span class="traitTranslation">Я не люблю людей, не держащих слово.</span>
+          </div>
+          <div class="traitCard traitCard--bad">
+            Мен бос сөзді адамдарды жақтырмаймын.
+            <span class="traitTranslation">Я презираю пустословов.</span>
+          </div>
+        </div>
+      </div>
+    
+      <h3 class="h3" style="text-align:center; margin-top:40px;">❤️ Достық деген не?</h3>
+      <div class="coreGrid">
+        <div class="coreBlock">
+          <span class="coreIcon">🤝</span>
+          <div class="coreText">Өзара түсіністік</div>
+          <div class="coreSub">Взаимопонимание</div>
+        </div>
+        <div class="coreBlock">
+          <span class="coreIcon">🏗️</span>
+          <div class="coreText">Өзара қолдау</div>
+          <div class="coreSub">Взаимная поддержка</div>
+        </div>
+        <div class="coreBlock">
+          <span class="coreIcon">🎩</span>
+          <div class="coreText">Өзара сыйластық</div>
+          <div class="coreSub">Взаимное уважение</div>
+        </div>
+        <div class="coreBlock">
+          <span class="coreIcon">🆘</span>
+          <div class="coreText">Өзара көмектесу</div>
+          <div class="coreSub">Взаимная помощь</div>
+        </div>
+      </div>
+    
+      <div class="goldCard">
+        <div class="goldItem">
+          <span class="goldCheck">★</span>
+          <div class="goldText">
+            Менің ең жақсы досым бар.
+            <span class="goldSub">У меня есть лучший друг.</span>
+          </div>
+        </div>
+        <div class="goldItem">
+          <span class="goldCheck">★</span>
+          <div class="goldText">
+            Ол уақытында көмекке келеді.
+            <span class="goldSub">Он(а) вовремя приходит на помощь.</span>
+          </div>
+        </div>
+        <div class="goldItem">
+          <span class="goldCheck">★</span>
+          <div class="goldText">
+            Біз 30 жыл доспыз.
+            <span class="goldSub">Мы друзья 30 лет.</span>
+          </div>
+        </div>
+      </div>
+        <div class="block" style="margin-top: 24px; border-left: 4px solid var(--a);">
+          <div class="block__title">Тапсырма: Мәтінді толықтырыңыз</div>
+          <p style="font-size: 1.05rem; line-height: 1.6;">
+            Мен – ... (атыңыз). Мен ашық адаммын. Менің достарым <strong>көп</strong>. 
+            Көбінесе, олар <strong>мектеп</strong> және <strong>студенттік</strong> достарым. 
+            Біз мерекелерде кездесеміз, бір-бірімізге қонаққа барамыз. 
+            Менің ең жақын екі досым бар. Олар: ... және ... .
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="section reveal" id="test">
+      <div class="section__head">
+        <h2 class="h2">Өзіңізді тексеріңіз</h2>
+        <p class="section__sub">8 сұраққа жауап беріңіз.</p>
+      </div>
+    
+      <div class="weekSection">
+        <div class="weekSection__body">
+          <form id="quizForm">
+    
+            <!-- 1 -->
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">
+                1. «Адал адам» дегеніміз кім?
+              </p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q1" value="0"> Көңілді адам</label>
+                <label class="testItem"><input type="radio" name="q1" value="1"> Өз сөзіне берік адам</label>
+                <label class="testItem"><input type="radio" name="q1" value="0"> Көп сөйлейтін адам</label>
+              </div>
+            </div>
+    
+            <!-- 2 -->
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">
+                2. «Жауапсыздық» сөзінің мағынасы:
+              </p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q2" value="1"> Міндетін орындамау</label>
+                <label class="testItem"><input type="radio" name="q2" value="0"> Біреуге көмектесу</label>
+                <label class="testItem"><input type="radio" name="q2" value="0"> Сыйластық таныту</label>
+              </div>
+            </div>
+    
+            <!-- 3 -->
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">
+                3. Сөйлемді толықтырыңыз: «Менің мектепте көп ... бар».
+              </p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q3" value="0"> достық</label>
+                <label class="testItem"><input type="radio" name="q3" value="0"> дос</label>
+                <label class="testItem"><input type="radio" name="q3" value="1"> достарым</label>
+              </div>
+            </div>
+    
+            <!-- 4 -->
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">
+                4. «Адам өз сөзінде ...» сөйлемін дұрыс аяқтаңыз:
+              </p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q4" value="0"> жүреді</label>
+                <label class="testItem"><input type="radio" name="q4" value="1"> тұрады</label>
+                <label class="testItem"><input type="radio" name="q4" value="0"> ойлайды</label>
+              </div>
+            </div>
+    
+            <!-- 5 -->
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">
+                5. «Достық» ұғымына ең жақын сөз:
+              </p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q5" value="0"> Көмек</label>
+                <label class="testItem"><input type="radio" name="q5" value="1"> Сыйластық</label>
+                <label class="testItem"><input type="radio" name="q5" value="0"> Міндет</label>
+              </div>
+            </div>
+    
+            <!-- 6 -->
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">
+                6. «Ең жақсы дос» қандай болады?
+              </p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q6" value="1"> Сенімді және адал</label>
+                <label class="testItem"><input type="radio" name="q6" value="0"> Көңілді ғана</label>
+                <label class="testItem"><input type="radio" name="q6" value="0"> Танымал адам</label>
+              </div>
+            </div>
+    
+            <!-- 7 -->
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">
+                7. «Жауапты» сөзінің қарсы мағынасы:
+              </p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q7" value="1"> Жауапсыз</label>
+                <label class="testItem"><input type="radio" name="q7" value="0"> Адал</label>
+                <label class="testItem"><input type="radio" name="q7" value="0"> Ашық</label>
+              </div>
+            </div>
+    
+            <!-- 8 -->
+            <div class="block">
+              <p class="h2" style="font-size:1.1rem; margin-bottom:12px;">
+                8. Сөйлемді дұрыс аяқтаңыз: «Маған көңілді адамдар ...».
+              </p>
+              <div class="testGrid">
+                <label class="testItem"><input type="radio" name="q8" value="0"> жек көремін</label>
+                <label class="testItem"><input type="radio" name="q8" value="1"> ұнайды</label>
+                <label class="testItem"><input type="radio" name="q8" value="0"> түсінбеймін</label>
+              </div>
+            </div>
+    
+            <button
+              type="button"
+              class="btn btn--primary"
+              style="margin-top: 16px; width: 100%;"
+              onclick="checkQuiz()"
+            >
+              Нәтижені тексеру
+            </button>
+          </form>
+    
+          <div id="quizResult" class="resultBox"></div>
+        </div>
+      </div>
+    </section>
+    
+
+    <div class="navBottom">
+      <a class="btn" href="week3.html">← 3-апта</a>
+      <a class="btn btn--primary" href="week5.html">5-аптаға өту →</a>
+    </div>
+
+    <footer class="footer reveal" role="contentinfo">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__brand">
+            <span class="brand__mark brand__mark--sm" aria-hidden="true"></span>
+            <div>
+              <div class="footer__title">Ситуативтік қазақ тілі</div>
+              <div class="footer__sub">Онлайн курс</div>
+            </div>
+          </div>
+          <p class="footer__text">Авторы: Ахметова Татьяна Алимжановна</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span class="muted">© Kazakh Course 2026</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    // Reveal animation trigger
+    document.addEventListener('DOMContentLoaded', () => {
+      document.documentElement.classList.add('reveal-ready');
+      setTimeout(() => {
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach((el, i) => {
+          setTimeout(() => el.classList.add('is-in'), i * 100);
+        });
+      }, 100);
+    });
+
+    // Toggle Lexicon
+    function toggleLex() {
+      const btn = document.getElementById('toggleLexBtn');
+      const targets = document.querySelectorAll('[data-lex-target]');
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+
+      btn.setAttribute('aria-expanded', !isExpanded);
+      targets.forEach(t => t.classList.toggle('is-hidden'));
+    }
+
+    // Quiz Engine
+    function checkQuiz() {
+      const form = document.getElementById('quizForm');
+      const resultBox = document.getElementById('quizResult');
+      let score = 0;
+      const total = 8;
+
+      // Simple check logic
+      for (let i = 1; i <= total; i++) {
+        const selected = form.querySelector(`input[name="q${i}"]:checked`);
+        if (selected && selected.value === "1") {
+          score++;
+          selected.parentElement.style.borderColor = "var(--b)";
+          selected.parentElement.style.backgroundColor = "color-mix(in oklab, var(--b) 10%, transparent)";
+        } else if (selected) {
+          selected.parentElement.style.borderColor = "red";
+        }
+      }
+
+      resultBox.style.display = 'block';
+      resultBox.className = 'resultBox ' + (score >= 6 ? 'is-good' : 'is-bad');
+      
+      if (score === total) {
+        resultBox.innerHTML = `<strong>Тамаша! 🏆</strong><br>Сіз барлық сұраққа дұрыс жауап бердіңіз (${score}/${total}).`;
+      } else if (score >= 5) {
+        resultBox.innerHTML = `<strong>Жақсы! 👍</strong><br>Нәтиже: ${score}/${total}. Қателерді қарап шығыңыз.`;
+      } else {
+        resultBox.innerHTML = `<strong>Қайталау керек 📚</strong><br>Нәтиже: ${score}/${total}. Сабақты қайталап өтіңіз.`;
+      }
+      
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+</body>
+</html>

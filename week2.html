@@ -1,0 +1,1521 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2-апта: Сәлемдесу. Танысу. Өмірбаян</title>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    /* =========================================
+       WEEK 2 SPECIFIC STYLES
+       ========================================= */
+
+    /* 1. LEXICON BANK (Сөздер тобы) */
+    .lexiconBank { display: grid; gap: 20px; }
+    .lexiconGroup { background: var(--surface); border: 1px solid var(--stroke); border-radius: 16px; padding: 16px; }
+    .lexiconGroup__title { font-size: 0.9rem; text-transform: uppercase; color: var(--a); margin-bottom: 12px; font-weight: 800; }
+    .wordChips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .wordChip { display: inline-flex; flex-direction: column; padding: 6px 12px; border-radius: 12px; background: color-mix(in oklab, var(--surface2) 50%, transparent); border: 1px solid var(--stroke); font-size: 0.95rem; transition: all 0.2s; }
+    .wordChip:hover { background: var(--surface); border-color: var(--a); transform: translateY(-2px); }
+    .wordChip__kz { font-weight: 700; color: var(--text); }
+    .wordChip__ru { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+    /* 2. PHRASE CARDS (Сөйлесу түрлері) */
+    .situationGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .phraseCard {
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      padding: 16px;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .phraseCard:hover {
+      border-color: var(--b);
+      box-shadow: var(--shadow-1);
+      transform: translateY(-2px);
+    }
+
+    .phraseCard__kz { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; }
+    
+    /* Аударма стильдері */
+    .phraseCard__ru { 
+      font-size: 0.9rem; 
+      color: var(--muted); 
+      display: none; /* Бастапқыда жасырын */
+      margin-top: 8px; 
+      border-top: 1px dashed var(--stroke); 
+      padding-top: 8px;
+    }
+    
+    /* Түйме басылғанда осы класс қосылады */
+    body.show-trans .phraseCard__ru { 
+      display: block; 
+      animation: slideDown 0.3s ease; 
+    }
+
+    /* 3. PATTERNS (Сөйлеу клишелері - Стикерлер) */
+    .stickerCloud { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .sticker { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 20px; font-size: 1rem; background: var(--surface); border: 1px solid var(--stroke); box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+    .sticker:hover { transform: translateY(-2px); box-shadow: var(--shadow-1); }
+    .sticker b { color: var(--a); font-weight: 800; }
+
+    /* 4. PHONE CHAT (Компактный телефон) */
+    .phoneWrapper { display: flex; flex-direction: column; align-items: center; margin: 20px 0; }
+    .phoneMockup { width: 100%; max-width: 340px; height: 480px; background: #f0f2f5; border-radius: 24px; border: 6px solid var(--text); box-shadow: var(--shadow-2); display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    .phoneHead { background: var(--surface); padding: 10px 14px; border-bottom: 1px solid var(--stroke); display: flex; align-items: center; gap: 10px; z-index: 2; }
+    .phoneHead__avatar { width: 32px; height: 32px; background: var(--a); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .phoneHead__name { font-weight: 700; font-size: 0.9rem; }
+    .phoneBody { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background-image: radial-gradient(#cbd5e0 1px, transparent 1px); background-size: 18px 18px; }
+    .msg { max-width: 85%; padding: 8px 12px; border-radius: 14px; font-size: 0.9rem; line-height: 1.4; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .msg--left { align-self: flex-start; background: white; border-bottom-left-radius: 2px; }
+    .msg--right { align-self: flex-end; background: var(--a); color: white; border-bottom-right-radius: 2px; }
+    .msg-hidden { display: none; }
+    .phoneFooter { background: var(--surface); padding: 8px 12px; border-top: 1px solid var(--stroke); display: flex; align-items: center; gap: 8px; }
+    .fakeInput { flex: 1; height: 32px; background: var(--surface2); border-radius: 16px; }
+
+    /* 5. ROLE CARDS */
+    .roleCard { background: var(--surface); border: 1px solid var(--stroke); border-radius: 16px; padding: 14px; margin-bottom: 10px; display: flex; gap: 12px; }
+    .roleCard__num { min-width: 24px; height: 24px; background: var(--text); color: var(--bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; }
+
+    /* 6. CONSTRUCTOR */
+    .constructorBox { background: white; padding: 24px; border-radius: 16px; border: 2px dashed var(--a); font-size: 1.1rem; line-height: 2; }
+    .inputBlank { border: none; border-bottom: 2px solid var(--muted); background: color-mix(in oklab, var(--a) 10%, white); color: var(--text); font-weight: bold; font-size: 1rem; padding: 0 6px; width: 120px; text-align: center; outline: none; border-radius: 4px 4px 0 0; }
+    .inputBlank:focus { border-bottom-color: var(--b); background: color-mix(in oklab, var(--b) 10%, white); }
+
+    /* 7. MINI GRID (Sidebar) */
+    .miniGrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 20px; }
+    .miniCard { height: 36px; border-radius: 8px; border: 1px solid var(--stroke); display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--muted); font-weight: 700; font-size: 0.9rem; transition: all 0.2s; }
+    .miniCard:hover { border-color: var(--stroke2); background: var(--surface2); color: var(--text); }
+
+    /* 8. COMPACT TEST GRID */
+    .compactGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .compactBlock { padding: 12px 14px !important; margin: 0 !important; }
+    .compactTitle { font-size: 1rem !important; margin-bottom: 10px !important; font-weight: 700; }
+    @media (max-width: 768px) { .compactGrid { grid-template-columns: 1fr; } }
+
+    /* 9. NAV BOTTOM */
+    .navBottom { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--stroke); }
+    @media (max-width: 480px) { .navBottom { flex-direction: column; gap: 10px; } .navBottom .btn { width: 100%; } }
+
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes popIn { from { opacity: 0; transform: translateY(10px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  /* =========================================
+       COMPACT PHRASEBOOK (WEEK 2 UPDATE)
+       ========================================= */
+    
+    /* Сетка 2 колонки */
+    .phrasebookGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    /* Блок группы */
+    .phraseBlock {
+      background: var(--surface);
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-1);
+    }
+
+    /* Заголовок группы */
+    .phraseBlock__head {
+      background: color-mix(in oklab, var(--surface2) 60%, transparent);
+      padding: 12px 16px;
+      font-weight: 800;
+      color: var(--a);
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    /* Список фраз */
+    .phraseBlock__list {
+      padding: 8px 0;
+    }
+
+    /* Строка фразы */
+    .phraseRow {
+      padding: 10px 16px;
+      border-bottom: 1px solid color-mix(in oklab, var(--stroke) 40%, transparent);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .phraseRow:last-child { border-bottom: none; }
+    .phraseRow:hover { background: var(--surface2); }
+
+    /* Акцентные вопросы (слева полоска) */
+    .phraseRow--accent {
+      border-left: 3px solid var(--b);
+      background: color-mix(in oklab, var(--b) 5%, transparent);
+    }
+
+    .phraseRow__kz {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    /* Скрытый перевод */
+    .phraseRow__ru {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+      display: none; /* Скрыто */
+    }
+
+    /* Класс для показа перевода (Global via JS) */
+    body.show-trans .phraseRow__ru {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body data-page="week2">
+  <header class="topbar">
+    <div class="topbar__inner container">
+      <div class="brand">
+        <span class="brand__mark"></span>
+        <div class="brand__text">
+          <div class="brand__title">Ситуативтік қазақ тілі</div>
+          <div class="brand__sub">Онлайн курс</div>
+        </div>
+      </div>
+      <nav class="nav nav--weeks">
+        <a class="nav__link" href="index.html">Басты</a>
+        <a class="nav__link" href="week1.html">1</a>
+        <a class="nav__link is-active" href="week2.html">2</a>
+        <a class="nav__link" href="week3.html">3</a>
+        <a class="nav__link" href="week4.html">4</a>
+        <a class="nav__link" href="week5.html">5</a>
+        <a class="nav__link" href="week6.html">6</a>
+        <a class="nav__link" href="week7.html">7</a>
+        <a class="nav__link" href="week8.html">8</a>
+        <a class="nav__link" href="week9.html">9</a>
+        <a class="nav__link" href="week10.html">10</a>
+        <a class="nav__link" href="dictionary.html">Сөздік</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    
+    <section class="hero reveal">
+      <div class="hero__grid">
+        <div>
+          <div class="pill">
+            <span class="pill__dot"></span> 2-АПТА
+          </div>
+          <h1 class="h1">СӘЛЕМДЕСУ. ТАНЫСУ. <span class="h1__accent">ӨМІРБАЯН</span></h1>
+          <p class="lead">
+            Мақсаты: Сәлем беру, танысу, жөн сұрасу, "Сіз кімсіз?", алғыс айту және қоштасу түрлерін үйрену.
+          </p>
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#lexika">
+              Бастау <span class="btn__arrow">↓</span>
+            </a>
+          </div>
+        </div>
+
+        <aside class="glassPanel reveal">
+          <div class="glassPanel__top">
+            <div class="glassPanel__badge">Прогресс</div>
+            <div class="glassPanel__hint">2 / 10</div>
+          </div>
+          <div class="glassPanel__body">
+            <div class="progress__bar">
+              <span class="progress__fill" style="width: 20%"></span>
+            </div>
+            <div class="progress__note">Курстың 20% оқылды</div>
+            
+            <div class="miniGrid">
+               <a class="miniCard" href="week1.html">1</a>
+               <a class="miniCard" style="border-color:var(--a); background:rgba(77,163,255,0.1); color:var(--text); font-weight:800;" href="week2.html">2</a>
+               <a class="miniCard" href="week3.html">3</a>
+               <a class="miniCard" href="week4.html">4</a>
+               <a class="miniCard" href="week5.html">5</a>
+               <a class="miniCard" href="week6.html">6</a>
+               <a class="miniCard" href="week7.html">7</a>
+               <a class="miniCard" href="week8.html">8</a>
+               <a class="miniCard" href="week9.html">9</a>
+               <a class="miniCard" href="week10.html">10</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="lexika" class="section reveal">
+      <div class="section__head">
+        <h2 class="h2" style="font-size: 2rem; color: #1e293b;">2.1 Лексикалық минимум</h2>
+        <p class="section__sub">Карточканы басып, сөздің аудармасын көріңіз.</p>
+      </div>
+    
+      <style>
+        /* CONTROL PANEL (TABS) */
+        .filterNav {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 10px;
+          margin-bottom: 30px;
+        }
+    
+        .filterBtn {
+          background: #ffffff;
+          border: 2px solid #e2e8f0;
+          border-radius: 50px;
+          padding: 10px 20px;
+          font-weight: 700;
+          color: #64748b;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+    
+        .filterBtn:hover {
+          background: #f1f5f9;
+          transform: translateY(-2px);
+        }
+    
+        .filterBtn.active {
+          background: #3b82f6;
+          color: white;
+          border-color: #3b82f6;
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+    
+        /* CARDS GRID */
+        .flashcardGrid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 20px;
+          perspective: 1000px; /* 3D effect */
+        }
+    
+        /* FLIP CARD STYLES */
+        .fCard {
+          background: transparent;
+          height: 140px; /* Fixed height */
+          cursor: pointer;
+        }
+    
+        .fCard-inner {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          text-align: center;
+          transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+          transform-style: preserve-3d;
+          border-radius: 16px;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+    
+        .fCard.flipped .fCard-inner {
+          transform: rotateY(180deg);
+        }
+    
+        /* Front & Back Common */
+        .fFront, .fBack {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+          border-radius: 16px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 15px;
+          border: 1px solid #e2e8f0;
+        }
+    
+        /* FRONT (Kazakh) */
+        .fFront {
+          background: #ffffff;
+          color: #1e293b;
+        }
+        .fWordKz {
+          font-size: 1.1rem;
+          font-weight: 800;
+          margin-top: 10px;
+        }
+        .fIcon {
+          font-size: 2rem;
+          margin-bottom: 5px;
+          opacity: 0.8;
+        }
+    
+        /* BACK (Russian) */
+        .fBack {
+          background: #eff6ff; /* Light Blue */
+          color: #1d4ed8;
+          transform: rotateY(180deg);
+          border-color: #bfdbfe;
+        }
+        .fWordRu {
+          font-size: 1rem;
+          font-weight: 600;
+        }
+        
+        /* Animation for filtering */
+        @keyframes popIn {
+          0% { opacity: 0; transform: scale(0.8); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        .fCard.animate {
+          animation: popIn 0.4s ease forwards;
+        }
+    
+      </style>
+    
+      <div class="weekSection__body">
+        
+        <div class="filterNav">
+          <button class="filterBtn active" onclick="filterCards('all')">✨ Барлығы</button>
+          <button class="filterBtn" onclick="filterCards('cat1')">👋 Сәлемдесу</button>
+          <button class="filterBtn" onclick="filterCards('cat2')">⏰ Уақыт</button>
+          <button class="filterBtn" onclick="filterCards('cat3')">🤝 Әдептілік</button>
+          <button class="filterBtn" onclick="filterCards('cat4')">🏡 Үй/Қонақ</button>
+          <button class="filterBtn" onclick="filterCards('cat5')">📝 Өмірбаян</button>
+        </div>
+    
+        <div class="flashcardGrid" id="cardContainer">
+          
+          <div class="fCard" data-cat="cat1" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">👤</div><div class="fWordKz">Ат / Есім</div></div>
+              <div class="fBack"><div class="fWordRu">Имя</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat1" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">👋</div><div class="fWordKz">Сәлем</div></div>
+              <div class="fBack"><div class="fWordRu">Привет</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat1" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">❓</div><div class="fWordKz">Хал-жағдай</div></div>
+              <div class="fBack"><div class="fWordRu">Дела (Как дела?)</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat1" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🩺</div><div class="fWordKz">Денсаулық</div></div>
+              <div class="fBack"><div class="fWordRu">Здоровье</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat1" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">😊</div><div class="fWordKz">Көңіл-күй</div></div>
+              <div class="fBack"><div class="fWordRu">Настроение</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat1" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">👍</div><div class="fWordKz">Жақсы / Өте жақсы</div></div>
+              <div class="fBack"><div class="fWordRu">Хорошо / Отлично</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat1" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">😐</div><div class="fWordKz">Жаман емес</div></div>
+              <div class="fBack"><div class="fWordRu">Неплохо</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat1" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">📰</div><div class="fWordKz">Жаңалық</div></div>
+              <div class="fBack"><div class="fWordRu">Новости</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat1" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">➕</div><div class="fWordKz">Көп</div></div>
+              <div class="fBack"><div class="fWordRu">Много</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat1" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">❌</div><div class="fWordKz">Жоқ</div></div>
+              <div class="fBack"><div class="fWordRu">Нет</div></div>
+            </div>
+          </div>
+    
+          <div class="fCard" data-cat="cat2" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🌅</div><div class="fWordKz">Таң</div></div>
+              <div class="fBack"><div class="fWordRu">Утро</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat2" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">☀️</div><div class="fWordKz">Күн</div></div>
+              <div class="fBack"><div class="fWordRu">День</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat2" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🌇</div><div class="fWordKz">Кеш</div></div>
+              <div class="fBack"><div class="fWordRu">Вечер</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat2" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">❄️</div><div class="fWordKz">Қыс</div></div>
+              <div class="fBack"><div class="fWordRu">Зима</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat2" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🌱</div><div class="fWordKz">Көктем</div></div>
+              <div class="fBack"><div class="fWordRu">Весна</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat2" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🌻</div><div class="fWordKz">Жаз</div></div>
+              <div class="fBack"><div class="fWordRu">Лето</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat2" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🍂</div><div class="fWordKz">Күз</div></div>
+              <div class="fBack"><div class="fWordRu">Осень</div></div>
+            </div>
+          </div>
+    
+          <div class="fCard" data-cat="cat3" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🙏</div><div class="fWordKz">Рахмет / Ризамын</div></div>
+              <div class="fBack"><div class="fWordRu">Спасибо / Благодарю</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat3" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">❤️</div><div class="fWordKz">Шың жүректен</div></div>
+              <div class="fBack"><div class="fWordRu">От всей души</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat3" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🎁</div><div class="fWordKz">Тілек</div></div>
+              <div class="fBack"><div class="fWordRu">Пожелание</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat3" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">💁</div><div class="fWordKz">Мархабат / Оқасы жоқ</div></div>
+              <div class="fBack"><div class="fWordRu">Пожалуйста / Не за что</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat3" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">👋</div><div class="fWordKz">Сау болыңыз</div></div>
+              <div class="fBack"><div class="fWordRu">До свидания</div></div>
+            </div>
+          </div>
+    
+          <div class="fCard" data-cat="cat4" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">👑</div><div class="fWordKz">Төр</div></div>
+              <div class="fBack"><div class="fWordRu">Почетное место</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat4" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🚪</div><div class="fWordKz">Төрлетіңіз</div></div>
+              <div class="fBack"><div class="fWordRu">Проходите (на почетное место)</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat4" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🛖</div><div class="fWordKz">Шаңырақ</div></div>
+              <div class="fBack"><div class="fWordRu">Дом, очаг</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat4" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🍽️</div><div class="fWordKz">Дастархан</div></div>
+              <div class="fBack"><div class="fWordRu">Накрытый стол</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat4" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">☕</div><div class="fWordKz">Қонақ</div></div>
+              <div class="fBack"><div class="fWordRu">Гость</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat4" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">👴</div><div class="fWordKz">Үлкендер</div></div>
+              <div class="fBack"><div class="fWordRu">Старшие</div></div>
+            </div>
+          </div>
+    
+          <div class="fCard" data-cat="cat5" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🏙️</div><div class="fWordKz">Қала / Ауыл</div></div>
+              <div class="fBack"><div class="fWordRu">Город / Село</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat5" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">👶</div><div class="fWordKz">Тудым</div></div>
+              <div class="fBack"><div class="fWordRu">Родился</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat5" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">🏫</div><div class="fWordKz">Мектеп / Оқыдым</div></div>
+              <div class="fBack"><div class="fWordRu">Школа / Учился</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat5" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">💼</div><div class="fWordKz">Жұмыс істеймін</div></div>
+              <div class="fBack"><div class="fWordRu">Работал</div></div>
+            </div>
+          </div>
+          <div class="fCard" data-cat="cat5" onclick="flip(this)">
+            <div class="fCard-inner">
+              <div class="fFront"><div class="fIcon">👨‍🏫</div><div class="fWordKz">Оқытушы</div></div>
+              <div class="fBack"><div class="fWordRu">Преподаватель</div></div>
+            </div>
+          </div>
+    
+        </div>
+      </div>
+    
+      <script>
+        function flip(card) {
+          card.classList.toggle('flipped');
+        }
+    
+        function filterCards(category) {
+          const allCards = document.querySelectorAll('.fCard');
+          const allBtns = document.querySelectorAll('.filterBtn');
+    
+          // Update Buttons
+          allBtns.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('onclick').includes(category)) {
+              btn.classList.add('active');
+            }
+          });
+    
+          // Filter Logic with Animation
+          allCards.forEach(card => {
+            // Reset state
+            card.classList.remove('animate');
+            card.style.display = 'none';
+    
+            if (category === 'all' || card.getAttribute('data-cat') === category) {
+              card.style.display = 'block';
+              // Trigger reflow for animation
+              void card.offsetWidth;
+              card.classList.add('animate');
+            }
+          });
+        }
+      </script>
+    </section>
+
+    <section class="section reveal">
+      <div class="section__head">
+        <h2 class="h2">Сөйлесу түрлері</h2>
+        <button class="btn btn--ghost" id="transBtn" onclick="toggleTranslations()">
+        </button>
+      </div>
+
+      <div class="phrasebookGrid">
+        
+        <div class="phraseBlock">
+          <div class="phraseBlock__head">1. Как приветствовать?</div>
+          <div class="phraseBlock__list">
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Сәлеметсiз бе? / Амансыз ба?</div>
+              <div class="phraseRow__ru">Здравствуйте! (вежливая форма)</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Сәлем!</div>
+              <div class="phraseRow__ru">Привет!</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Сәлеметсің бе? / Амансың ба?</div>
+              <div class="phraseRow__ru">Здравствуй!</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Сәлеметсiздер ме?</div>
+              <div class="phraseRow__ru">Здравствуйте! (мн.ч.)</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Ассалаумағалейкум!</div>
+              <div class="phraseRow__ru">Приветствие для мужчин</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Қайырлы таң / күн / кеш!</div>
+              <div class="phraseRow__ru">Доброе утро / день / вечер!</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Қош келдіңіз(дер)!</div>
+              <div class="phraseRow__ru">Добро пожаловать!</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phraseBlock">
+          <div class="phraseBlock__head">2. Как представиться?</div>
+          <div class="phraseBlock__list">
+            <div class="phraseRow phraseRow--accent">
+              <div class="phraseRow__kz">Сіз кімсіз?</div>
+              <div class="phraseRow__ru">Кто Вы? / Представьтесь</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Мен – Татьянамын.</div>
+              <div class="phraseRow__ru">Я - Татьяна.</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Менің атым – Татьяна.</div>
+              <div class="phraseRow__ru">Меня зовут Татьяна.</div>
+            </div>
+            <div class="phraseRow phraseRow--accent">
+              <div class="phraseRow__kz">Сіздің аты-жөніңіз кім?</div>
+              <div class="phraseRow__ru">Как Вас зовут?</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Менің аты-жөнім - Ахметова Татьяна.</div>
+              <div class="phraseRow__ru">Меня зовут Ахметова Татьяна.</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Өте жақсы!</div>
+              <div class="phraseRow__ru">Очень приятно!</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phraseBlock">
+          <div class="phraseBlock__head">3. Как Вы?</div>
+          <div class="phraseBlock__list">
+            <div class="phraseRow phraseRow--accent">
+              <div class="phraseRow__kz">Қалайсыз? / Көңіл-күйіңіз қалай?</div>
+              <div class="phraseRow__ru">Как Ваши дела? / Как настроение?</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Денсаулығыңыз қалай?</div>
+              <div class="phraseRow__ru">Как Ваше здоровье?</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Рақмет, жақсы.</div>
+              <div class="phraseRow__ru">Спасибо, хорошо.</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Құдайға шүкір! / Ойдағыдай.</div>
+              <div class="phraseRow__ru">Слава богу! / Все в порядке.</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Өте жақсы! / Тамаша!</div>
+              <div class="phraseRow__ru">Очень хорошо! / Отлично!</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Жаман емес. / Онша емес.</div>
+              <div class="phraseRow__ru">Неплохо. / Не очень.</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Менде бәрі жақсы.</div>
+              <div class="phraseRow__ru">У меня все хорошо.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phraseBlock">
+          <div class="phraseBlock__head">4. Какие новости?</div>
+          <div class="phraseBlock__list">
+            <div class="phraseRow phraseRow--accent">
+              <div class="phraseRow__kz">Не жаңалық бар?</div>
+              <div class="phraseRow__ru">Что нового?</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Қалайсыңдар, бәрі жақсы ма?</div>
+              <div class="phraseRow__ru">Как вы, все хорошо?</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Жаңалық жоқ.</div>
+              <div class="phraseRow__ru">Новостей нет.</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Жаңалық көп.</div>
+              <div class="phraseRow__ru">Новостей много.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phraseBlock">
+          <div class="phraseBlock__head">5. Благодарность</div>
+          <div class="phraseBlock__list">
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Рақмет / Көп рақмет.</div>
+              <div class="phraseRow__ru">Спасибо / Большое спасибо.</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Сізге алғыс айтамын / ризамын.</div>
+              <div class="phraseRow__ru">Благодарю Вас / Признателен Вам.</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Шын жүректен алғыс айтамын.</div>
+              <div class="phraseRow__ru">Искренне благодарю.</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Назарыңызға рақмет!</div>
+              <div class="phraseRow__ru">Спасибо за внимание!</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Оқасы жоқ / Мархабат.</div>
+              <div class="phraseRow__ru">Не за что / Пожалуйста.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phraseBlock">
+          <div class="phraseBlock__head">6. Прощание</div>
+          <div class="phraseBlock__list">
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Сау бол!</div>
+              <div class="phraseRow__ru">Пока! До свидания!</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Сау болыңыз! / Қош болыңыз!</div>
+              <div class="phraseRow__ru">До свидания (Вы).</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Аман болыңыз!</div>
+              <div class="phraseRow__ru">Будьте здоровы!</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Кездескенше! / Ертеңге дейін!</div>
+              <div class="phraseRow__ru">До встречи! / До завтра!</div>
+            </div>
+            <div class="phraseRow">
+              <div class="phraseRow__kz">Қайырлы түн!</div>
+              <div class="phraseRow__ru">Спокойной ночи!</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <div class="section__head">
+        <h2 class="h2" style="font-size: 1.8rem; color: #1e293b; margin-bottom: 10px;">2.2 Сөйлеу клишелері</h2>
+        <p class="section__sub">Карточкаларға тінтуірді апарып көріңіз.</p>
+      </div>
+    
+      <style>
+        /* 3D STAGE */
+        .stickerCloud {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 20px;
+          padding: 20px;
+          perspective: 1000px; /* 3D Perspective */
+        }
+    
+        /* CARD STYLE */
+        .sticker {
+          background: rgba(255, 255, 255, 0.9);
+          padding: 15px 25px;
+          border-radius: 16px;
+          font-size: 1rem;
+          color: #334155;
+          box-shadow: 0 10px 20px rgba(0,0,0,0.05), 0 2px 5px rgba(0,0,0,0.02);
+          border: 1px solid rgba(255,255,255,0.8);
+          cursor: default;
+          transition: all 0.1s ease-out; /* Smooth JS movement */
+          position: relative;
+          overflow: hidden;
+          
+          /* Idle Animation */
+          animation: floatIdle 6s ease-in-out infinite;
+        }
+    
+        /* Randomize animation delays for organic look */
+        .sticker:nth-child(2n) { animation-delay: 1s; }
+        .sticker:nth-child(3n) { animation-delay: 2s; }
+        .sticker:nth-child(5n) { animation-delay: 0.5s; }
+    
+        /* Highlight Suffixes */
+        .sticker b {
+          color: #2563eb;
+          font-weight: 800;
+          background: #eff6ff;
+          padding: 0 4px;
+          border-radius: 4px;
+        }
+    
+        /* CATEGORY BORDERS (Visual Grouping) */
+        /* Location (Blue) */
+        .sticker:nth-child(-n+6) { border-bottom: 4px solid #3b82f6; }
+        /* Time (Orange) */
+        .sticker:nth-child(n+7):nth-child(-n+9) { border-bottom: 4px solid #f59e0b; }
+        /* Education/Work (Purple) */
+        .sticker:nth-child(n+10) { border-bottom: 4px solid #8b5cf6; }
+    
+        /* SHINE EFFECT */
+        .sticker::before {
+          content: "";
+          position: absolute;
+          top: 0; left: -100%;
+          width: 50%; height: 100%;
+          background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
+          transform: skewX(-25deg);
+          transition: 0.5s;
+        }
+        .sticker:hover::before { left: 150%; transition: 0.7s; }
+    
+        /* STOP ANIMATION ON HOVER */
+        .sticker:hover {
+          animation-play-state: paused;
+          z-index: 10;
+          background: #ffffff;
+        }
+    
+        /* KEYFRAMES */
+        @keyframes floatIdle {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+      </style>
+    
+      <div class="weekSection__body">
+        <div class="stickerCloud" id="tiltContainer">
+          <div class="sticker" data-tilt>🏙️ Мен Петропавл<b>да</b> тудым.</div>
+          <div class="sticker" data-tilt>🏢 Мен қала<b>да</b> тудым.</div>
+          <div class="sticker" data-tilt>🏡 Мен ауыл<b>да</b> тудым.</div>
+          <div class="sticker" data-tilt>📍 Мен Сергеевка<b>да</b> тудым.</div>
+          <div class="sticker" data-tilt>🇰🇿 Мен Қазақстан<b>да</b> тудым.</div>
+          <div class="sticker" data-tilt>🗺️ Мен Солтүстік Қазақстан<b>да</b> тудым.</div>
+          
+          <div class="sticker" data-tilt>❄️ Мен қыста (көктемде, жазда, күзде) тудым.</div>
+          <div class="sticker" data-tilt>📅 Мен 25-ші қазан<b>да</b> тудым.</div>
+          <div class="sticker" data-tilt>🗓️ Мен 2005-ші жылы тудым.</div>
+          
+          <div class="sticker" data-tilt>🏫 Мен №8 мектеп<b>те</b> оқыдым.</div>
+          <div class="sticker" data-tilt>🎒 Мен Сергеевка орта мектебін<b>де</b> оқыдым.</div>
+          <div class="sticker" data-tilt>🎓 Мен университет<b>те</b> оқыдым.</div>
+          <div class="sticker" data-tilt>📊 Мен экономика факультетін<b>де</b> оқыдым.</div>
+          <div class="sticker" data-tilt>💼 Менің мамандығым – қаржыгер.</div>
+          <div class="sticker" data-tilt>📜 Мен магистратура<b>да</b> оқыдым.</div>
+          <div class="sticker" data-tilt>🔬 Мен докторантура<b>да</b> оқыдым.</div>
+          <div class="sticker" data-tilt>👩‍🏫 Мен педагогика ғылымдары кандидатымын.</div>
+        </div>
+      </div>
+    
+      <script>
+        // 3D TILT EFFECT LOGIC
+        document.addEventListener('DOMContentLoaded', () => {
+          const cards = document.querySelectorAll('[data-tilt]');
+    
+          cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+              const rect = card.getBoundingClientRect();
+              const x = e.clientX - rect.left; // Mouse X inside element
+              const y = e.clientY - rect.top;  // Mouse Y inside element
+              
+              // Calculate center
+              const centerX = rect.width / 2;
+              const centerY = rect.height / 2;
+              
+              // Calculate tilt values (max rotation 15deg)
+              const rotateX = ((y - centerY) / centerY) * -15; 
+              const rotateY = ((x - centerX) / centerX) * 15;
+    
+              // Apply transform
+              card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+            });
+    
+            card.addEventListener('mouseleave', () => {
+              // Reset transform
+              card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+            });
+          });
+        });
+      </script>
+    </section>
+
+    <section class="section reveal">
+      <div class="section__head">
+        <h2 class="h2">2.3 Бақылау тапсырмалары</h2>
+      </div>
+
+      <h3 class="h3">1. Диалогты оқыңыз (Хабарлама алмасу):</h3>
+      <div class="phoneWrapper">
+        <div class="phoneMockup">
+          <div class="phoneHead">
+            <div class="phoneHead__avatar">Ә</div>
+            <div class="phoneHead__info">
+              <div class="phoneHead__name">Әділет</div>
+              <div class="phoneHead__status">online</div>
+            </div>
+          </div>
+          <div class="phoneBody" id="chatScrollArea">
+            <div class="msg msg--left msg-hidden">Сәлеметсіз бе?</div>
+            <div class="msg msg--right msg-hidden">Сәлеметсіз бе?</div>
+            
+            <div class="msg msg--left msg-hidden">Сіз кімсіз?</div>
+            <div class="msg msg--right msg-hidden">Мен Әділетпін.</div>
+            
+            <div class="msg msg--left msg-hidden">Қалайсыз?</div>
+            <div class="msg msg--right msg-hidden">Жақсымын.</div>
+            
+            <div class="msg msg--left msg-hidden">Не жаңалық бар?</div>
+            <div class="msg msg--right msg-hidden">Жоқ.</div>
+            
+            <div class="msg msg--left msg-hidden">Сіз қалада тудыңыз ба?</div>
+            <div class="msg msg--right msg-hidden">Жоқ. Мен ауылда тудым.</div>
+            
+            <div class="msg msg--left msg-hidden">Сіз қай мектепте оқыдыңыз?</div>
+            <div class="msg msg--right msg-hidden">Мен Сергеевка орта мектебінде оқыдым.</div>
+            
+            <div class="msg msg--left msg-hidden">Сіз қайда жұмыс істейсіз?</div>
+            <div class="msg msg--right msg-hidden">Мен қазір университетте жұмыс істеймін.</div>
+            
+            <div class="msg msg--left msg-hidden">Сау болыңыз!</div>
+            <div class="msg msg--right msg-hidden">Сау болыңыз.</div>
+          </div>
+          <div class="phoneFooter">
+            <div class="fakeInput">Хабарлама...</div>
+            <div style="color:var(--a); font-size:1.2rem;">➤</div>
+          </div>
+        </div>
+        <button class="btn btn--primary" id="nextMsgBtn" onclick="showNextMessage()" style="margin-top: 16px;">
+          Келесі хабарлама (Next) ↓
+        </button>
+      </div>
+      <section class="weekSection reveal" style="margin-top: 40px;">
+        <div class="weekSection__head">
+          <h3 class="h3 weekSection__title" style="color:#1e293b; font-size:1.5rem;">2. Жағдаяттар (Ситуации)</h3>
+          <p class="section__sub">Рөлдік ойындар: Сөйлесу дағдысын жаттықтыру.</p>
+        </div>
+      
+        <style>
+          /* GRID LAYOUT */
+          .sitGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+          }
+      
+          /* CARD STYLE */
+          .sitCard {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            border: 1px solid #f1f5f9;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow: hidden;
+          }
+      
+          /* Top Accent Line */
+          .sitCard::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: var(--accent-color);
+          }
+      
+          /* Hover Effect */
+          .sitCard:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+          }
+      
+          /* Header inside card */
+          .sitHeader {
+            display: flex; align-items: center; justify-content: space-between;
+          }
+          .sitNum {
+            font-size: 2.5rem; font-weight: 800; color: #f1f5f9;
+            line-height: 1; position: absolute; right: 15px; top: 15px;
+            z-index: 0;
+          }
+          
+          .sitIcon {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: var(--bg-light); color: var(--accent-color);
+            display: grid; place-items: center; font-size: 1.2rem;
+            position: relative; z-index: 1;
+          }
+      
+          .sitText {
+            font-size: 1rem; line-height: 1.6; color: #475569;
+            position: relative; z-index: 1;
+          }
+      
+          /* Specific Colors */
+          .c-blue { --accent-color: #3b82f6; --bg-light: #eff6ff; }
+          .c-purple { --accent-color: #8b5cf6; --bg-light: #f5f3ff; }
+          .c-green { --accent-color: #10b981; --bg-light: #ecfdf5; }
+          .c-orange { --accent-color: #f59e0b; --bg-light: #fffbeb; }
+          .c-pink { --accent-color: #ec4899; --bg-light: #fdf2f8; }
+      
+        </style>
+      
+        <div class="weekSection__body sitGrid">
+      
+          <div class="sitCard c-blue">
+            <div class="sitNum">1</div>
+            <div class="sitHeader">
+              <div class="sitIcon">🤝</div>
+            </div>
+            <div class="sitText">
+              Сұхбаттасыңызбен амандасыңыз, оның есімін сұраңыз, қай жоғары оқу орнында оқығанын және қазір қайда жұмыс істейтінін сұраңыз. Әңгіме үшін алғыс айтыңыз. Қоштасыңыз.
+            </div>
+          </div>
+      
+          <div class="sitCard c-purple">
+            <div class="sitNum">2</div>
+            <div class="sitHeader">
+              <div class="sitIcon">🎓</div>
+            </div>
+            <div class="sitText">
+              Сұхбаттасыңызбен амандасыңыз, оның кім екенін сұраңыз, магистратурада оқыды ма, қазір қайда және кім болып жұмыс істейтінін сұраңыз. Әңгіме үшін алғыс айтыңыз. Қоштасыңыз.
+            </div>
+          </div>
+      
+          <div class="sitCard c-green">
+            <div class="sitNum">3</div>
+            <div class="sitHeader">
+              <div class="sitIcon">🏫</div>
+            </div>
+            <div class="sitText">
+              Сұхбаттасыңызбен амандасыңыз, оның аты-жөнін сұраңыз, қай мектепте оқығанын сұраңыз, қазір жұмыс істей ме, соны біліңіз. Әңгіме үшін алғыс айтыңыз. Қоштасыңыз.
+            </div>
+          </div>
+      
+          <div class="sitCard c-orange">
+            <div class="sitNum">4</div>
+            <div class="sitHeader">
+              <div class="sitIcon">🎂</div>
+            </div>
+            <div class="sitText">
+              Сұхбаттасыңызбен амандасыңыз, оның аты-жөнін сұраңыз, қашан және қайда туғанын біліңіз. Қай мектепте және қай жоғары оқу орнында оқығанын сұраңыз. Әңгіме үшін алғыс айтыңыз. Қоштасыңыз.
+            </div>
+          </div>
+      
+          <div class="sitCard c-pink">
+            <div class="sitNum">5</div>
+            <div class="sitHeader">
+              <div class="sitIcon">💼</div>
+            </div>
+            <div class="sitText">
+              Сұхбаттасыңызбен амандасыңыз, оның есімін сұраңыз, қашан туғанын біліңіз. Қай мектепте және қай жоғары оқу орнында оқығанын, қазір қайда жұмыс істейтінін сұраңыз. Әңгіме үшін алғыс айтыңыз. Қоштасыңыз.
+            </div>
+          </div>
+      
+        </div>
+      </section>
+      <h3 class="h3" style="margin-top:30px">3. Әңгімені толықтырыңыз, мазмұнын айтып беріңіз</h3>
+      <div class="constructorBox">
+        Мен – <input type="text" class="inputBlank" placeholder="(имя)">.
+        Мен қазір Петропавлда тұрамын.
+        Петропавл – менің қалам.
+        Мен <input type="text" class="inputBlank" placeholder="(ел, қала/ауыл)"> тудым.
+        Мен <input type="text" class="inputBlank" placeholder="(уақыт)"> тудым.
+        Мен <input type="text" class="inputBlank" placeholder="(мектеп, ЖОО)"> оқыдым.
+        Мен жақсы білім алдым.
+        Мен қазір <input type="text" class="inputBlank" placeholder="(жұмыс орны)"> жұмыс істеймін.
+        Мен университетте <input type="text" class="inputBlank" placeholder="(жыл)"> жыл жұмыс істеймін.
+      </div>
+    </section>
+    <section class="section reveal">
+      <div class="section__head">
+        <h2 class="h2">Өзіңізді тексеріңіз</h2>
+        <p class="section__sub">Дұрыс жауапты таңдаңыз (8 сұрақ).</p>
+      </div>
+    
+      <div class="weekSection">
+        <div class="weekSection__body">
+    
+          <form id="quizForm" novalidate>
+            <div class="compactGrid">
+    
+              <!-- 1 -->
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">1. Доброе утро!</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q1" value="1"> Қайырлы таң
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q1" value="0"> Қайырлы кеш
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q1" value="0"> Қайырлы түн
+                  </label>
+                </div>
+              </div>
+    
+              <!-- 2 -->
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">2. Қалайсыз? (Как дела?)</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q2" value="0"> Рахмет
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q2" value="1"> Жақсы
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q2" value="0"> Жоқ
+                  </label>
+                </div>
+              </div>
+    
+              <!-- 3 -->
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">3. Мен қалада ... (родился).</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q3" value="1"> тудым
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q3" value="0"> оқыдым
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q3" value="0"> жұмыс істеймін
+                  </label>
+                </div>
+              </div>
+    
+              <!-- 4 -->
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">4. Мен мектеп... оқыдым.</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q4" value="0"> –ға
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q4" value="1"> –те
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q4" value="0"> –пен
+                  </label>
+                </div>
+              </div>
+    
+              <!-- 5 -->
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">5. Сау ... (До свидания!)</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q5" value="0"> келдіңіз
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q5" value="1"> болыңыз
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q5" value="0"> жақсы
+                  </label>
+                </div>
+              </div>
+    
+              <!-- 6 -->
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">6. Спасибо!</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q6" value="1"> Рақмет
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q6" value="0"> Сәлем
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q6" value="0"> Мархабат
+                  </label>
+                </div>
+              </div>
+    
+              <!-- 7 -->
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">7. Сіз ... (Кто Вы?)</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q7" value="0"> қалайсыз
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q7" value="1"> кімсіз
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q7" value="0"> қайдасыз
+                  </label>
+                </div>
+              </div>
+    
+              <!-- 8 -->
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">8. Не жаңалық ...? (бар)</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q8" value="1"> бар
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q8" value="0"> жоқ
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q8" value="0"> көп
+                  </label>
+                </div>
+              </div>
+    
+            </div>
+    
+            <button
+              type="button"
+              class="btn btn--primary"
+              id="checkQuizBtn"
+              style="margin-top:24px; width:100%;"
+            >
+              Нәтижені тексеру
+            </button>
+          </form>
+    
+          <div id="quizResult" class="resultBox" aria-live="polite"></div>
+    
+        </div>
+      </div>
+    </section>
+    
+    
+    <div class="navBottom">
+      <a class="btn" href="week1.html">← 1-аптаға өту</a>
+      <a class="btn btn--primary" href="week3.html">3-аптаға өту →</a>
+    </div>
+
+    <footer class="footer reveal" role="contentinfo">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__brand">
+            <span class="brand__mark brand__mark--sm" aria-hidden="true"></span>
+            <div>
+              <div class="footer__title">Ситуативтік қазақ тілі</div>
+              <div class="footer__sub">Онлайн курс</div>
+            </div>
+          </div>
+          <p class="footer__text">Авторы: Ахметова Татьяна Алимжановна</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span class="muted">© Kazakh Course 2026</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('checkQuizBtn');
+      if (btn) {
+        btn.addEventListener('click', checkQuiz);
+      }
+    });
+    
+    function checkQuiz() {
+      const form = document.getElementById('quizForm');
+      const resultBox = document.getElementById('quizResult');
+    
+      let score = 0;
+      const total = 8;
+    
+      for (let i = 1; i <= total; i++) {
+        const selected = form.querySelector(`input[name="q${i}"]:checked`);
+        if (selected && selected.value === '1') {
+          score++;
+        }
+      }
+    
+      resultBox.style.display = 'block';
+    
+      if (score === total) {
+        resultBox.className = 'resultBox is-good';
+        resultBox.textContent = 'Тамаша! 8/8 🏆';
+      } else if (score >= 5) {
+        resultBox.className = 'resultBox is-good';
+        resultBox.textContent = `Жақсы! ${score}/8 👍`;
+      } else {
+        resultBox.className = 'resultBox is-bad';
+        resultBox.textContent = `Қайталау керек: ${score}/8`;
+      }
+    
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    </script>
+    
+  <script>
+  /* =========================
+     REVEAL ANIMATION
+     ========================= */
+  document.addEventListener('DOMContentLoaded', () => {
+    document.documentElement.classList.add('reveal-ready');
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      setTimeout(() => el.classList.add('is-in'), i * 100);
+    });
+  });
+  
+  
+  /* =========================
+     PHONE CHAT LOGIC
+     ========================= */
+  let currentMsgIndex = 0;
+  
+  function showNextMessage() {
+    const messages = document.querySelectorAll('.msg');
+    const chatArea = document.getElementById('chatScrollArea');
+    const btn = document.getElementById('nextMsgBtn');
+  
+    if (!messages.length || !chatArea || !btn) return;
+  
+    if (currentMsgIndex < messages.length) {
+      messages[currentMsgIndex].classList.remove('msg-hidden');
+      chatArea.scrollTop = chatArea.scrollHeight;
+      currentMsgIndex++;
+    }
+  
+    if (currentMsgIndex >= messages.length) {
+      btn.textContent = 'Диалог аяқталды ↺';
+      btn.classList.add('btn--ghost');
+      btn.onclick = resetChat;
+    }
+  }
+  
+  function resetChat() {
+    const messages = document.querySelectorAll('.msg');
+    const btn = document.getElementById('nextMsgBtn');
+  
+    messages.forEach(m => m.classList.add('msg-hidden'));
+    currentMsgIndex = 0;
+  
+    btn.textContent = 'Келесі хабарлама (Next) ↓';
+    btn.classList.remove('btn--ghost');
+    btn.onclick = showNextMessage;
+  }
+  
+  
+  /* =========================
+     TRANSLATION TOGGLE
+     ========================= */
+  function toggleTranslations() {
+    const btn = document.getElementById('transBtn');
+    document.body.classList.toggle('show-trans');
+  
+    if (!btn) return;
+  
+    if (document.body.classList.contains('show-trans')) {
+      btn.textContent = 'Аударманы жасыру ✕';
+      btn.style.opacity = '0.8';
+    } else {
+      btn.textContent = 'Аудармасын көрсету 👁️';
+      btn.style.opacity = '1';
+    }
+  }
+  
+  
+  /* =========================
+     QUIZ LOGIC (FINAL, SAFE)
+     ========================= */
+  function checkQuiz() {
+    const form = document.getElementById('quizForm');
+    const resultBox = document.getElementById('quizResult');
+  
+    if (!form || !resultBox) {
+      console.error('quizForm немесе quizResult табылмады');
+      return;
+    }
+  
+    const total = 8;
+    let score = 0;
+  
+    for (let i = 1; i <= total; i++) {
+      const inputs = form.querySelectorAll(`input[name="q${i}"]`);
+      const selected = form.querySelector(`input[name="q${i}"]:checked`);
+  
+      inputs.forEach(input => {
+        const label = input.parentElement;
+        label.style.borderColor = 'var(--stroke)';
+        label.style.backgroundColor = 'var(--surface2)';
+      });
+  
+      if (selected) {
+        const label = selected.parentElement;
+        if (selected.value === '1') {
+          score++;
+          label.style.borderColor = 'var(--b)';
+          label.style.backgroundColor =
+            'color-mix(in oklab, var(--b) 10%, transparent)';
+        } else {
+          label.style.borderColor = 'red';
+          label.style.backgroundColor =
+            'color-mix(in oklab, red 5%, transparent)';
+        }
+      }
+    }
+  
+    resultBox.style.display = 'block';
+  
+    if (score === total) {
+      resultBox.className = 'resultBox is-good';
+      resultBox.innerHTML = 'Тамаша! 8/8 🏆';
+    } else if (score >= 5) {
+      resultBox.className = 'resultBox is-good';
+      resultBox.innerHTML = `Жақсы! ${score}/8 👍`;
+    } else {
+      resultBox.className = 'resultBox is-bad';
+      resultBox.innerHTML = `Қайталау керек: ${score}/8`;
+    }
+  
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const quizBtn = document.getElementById('checkQuizBtn');
+  
+    if (!quizBtn) {
+      console.error('❌ Кнопка теста не найдена');
+      return;
+    }
+  
+    quizBtn.addEventListener('click', () => {
+      console.log('✅ Нәтижені тексеру — нажата');
+      checkQuiz();
+    });
+  });
+  
+  </script>
+  
+</body>
+</html>
