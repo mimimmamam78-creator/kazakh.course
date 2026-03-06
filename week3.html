@@ -11,7 +11,212 @@
     /* =========================================
        СІЗДІҢ БАСТАПҚЫ СТИЛЬДЕРІҢІЗ (ӨЗГЕРІССІЗ)
        ========================================= */
+/* =========================================
+   ТЕСТ СТИЛЬДЕРІ (ӨЗІҢІЗДІ ТЕКСЕРІҢІЗ)
+   ========================================= */
 
+/* Екі бағанды ықшам тор (Сетка) */
+.compactGrid { 
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr); /* Екі баған */
+  gap: 16px; 
+}
+
+/* Мобильді экранда бір баған болады */
+@media (max-width: 768px) { 
+  .compactGrid { grid-template-columns: 1fr; } 
+}
+
+/* Сұрақ блогы (Карточка) */
+.compactBlock { 
+  background: var(--surface, #ffffff); 
+  border: 1px solid var(--stroke, #e2e8f0); 
+  border-radius: 12px; 
+  padding: 14px 16px !important; /* Ықшам padding */
+  margin: 0 !important; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Сұрақ мәтіні */
+.compactTitle { 
+  font-size: 0.95rem !important; /* Шрифт кішірейтілді */
+  margin-bottom: 12px !important; 
+  font-weight: 700; 
+  color: var(--text, #1e293b);
+  line-height: 1.4;
+}
+
+/* Жауаптар тізімі (Түймелер контейнері) */
+.testGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto; /* Төменге туралау үшін */
+}
+
+/* Жауап нұсқасы (Label) */
+.testItem {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  font-size: 0.85rem; /* Жауап шрифті компактный */
+  color: var(--muted, #64748b);
+  background: var(--surface2, #f8fafc);
+  border: 1px solid var(--stroke, #e2e8f0);
+  border-radius: 8px;
+  padding: 8px 12px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+/* Радио-батырманы көрінбейтін ету */
+.testItem input[type="radio"] {
+  position: absolute; 
+  opacity: 0; 
+  cursor: pointer; 
+  height: 0; 
+  width: 0;
+}
+
+.testItem:hover { 
+  background: #ffffff; 
+  border-color: #cbd5e1; 
+}
+
+/* Таңдалған кездегі стиль */
+.testItem:has(input:checked) {
+  background: color-mix(in srgb, var(--b, #3b82f6) 10%, white);
+  border-color: var(--b, #3b82f6);
+  color: var(--b, #3b82f6);
+  font-weight: 600;
+}
+
+/* =========================================
+   ТЕКСЕРУДЕН КЕЙІНГІ ТҮСТЕР (JS ҚОСАДЫ)
+   ========================================= */
+
+.testItem.is-correct { 
+  background-color: #dcfce7 !important; 
+  border-color: #22c55e !important; 
+  color: #166534 !important; 
+  font-weight: 700;
+}
+
+.testItem.is-wrong { 
+  background-color: #fee2e2 !important; 
+  border-color: #ef4444 !important; 
+  color: #991b1b !important; 
+  font-weight: 600;
+}
+
+/* Нәтиже көрсететін блок */
+.resultBox {
+  margin-top: 24px;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 1rem;
+  display: none;
+  animation: popInResult 0.4s ease forwards;
+}
+
+.resultBox.is-good {
+  background-color: #dcfce7;
+  border: 1px solid #22c55e;
+  color: #166534;
+}
+
+.resultBox.is-bad {
+  background-color: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #991b1b;
+}
+
+@keyframes popInResult {
+  0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+/* =========================================
+   ТЕКСЕРУДЕН КЕЙІНГІ СТИЛЬДЕР (JS ҚОСАДЫ)
+   ========================================= */
+
+.qOpt.correct {
+  background-color: #dcfce7 !important;
+  border-color: #22c55e !important;
+  color: #166534 !important;
+  font-weight: 700;
+}
+
+.qOpt.wrong {
+  background-color: #fee2e2 !important;
+  border-color: #ef4444 !important;
+  color: #991b1b !important;
+  opacity: 0.8;
+}
+
+/* =========================================
+   3D БАТЫРМА ЖӘНЕ НӘТИЖЕ БЛОГЫ
+   ========================================= */
+
+.btn3D {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  margin-top: 10px;
+}
+
+.btn3D__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  background: var(--accent, #27ae60);
+  color: white;
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transform: translateY(-5px);
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 15px rgba(39, 174, 96, 0.25), 0 5px 0 #1e8449;
+}
+
+.btn3D:active .btn3D__content {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(39, 174, 96, 0.25), 0 1px 0 #1e8449;
+}
+
+.resultBox {
+  padding: 24px;
+  border-radius: 16px;
+  text-align: center;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  animation: popInResult 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.resultBox.is-good {
+  background: #dcfce7;
+  border: 2px solid #22c55e;
+  color: #166534;
+}
+
+.resultBox.is-bad {
+  background: #fee2e2;
+  border: 2px solid #ef4444;
+  color: #991b1b;
+}
+
+@keyframes popInResult {
+  0% { opacity: 0; transform: scale(0.95) translateY(15px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
     /* 1. TOPIC CARDS */
     .topicCardGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
     .topicCard { background: var(--surface); border: 1px solid var(--stroke); border-top-width: 4px; border-radius: 16px; box-shadow: var(--shadow-1); display: flex; flex-direction: column; overflow: hidden; }
@@ -158,6 +363,7 @@
         </div>
       </div>
       <nav class="nav nav--weeks">
+        <a class="nav__link" href="index.html">Басты</a>
         <a class="nav__link" href="week1.html">1</a>
         <a class="nav__link" href="week2.html">2</a>
         <a class="nav__link is-active" href="week3.html">3</a>
@@ -398,7 +604,7 @@
         </div>
         <div class="missionCard">
           <div class="missionCard__head"><span class="missionCard__num">05</span><span class="missionCard__icon">🕰️</span></div>
-          <div class="missionCard__body">Өзіңізді таныстырыңыз. Сұхбаттасыңыздың <strong>қарапайым күні</strong> қалай өтетінін, бос уақытта қайда баратынын және ол үшін өмірде не маңызды екенін сұраңыз.</div>
+          <div class="missionCard__body">Өзіңізді таныстырыңыз. Сұхбаттасыңыздың <strong>әдетте күндеріңіз</strong> қалай өтетінін, бос уақытта қайда баратынын және ол үшін өмірде не маңызды екенін сұраңыз.</div>
         </div>
         <div class="missionCard">
           <div class="missionCard__head"><span class="missionCard__num">06</span><span class="missionCard__icon">🎯</span></div>
@@ -425,100 +631,182 @@
         </div>
       </div>
     </section>
-
-    <section class="section reveal" id="test">
+    <section class="section reveal">
       <div class="section__head">
         <h2 class="h2">Өзіңізді тексеріңіз</h2>
         <p class="section__sub">Дұрыс жауапты таңдаңыз (10 сұрақ).</p>
       </div>
-      <div class="weekSection"> 
+    
+      <div class="weekSection">
         <div class="weekSection__body">
-          <form id="quizForm">
-            <div class="quizGrid">
-              <div class="quizCard">
-                <div class="quizCard__q">1. Мен Алматы... барғым келеді. (Куда?)</div>
-                <div class="quizOptions">
-                  <label class="qOpt"><input type="radio" name="q1" value="0"> –да</label>
-                  <label class="qOpt"><input type="radio" name="q1" value="1"> –ға</label>
-                  <label class="qOpt"><input type="radio" name="q1" value="0"> –дан</label>
+    
+          <form id="quizForm" novalidate>
+            <div class="compactGrid">
+    
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">1. «Я хорошо пою» қазақша қалай болады?</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q1" value="0"> Мен жақсы тоқимын.
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q1" value="1"> Мен жақсы ән айтамын.
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q1" value="0"> Мен сурет саламын.
+                  </label>
                 </div>
               </div>
-              <div class="quizCard">
-                <div class="quizCard__q">2. Уақытты достар... өткіземін. (С кем?)</div>
-                <div class="quizOptions">
-                  <label class="qOpt"><input type="radio" name="q2" value="1"> –мен</label>
-                  <label class="qOpt"><input type="radio" name="q2" value="0"> –да</label>
-                  <label class="qOpt"><input type="radio" name="q2" value="0"> –дың</label>
+    
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">2. «Свободное время» сөзінің аудармасы?</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q2" value="0"> Жұмыс уақыты
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q2" value="1"> Бос уақыт
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q2" value="0"> Күнделікті өмір
+                  </label>
                 </div>
               </div>
-              <div class="quizCard">
-                <div class="quizCard__q">3. Дүкен ... (Шоппинг).</div>
-                <div class="quizOptions">
-                  <label class="qOpt"><input type="radio" name="q3" value="0"> оқимын</label>
-                  <label class="qOpt"><input type="radio" name="q3" value="1"> аралаймын</label>
-                  <label class="qOpt"><input type="radio" name="q3" value="0"> тоқимын</label>
+    
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">3. «Для меня важна семья» аудармасы:</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q3" value="1"> Мен үшін отбасым маңызды.
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q3" value="0"> Мен үшін жұмысым маңызды.
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q3" value="0"> Менде мақсат жоқ.
+                  </label>
                 </div>
               </div>
-              <div class="quizCard">
-                <div class="quizCard__q">4. Мен жақсы ән айта... (Я пою).</div>
-                <div class="quizOptions">
-                  <label class="qOpt"><input type="radio" name="q4" value="0"> –сың</label>
-                  <label class="qOpt"><input type="radio" name="q4" value="0"> –ды</label>
-                  <label class="qOpt"><input type="radio" name="q4" value="1"> –мын</label>
+    
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">4. «Часто» қазақша қалай болады?</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q4" value="0"> Сирек
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q4" value="1"> Жиі
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q4" value="0"> Әрқашан
+                  </label>
                 </div>
               </div>
-              <div class="quizCard">
-                <div class="quizCard__q">5. Мен үшін өмірде ... маңызды.</div>
-                <div class="quizOptions">
-                  <label class="qOpt"><input type="radio" name="q5" value="1"> отбасым</label>
-                  <label class="qOpt"><input type="radio" name="q5" value="0"> дала</label>
-                  <label class="qOpt"><input type="radio" name="q5" value="0"> техника</label>
+    
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">5. «Мақсат» сөзінің мағынасы?</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q5" value="0"> Мечта
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q5" value="1"> Цель
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q5" value="0"> Хобби
+                  </label>
                 </div>
               </div>
-              <div class="quizCard">
-                <div class="quizCard__q">6. «Техниканы жақсы білемін» — бұл:</div>
-                <div class="quizOptions">
-                  <label class="qOpt"><input type="radio" name="q6" value="0"> Чинить</label>
-                  <label class="qOpt"><input type="radio" name="q6" value="1"> Знать</label>
-                  <label class="qOpt"><input type="radio" name="q6" value="0"> Любить</label>
+    
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">6. Жалғауды табыңыз: "Бос уақытымды отбасым... өткіземін."</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q6" value="0"> -бен
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q6" value="0"> -пен
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q6" value="1"> -мен
+                  </label>
                 </div>
               </div>
-              <div class="quizCard">
-                <div class="quizCard__q">7. Мен спортзалға ... барамын. (Когда?)</div>
-                <div class="quizOptions">
-                  <label class="qOpt"><input type="radio" name="q7" value="0"> Түнде</label>
-                  <label class="qOpt"><input type="radio" name="q7" value="0"> Жұмыста</label>
-                  <label class="qOpt"><input type="radio" name="q7" value="1"> Бос уақытта</label>
+    
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">7. «Далада қыдырамын» тіркесінің мағынасы:</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q7" value="0"> Смотрю телевизор.
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q7" value="1"> Гуляю на улице.
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q7" value="0"> Хожу по магазинам.
+                  </label>
                 </div>
               </div>
-              <div class="quizCard">
-                <div class="quizCard__q">8. «Мақсат» сөзінің синонимі?</div>
-                <div class="quizOptions">
-                  <label class="qOpt"><input type="radio" name="q8" value="0"> Арман (Мечта)</label>
-                  <label class="qOpt"><input type="radio" name="q8" value="1"> Цель</label>
-                  <label class="qOpt"><input type="radio" name="q8" value="0"> Жұмыс</label>
+    
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">8. Егер адамға билеген ұнаса, қалай айтады?</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q8" value="0"> Мен сурет саламын.
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q8" value="1"> Мен билегенді ұнатамын.
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q8" value="0"> Мен ән айтпаймын.
+                  </label>
                 </div>
               </div>
-              <div class="quizCard">
-                <div class="quizCard__q">9. «Жиі» сөзінің аудармасы?</div>
-                <div class="quizOptions">
-                  <label class="qOpt"><input type="radio" name="q9" value="1"> Часто</label>
-                  <label class="qOpt"><input type="radio" name="q9" value="0"> Редко</label>
-                  <label class="qOpt"><input type="radio" name="q9" value="0"> Никогда</label>
+    
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">9. «Әрқашан» сөзінің антонимі (қарама-қарсы сөз):</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q9" value="0"> Жиі
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q9" value="1"> Ешқашан
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q9" value="0"> Көп
+                  </label>
                 </div>
               </div>
-              <div class="quizCard">
-                <div class="quizCard__q">10. Мен сурет ... (Я рисую).</div>
-                <div class="quizOptions">
-                  <label class="qOpt"><input type="radio" name="q10" value="0"> пісіремін</label>
-                  <label class="qOpt"><input type="radio" name="q10" value="1"> саламын</label>
-                  <label class="qOpt"><input type="radio" name="q10" value="0"> білемін</label>
+    
+              <div class="block compactBlock">
+                <p class="h2 compactTitle">10. Қоштасып жатырсыз. Қай сөзді айтасыз?</p>
+                <div class="testGrid">
+                  <label class="testItem">
+                    <input type="radio" name="q10" value="0"> Сәлем!
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q10" value="1"> Кездескенше!
+                  </label>
+                  <label class="testItem">
+                    <input type="radio" name="q10" value="0"> Мархабат!
+                  </label>
                 </div>
               </div>
+    
             </div>
-            <button type="button" class="btn btn--primary" style="margin-top: 24px; width: 100%;" onclick="checkQuiz()">Нәтижені тексеру</button>
+    
+            <button
+              type="button"
+              class="btn btn--primary"
+              id="checkQuizBtn"
+              style="margin-top:24px; width:100%;"
+            >
+              Нәтижені тексеру
+            </button>
           </form>
-          <div id="quizResult" class="resultBox"></div>
+    
+          <div id="quizResult" class="resultBox" aria-live="polite"></div>
+    
         </div>
       </div>
     </section>
@@ -557,7 +845,62 @@
         });
       }, 100);
     });
-
+    document.addEventListener('DOMContentLoaded', () => {
+      const checkBtn = document.getElementById('checkQuizBtn');
+      if (checkBtn) {
+        checkBtn.addEventListener('click', checkQuiz);
+      }
+    });
+    
+    function checkQuiz() {
+      const form = document.getElementById('quizForm');
+      const resultBox = document.getElementById('quizResult');
+    
+      if (!form || !resultBox) return;
+    
+      const total = 10; // 10 сұрақ
+      let score = 0;
+    
+      // 1. Алдыңғы тексеру нәтижелерін тазалау
+      const allItems = form.querySelectorAll('.testItem');
+      allItems.forEach(item => {
+        item.classList.remove('is-correct', 'is-wrong');
+      });
+    
+      // 2. Барлық сұрақтарды тексеру
+      for (let i = 1; i <= total; i++) {
+        const selected = form.querySelector(`input[name="q${i}"]:checked`);
+        
+        if (selected) {
+          const label = selected.closest('.testItem');
+          
+          // Егер value "1" болса - дұрыс, "0" болса - қате
+          if (selected.value === '1') {
+            score++;
+            label.classList.add('is-correct');
+          } else {
+            label.classList.add('is-wrong');
+          }
+        }
+      }
+    
+      // 3. Нәтижені шығару
+      resultBox.style.display = 'block';
+    
+      if (score === total) {
+        resultBox.className = 'resultBox is-good';
+        resultBox.innerHTML = `<strong>Тамаша! ${score}/${total} 🏆</strong><br>Сіз тақырыпты толық меңгердіңіз.`;
+      } else if (score >= 6) {
+        resultBox.className = 'resultBox is-good';
+        resultBox.innerHTML = `<strong>Жақсы! ${score}/${total} 👍</strong><br>Кейбір қателер бар.`;
+      } else {
+        resultBox.className = 'resultBox is-bad';
+        resultBox.innerHTML = `<strong>Қайталау керек: ${score}/${total}</strong><br>Ережелерді қайта қарап шығыңыз.`;
+      }
+    
+      // 4. Экранды нәтижеге қарай сырғыту
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
     // АУДАРМА БАТЫРМАСЫ
     function toggleGlobalTrans() {
       const btn = document.getElementById('transBtn');
